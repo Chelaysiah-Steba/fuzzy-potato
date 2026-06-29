@@ -5,28 +5,18 @@ untidy_scientists <- data.frame(
     "sci11","sci11","sci12","sci12","sci13","sci13","sci14","sci14","sci15","sci15",
     "sci16","sci16","sci17","sci17","sci18","sci18","sci19","sci19","sci20","sci20"
   ),
-  Measurement = rep(c("age_years", "survival_days"), 20),
-  Value = c(
-    34, 88,
-    50, 20,
-    41, 77,
-    29, 55,
-    46, 12,
-    38, 91,
-    52, 33,
-    44, 67,
-    31, 82,
-    57, 14,
-    36, 73,
-    48, 29,
-    40, 95,
-    53, 18,
-    28, 64,
-    39, 87,
-    45, 22,
-    32, 79,
-    55, 31,
-    37, 70
+    MeasurementType = rep(c("age_years", "symptom_onset_days"), times = 20),
+    MeasurementValue = c(
+      # age_years
+      34, 50, 41, 29, 46,
+      38, 52, 44, 31, 57,
+      36, 48, 40, 53, 28,
+      39, 45, 32, 55, 37,
+      # symptom_onset_days
+      3, 2, 6, 2, 4,
+      7, 8, 4, 2, 5,
+      3, 2, 6, 2, 4,
+      7, 8, 4, 2, 5
+    )
   )
-)
-
+  

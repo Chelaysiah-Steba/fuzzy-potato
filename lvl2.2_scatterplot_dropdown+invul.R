@@ -2,9 +2,6 @@ library(shiny)
 library(shinyjs)
 library(ggplot2)
 
-# ---------------------------
-# DATASET
-# ---------------------------
 tidy_scientists <- data.frame(
   Scientist = c(
     "sci01","sci02","sci03","sci04","sci05",
@@ -18,17 +15,14 @@ tidy_scientists <- data.frame(
     36, 48, 40, 53, 28,
     39, 45, 32, 55, 37
   ),
-  survival_days = c(
-    88, 20, 77, 55, 12,
-    91, 33, 67, 82, 14,
-    73, 29, 95, 18, 64,
-    87, 22, 79, 31, 70
+  symptom_onset_days = c(
+    3, 2, 6, 2, 4,
+    7, 8, 4, 2, 5,
+    3, 2, 6, 2, 4,
+    7, 8, 4, 2, 5
   )
 )
 
-# ---------------------------
-# UI
-# ---------------------------
 ui <- fluidPage(
   useShinyjs(),
   
@@ -40,71 +34,54 @@ ui <- fluidPage(
         font-family: 'Courier New', monospace;
       }
 
-      #start_wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60vh;
-      }
-
       .code-box {
         background-color: #000000;
         border: 3px solid #00FF00;
-        padding: 10px;
-        margin-bottom: 5px;   /* SMALLER SPACING */
-        font-family: 'Courier New', monospace;
-        white-space: pre-wrap;
+        padding: 8px;
+        margin-bottom: 5px;
         font-size: 1.05em;
-        line-height: 1.2em;   /* TIGHTER LINE SPACING */
+        line-height: 1.1em;
       }
 
       .inline-input {
-        display: inline-block;
         width: 120px;
         background-color: #000000;
         color: #00FF00;
         border: 2px solid #00FF00;
-        font-family: 'Courier New', monospace;
-        margin-left: 3px;
-        margin-right: 3px;
-        height: 28px;         /* SMALLER HEIGHT */
+        margin: 0 3px;
+        height: 26px;
       }
 
       .inline-dropdown {
-        display: inline-block;
         background-color: #000000;
         color: #00FF00;
         border: 2px solid #00FF00;
-        font-family: 'Courier New', monospace;
         margin-left: 3px;
-        height: 32px;         /* SMALLER HEIGHT */
+        height: 30px;
       }
 
       .game-container {
         display: flex;
-        gap: 10px;            /* SMALLER GAP */
+        gap: 10px;
         margin-top: 10px;
       }
 
       .editor, .console {
         width: 50%;
-        padding: 10px;        /* SMALLER PADDING */
+        padding: 10px;
         border: 2px solid #00FF00;
-        background-color: #1c1c1c;
       }
 
       .console {
         background-color: #000000;
-        white-space: pre-wrap;
       }
 
       button {
         background-color: #1c1c1c;
         color: #00FF00;
         border: 2px solid #00FF00;
-        padding: 8px 16px;    /* SMALLER BUTTON */
+        padding: 8px 16px;
         cursor: pointer;
-        font-size: 1.1em;
       }
 
       button:hover {
@@ -114,106 +91,93 @@ ui <- fluidPage(
     "))
   ),
   
-  div(
-    id = "start_wrapper",
-    actionButton("start_scatter", "📊 Start Level 2.2: Maak een scatterplot")
-  ),
-  
   uiOutput("game_ui")
 )
 
-# ---------------------------
-# SERVER
-# ---------------------------
 server <- function(input, output, session) {
   
-  observeEvent(input$start_scatter, {
-    
-    removeUI(selector = "#start_wrapper", immediate = TRUE)
-    
-    output$game_ui <- renderUI({
-      div(class = "game-container",
-          
-          div(class = "editor",
-              h3("Level 2.2: Maak een scatterplot"),
-              p("Opdracht: kies de juiste functie en vul de lege plekken in."),
-              
-              div(class = "code-box",
-                  
-                  HTML("ggplot(tidy_scientists, aes(x = "),
-                  tags$input(id = "x_input", type = "text", class = "inline-input"),
-                  HTML(", y = "),
-                  tags$input(id = "y_input", type = "text", class = "inline-input"),
-                  HTML(")) + "),
-                  
-                  selectInput(
-                    "geom_choice",
-                    NULL,
-                    choices = c(
-                      "geom_point()" = "geom_point()",
-                      "geom_line()" = "geom_line()",
-                      "geom_bar()" = "geom_bar()",
-                      "geom_histogram()" = "geom_histogram()"
-                    ),
-                    width = "180px",
-                    selectize = FALSE
+  output$game_ui <- renderUI({
+    div(class = "game-container",
+        
+        div(class = "editor",
+            h3("Level 2.2: Maak een scatterplot"),
+            p("Opdracht: vul alle velden correct in."),
+            
+            div(class = "code-box",
+                HTML("ggplot(tidy_scientists, aes(x = "),
+                tags$input(id = "x_input", type = "text", class = "inline-input"),
+                HTML(", y = "),
+                tags$input(id = "y_input", type = "text", class = "inline-input"),
+                HTML(")) + "),
+                
+                selectInput(
+                  "geom_choice",
+                  NULL,
+                  choices = c(
+                    "geom_point()" = "geom_point()",
+                    "geom_line()" = "geom_line()",
+                    "geom_bar()" = "geom_bar()",
+                    "geom_histogram()" = "geom_histogram()"
                   ),
-                  
-                  HTML(" + theme_minimal()")
-              ),
-              
-              actionButton("run_scatter", "▶ RUN CODE")
-          ),
-          
-          div(class = "console",
-              h3("Console"),
-              verbatimTextOutput("scatter_console"),
-              plotOutput("scatter_plot", height = "300px")   # SMALLER PLOT
-          )
-      )
-    })
+                  width = "160px",
+                  selectize = FALSE
+                ),
+                
+                HTML(" + theme_minimal()")
+            ),
+            
+            actionButton("run_scatter", "▶ RUN CODE")
+        ),
+        
+        div(class = "console",
+            h3("Console"),
+            verbatimTextOutput("scatter_console"),
+            plotOutput("scatter_plot", height = "300px")
+        )
+    )
   })
   
   observeEvent(input$run_scatter, {
-    req(input$geom_choice, input$x_input, input$y_input)
+    req(input$x_input, input$y_input, input$geom_choice)
     
-    correct_geom <- input$geom_choice == "geom_point()"
     correct_x <- input$x_input == "age_years"
-    correct_y <- input$y_input == "survival_days"
+    correct_y <- input$y_input == "symptom_onset_days"
+    correct_geom <- input$geom_choice == "geom_point()"
     
-    if (correct_geom && correct_x && correct_y) {
+    if (correct_x && correct_y && correct_geom) {
       
       output$scatter_console <- renderText({
         paste0(
-          "✔ Correct!\nJe hebt de juiste functie gekozen en alle velden correct ingevuld.\n\n",
+          "✔ Correct!\nAlles klopt.\n\n",
           "Volledige code:\n",
-          "ggplot(tidy_scientists, aes(x = age_years, y = survival_days)) +\n",
+          "ggplot(tidy_scientists, aes(x = age_years, y = symptom_onset_days)) +\n",
           "  geom_point() +\n",
           "  theme_minimal()"
         )
       })
       
       output$scatter_plot <- renderPlot({
-        ggplot(tidy_scientists, aes(age_years, survival_days)) +
+        ggplot(tidy_scientists, aes(age_years, symptom_onset_days)) +
           geom_point(color = "#00FF00", size = 3) +
           theme_minimal(base_family = "Courier New") +
           theme(
-            plot.background = element_rect(fill = "black", color = NA),
+            plot.background = element_rect(fill = "black"),
             panel.background = element_rect(fill = "black"),
             text = element_text(color = "#00FF00"),
             axis.text = element_text(color = "#00FF00")
           )
       })
       
-      session$sendCustomMessage("confetti", TRUE)
       return()
     }
     
     output$scatter_console <- renderText({
       paste0(
-        "✖ Fout.\nControleer je invoer.\n\n",
-        "Hint: Een scatterplot gebruikt punten → geom_point().\n",
-        "X = age_years\nY = survival_days"
+        "✖ Fout.\nAlle drie velden moeten correct zijn.\n\n",
+        "Hints:\n",
+        "X = age_years\n",
+        "Y = symptom_onset_days\n",
+        "Gebruik geom_point() voor een scatterplot."
       )
     })
     
