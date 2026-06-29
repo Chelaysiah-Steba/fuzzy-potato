@@ -1,6 +1,15 @@
 # laden van packages
 library(shiny)
 library(shinyjs)
+library(tidyverse)
+
+# laden van source materiaal (level scripts en vraagtypefuncties)
+source("modules.R")
+source("levels/level_2/level2_1.R")
+source("levels/level_2/level2_2.R")
+source("levels/level_2/level2_3.R")
+source("levels/level_2/level2_4.R")
+
 
 # ---------------------------------------------------------
 # STATE MACHINE
@@ -192,12 +201,37 @@ ui <- fluidPage(
 # ---------------------------------------------------------
 server <- function(input, output, session) {
   
+  level2_1_server(input, output, session, current_page)
+  level2_2_server(input, output, session, current_page)
+  level2_3_server(input, output, session, current_page)
+  level2_4_server(input, output, session, current_page)
+  
   # ROUTER
   output$main_ui <- renderUI({
     if (current_page() == "intro") {
+      
       start_page_ui()
+      
+    } else if (current_page() == "level2_1") {
+      
+      level2_1_ui()
+      
+    } else if (current_page() == "level2_2") {
+      
+      level2_2_ui()
+      
+    } else if (current_page() == "level2_3") {
+      
+      level2_3_ui()
+      
+    } else if (current_page() == "level2_4") {
+      
+      level2_4_ui()
+      
     } else if (current_page() == "end") {
+      
       end_page_ui()
+      
     }
   })
   
@@ -270,8 +304,8 @@ server <- function(input, output, session) {
   # ---------------------------------------------------------
   observeEvent(input$start_game, {
     showModal(modalDialog(
-      title = "LEVEL 1 — Introductie",
-      "In dit level leer je de basisprincipes van data-structuur in de bunker.",
+      title = "LEVEL 2 — Introductie",
+      "Tijdens het stabiliseren van het beveiligingssysteem is vastgesteld dat correcte data‑invoer essentieel is. Ruwe laboratoriumbestanden worden aangeleverd als TSV‑data, die alleen veilig verwerkt kan worden wanneer het juiste scheidingsteken en decimaalformaat worden ingesteld. Na het inlezen moet de onderzoeker controleren of alle variabelen correct zijn geïnterpreteerd, omdat foutieve kolomtypes het virusmonitoringsysteem kunnen verstoren. Voor het analyseren van verspreidingspatronen gebruikt het systeem visualisaties: scatterplots om relaties tussen metingen te detecteren, histogrammen om verdelingen te beoordelen en boxplots om afwijkingen en mogelijke besmettingspieken te identificeren. Heldere labels zijn noodzakelijk om snel beslissingen te nemen. Deze kennis is vereist om de volgende beveiligingslaag te activeren.",
       footer = tagList(
         modalButton("Sluiten"),
         actionButton("continue_btn", "Ga verder")
@@ -281,10 +315,10 @@ server <- function(input, output, session) {
   })
   
   # ---------------------------------------------------------
-  # INFO POP-UP → EINDSCHERM (tijdelijk)
+  # INFO POP-UP → level 2.1
   # ---------------------------------------------------------
   observeEvent(input$continue_btn, {
-    current_page("end")
+    current_page("level2_1")
     removeModal()
   })
   
