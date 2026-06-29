@@ -5,10 +5,10 @@ library(shinyjs)
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
-current_page <- reactiveVal("intro")
+current_page <- reactiveVal("intro")   # startpagina
 
 # ---------------------------------------------------------
-# STARTPAGINA TEKST
+# INTRO TEKST (typing effect)
 # ---------------------------------------------------------
 lines <- c(
   "Je betreedt de Helix-9 Onderzoeksbunker in de veronderstelling dat je een routine-trainingssessie ingaat...",
@@ -34,6 +34,7 @@ rv <- reactiveValues(
 # UI COMPONENTS
 # ---------------------------------------------------------
 
+# STARTPAGINA
 start_page_ui <- function() {
   div(class = "landing-container",
       
@@ -47,6 +48,7 @@ start_page_ui <- function() {
   )
 }
 
+# EINDSCHERM
 end_page_ui <- function() {
   div(class = "landing-container",
       
@@ -71,6 +73,7 @@ end_page_ui <- function() {
 ui <- fluidPage(
   useShinyjs(),
   
+  # ---------- CSS ----------
   tags$head(
     tags$style(HTML("
       body {
@@ -112,18 +115,21 @@ ui <- fluidPage(
         background-color: #00FF00;
         color: #1c1c1c;
       }
-      .caret {
-        display: inline-block;
-        width: 10px;
-        background-color: #00FF00;
-        animation: blink 0.8s infinite;
+      .modal-content {
+        background-color: #1c1c1c !important;
+        color: #00FF00;
+        border: 2px solid #00FF00;
       }
-      @keyframes blink {
-        0%, 50%, 100% { background-color: transparent; }
-        25%, 75% { background-color: #00FF00; }
+      .modal-header, .modal-footer {
+        background-color: #1c1c1c !important;
+        border-color: #00FF00;
+      }
+      .modal-title {
+        color: #00FF00;
       }
     ")),
     
+    # ---------- JS ----------
     tags$script(HTML("
       Shiny.addCustomMessageHandler('updateText', function(message) {
         document.getElementById('typed_text').innerHTML = message;
@@ -186,6 +192,7 @@ ui <- fluidPage(
 # ---------------------------------------------------------
 server <- function(input, output, session) {
   
+  # ROUTER
   output$main_ui <- renderUI({
     if (current_page() == "intro") {
       start_page_ui()
@@ -194,7 +201,9 @@ server <- function(input, output, session) {
     }
   })
   
-  # Typing effect
+  # ---------------------------------------------------------
+  # TYPING EFFECT
+  # ---------------------------------------------------------
   observe({
     if (current_page() != "intro") return()
     
@@ -239,7 +248,9 @@ server <- function(input, output, session) {
     }
   })
   
-  # Skip intro
+  # ---------------------------------------------------------
+  # SKIP INTRO
+  # ---------------------------------------------------------
   observeEvent(input$skip_intro, {
     rv$current_line <- length(lines) + 1
     rv$current_char <- 0
@@ -254,22 +265,32 @@ server <- function(input, output, session) {
     shinyjs::hide("skip_intro")
   })
   
-  # Start game → modal → end screen
+  # ---------------------------------------------------------
+  # START GAME → INFO POP-UP
+  # ---------------------------------------------------------
   observeEvent(input$start_game, {
     showModal(modalDialog(
-      title = "SPEL STARTEN...",
-      "Spel omgeving inladen...",
-      footer = actionButton("continue_btn", "Volgende"),
+      title = "LEVEL 1 — Introductie",
+      "In dit level leer je de basisprincipes van data-structuur in de bunker.",
+      footer = tagList(
+        modalButton("Sluiten"),
+        actionButton("continue_btn", "Ga verder")
+      ),
       easyClose = TRUE
     ))
   })
   
+  # ---------------------------------------------------------
+  # INFO POP-UP → EINDSCHERM (tijdelijk)
+  # ---------------------------------------------------------
   observeEvent(input$continue_btn, {
     current_page("end")
     removeModal()
   })
   
-  # Restart → terug naar intro + reset typing
+  # ---------------------------------------------------------
+  # EINDSCHERM -> INTRO (restart)
+  # ---------------------------------------------------------
   observeEvent(input$restart_game, {
     current_page("intro")
     rv$current_line <- 1
@@ -280,7 +301,9 @@ server <- function(input, output, session) {
     shinyjs::hide("start_game")
   })
   
-  # Confetti
+  # ---------------------------------------------------------
+  # CONFETTI
+  # ---------------------------------------------------------
   observeEvent(input$confetti_btn, {
     session$sendCustomMessage("confetti", TRUE)
   })
