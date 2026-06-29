@@ -40,7 +40,7 @@ ui <- fluidPage(
     "))
   ),
   
-  titlePanel("LEVEL 3.3 — Zet de barplot‑code in de juiste volgorde"),
+  titlePanel("LEVEL 3.4 — Zet de barplot‑code in de juiste volgorde"),
   
   h4("Sleep de code‑stukken hieronder in de juiste volgorde om een barplot met foutbalken te maken."),
   
