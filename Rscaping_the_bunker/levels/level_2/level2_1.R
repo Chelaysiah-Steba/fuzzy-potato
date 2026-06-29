@@ -28,6 +28,8 @@ excel_question <- list(
 
 level2_1_ui <- function() {
   
+  question <- render_question(excel_question)
+  
   fluidPage(
     
     useShinyjs(),
@@ -39,11 +41,13 @@ level2_1_ui <- function() {
           color: #00FF00;
           font-family: 'Courier New', monospace;
         }
+
         .game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
+
         .editor, .console {
           width: 50%;
           padding: 15px;
@@ -51,10 +55,12 @@ level2_1_ui <- function() {
           border: 2px solid #00FF00;
           text-align: left;
         }
+
         .editor {
           background-color: #1c1c1c;
           min-height: 200px;
         }
+
         .console {
           background-color: #000000;
           min-height: 200px;
@@ -64,76 +70,40 @@ level2_1_ui <- function() {
     ),
     
     div(
-      id = "start_wrapper",
-      style = "
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60vh;
-      ",
+      class = "game-container",
       
-      actionButton(
-        "start_level",
-        "📂 Start Level 2.1: Load Virus Dataset",
-        style = "
-          font-size: 1.5em;
-          padding: 20px 40px;
-          background-color: #1c1c1c;
-          color: #00FF00;
-          border: 3px solid #00FF00;
-          cursor: pointer;
-          text-shadow: 0 0 5px #00FF00;
-        "
+      div(
+        class = "editor",
+        
+        h3("📂 Level 2.1: Load the Virus Dataset"),
+        
+        p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
+        
+        p("Kies wat er tussen de haakjes moet staan:"),
+        
+        question$ui,
+        
+        actionButton("submit_excel", "▶ RUN CODE")
+      ),
+      
+      div(
+        class = "console",
+        
+        h3("Console"),
+        
+        verbatimTextOutput("excel_console"),
+        
+        br(),
+        
+        uiOutput("virus_table")
       )
-    ),
-    
-    uiOutput("game_ui")
-    
+    )
   )
-  
 }
 
 level2_1_server <- function(input, output, session, current_page) {
   
   question <- render_question(excel_question)
-  
-  observeEvent(input$start_level, {
-    
-    removeUI(selector = "#start_wrapper", immediate = TRUE)
-    
-    output$game_ui <- renderUI({
-      
-      div(
-        class = "game-container",
-        
-        div(
-          class = "editor",
-          
-          h3("📂 Level 2.1: Load the Virus Dataset"),
-          
-          p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
-          
-          p("Kies wat er tussen de haakjes moet staan:"),
-          
-          question$ui,
-          
-          actionButton("submit_excel", "▶ RUN CODE")
-        ),
-        
-        div(
-          class = "console",
-          
-          h3("Console"),
-          
-          verbatimTextOutput("excel_console"),
-          
-          br(),
-          
-          uiOutput("virus_table")
-        )
-      )
-    })
-  })
   
   observeEvent(input$submit_excel, {
     
