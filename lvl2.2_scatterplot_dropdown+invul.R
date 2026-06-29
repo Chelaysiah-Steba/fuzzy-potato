@@ -5,8 +5,8 @@ library(ggplot2)
 # ---------------------------
 # DATASET
 # ---------------------------
-scientist_dataset <- data.frame(
-  scientist = c(
+tidy_scientists <- data.frame(
+  Scientist = c(
     "sci01","sci02","sci03","sci04","sci05",
     "sci06","sci07","sci08","sci09","sci10",
     "sci11","sci12","sci13","sci14","sci15",
@@ -50,22 +50,24 @@ ui <- fluidPage(
       .code-box {
         background-color: #000000;
         border: 3px solid #00FF00;
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 10px;
+        margin-bottom: 5px;   /* SMALLER SPACING */
         font-family: 'Courier New', monospace;
         white-space: pre-wrap;
-        font-size: 1.1em;
+        font-size: 1.05em;
+        line-height: 1.2em;   /* TIGHTER LINE SPACING */
       }
 
       .inline-input {
         display: inline-block;
-        width: 140px;
+        width: 120px;
         background-color: #000000;
         color: #00FF00;
         border: 2px solid #00FF00;
         font-family: 'Courier New', monospace;
-        margin-left: 5px;
-        margin-right: 5px;
+        margin-left: 3px;
+        margin-right: 3px;
+        height: 28px;         /* SMALLER HEIGHT */
       }
 
       .inline-dropdown {
@@ -74,18 +76,19 @@ ui <- fluidPage(
         color: #00FF00;
         border: 2px solid #00FF00;
         font-family: 'Courier New', monospace;
-        margin-left: 5px;
+        margin-left: 3px;
+        height: 32px;         /* SMALLER HEIGHT */
       }
 
       .game-container {
         display: flex;
-        gap: 20px;
-        margin-top: 20px;
+        gap: 10px;            /* SMALLER GAP */
+        margin-top: 10px;
       }
 
       .editor, .console {
         width: 50%;
-        padding: 15px;
+        padding: 10px;        /* SMALLER PADDING */
         border: 2px solid #00FF00;
         background-color: #1c1c1c;
       }
@@ -99,9 +102,9 @@ ui <- fluidPage(
         background-color: #1c1c1c;
         color: #00FF00;
         border: 2px solid #00FF00;
-        padding: 10px 20px;
+        padding: 8px 16px;    /* SMALLER BUTTON */
         cursor: pointer;
-        font-size: 1.2em;
+        font-size: 1.1em;
       }
 
       button:hover {
@@ -137,13 +140,11 @@ server <- function(input, output, session) {
               
               div(class = "code-box",
                   
-                  HTML("ggplot(scientists_dataset, aes(x = "),
+                  HTML("ggplot(tidy_scientists, aes(x = "),
                   tags$input(id = "x_input", type = "text", class = "inline-input"),
                   HTML(", y = "),
                   tags$input(id = "y_input", type = "text", class = "inline-input"),
-                  HTML("
-)) +
-                  "),
+                  HTML(")) + "),
                   
                   selectInput(
                     "geom_choice",
@@ -154,13 +155,11 @@ server <- function(input, output, session) {
                       "geom_bar()" = "geom_bar()",
                       "geom_histogram()" = "geom_histogram()"
                     ),
-                    width = "200px",
+                    width = "180px",
                     selectize = FALSE
                   ),
                   
-                  HTML("
-+ theme_minimal()
-                  ")
+                  HTML(" + theme_minimal()")
               ),
               
               actionButton("run_scatter", "▶ RUN CODE")
@@ -169,7 +168,7 @@ server <- function(input, output, session) {
           div(class = "console",
               h3("Console"),
               verbatimTextOutput("scatter_console"),
-              plotOutput("scatter_plot")   # <-- NEW PLOT OUTPUT
+              plotOutput("scatter_plot", height = "300px")   # SMALLER PLOT
           )
       )
     })
@@ -188,13 +187,12 @@ server <- function(input, output, session) {
         paste0(
           "✔ Correct!\nJe hebt de juiste functie gekozen en alle velden correct ingevuld.\n\n",
           "Volledige code:\n",
-          "ggplot(scientists_dataset, aes(x = age_years, y = survival_days)) +\n",
+          "ggplot(tidy_scientists, aes(x = age_years, y = survival_days)) +\n",
           "  geom_point() +\n",
           "  theme_minimal()"
         )
       })
       
-      # SHOW SCATTERPLOT ONLY WHEN EVERYTHING IS CORRECT
       output$scatter_plot <- renderPlot({
         ggplot(tidy_scientists, aes(age_years, survival_days)) +
           geom_point(color = "#00FF00", size = 3) +
@@ -211,7 +209,6 @@ server <- function(input, output, session) {
       return()
     }
     
-    # WRONG ANSWER → HIDE PLOT
     output$scatter_console <- renderText({
       paste0(
         "✖ Fout.\nControleer je invoer.\n\n",

@@ -1,24 +1,18 @@
 library(shiny)
 library(shinyjs)
 
-scientists_dataset <- data.frame(
-  scientist = c(
-    "sci01","sci02","sci03","sci04","sci05",
-    "sci06","sci07","sci08","sci09","sci10",
-    "sci11","sci12","sci13","sci14","sci15",
-    "sci16","sci17","sci18","sci19","sci20"
+virus_dataset <- data.frame(
+  virus = c(
+    "VX-01", "CrimsonFlu", "OmegaSpore", "Nexavirus", "BlueAsh",
+    "PyroVex", "SilentMoth", "Gravemind", "Solaris-7", "HollowFang"
   ),
-  age_years = c(
-    34, 50, 41, 29, 46,
-    38, 52, 44, 31, 57,
-    36, 48, 40, 53, 28,
-    39, 45, 32, 55, 37
+  mean_onset_days = c(
+    3.2, 1.8, 5.6, 2.4, 4.1,
+    6.3, 7.8, 3.9, 2.1, 5.0
   ),
-  survival_days = c(
-    88, 20, 77, 55, 12,
-    91, 33, 67, 82, 14,
-    73, 29, 95, 18, 64,
-    87, 22, 79, 31, 70
+  sd_onset_days = c(
+    0.8, 0.5, 1.2, 0.6, 1.0,
+    1.4, 1.9, 0.7, 0.4, 1.1
   )
 )
 
@@ -53,9 +47,23 @@ ui <- fluidPage(
         min-height: 200px;
         white-space: pre-wrap;
       }
+      .code-box {
+        background-color: #000000;
+        border: 2px solid #00FF00;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .inline-input {
+        display: inline-block;
+        width: 160px;
+        background-color: #000000;
+        color: #00FF00;
+        border: 2px solid #00FF00;
+        font-family: 'Courier New', monospace;
+        margin-left: 5px;
+      }
     ")),
     
-    # Confetti script
     tags$script(HTML("
       Shiny.addCustomMessageHandler('confetti', function(message) {
         const colors = ['#ff3b3b', '#ffd93b', '#3bff57', '#3bd9ff', '#a93bff', '#ff8c3b'];
@@ -94,7 +102,6 @@ ui <- fluidPage(
     "))
   ),
   
-  # Centered start button
   div(
     id = "start_wrapper",
     style = "
@@ -105,7 +112,7 @@ ui <- fluidPage(
     ",
     actionButton(
       "start_level",
-      "📂 Start Level 2.1: Load Scientists Dataset",
+      "📂 Start Level 3.1: Virus dataset inladen",
       style = "
         font-size: 1.5em;
         padding: 20px 40px;
@@ -131,19 +138,14 @@ server <- function(input, output, session) {
       div(class = "game-container",
           
           div(class = "editor",
-              h3("📂 Level 2.1: Load the Scientists Dataset"),
-              p("Gebruik read_excel() om het bestand scientists.xlsx te laden."),
-              p("Kies wat er tussen de haakjes moet staan:"),
+              h3("📂 Level 3.1: Virus dataset inladen"),
+              p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
+              p("Typ wat er tussen de haakjes moet staan:"),
               
-              selectInput(
-                "excel_choice",
-                "scientists_dataset <- read_excel( ... )",
-                choices = c(
-                  "\"scientists.xlsx\"" = "\"scientists.xlsx\"",
-                  "scientists" = "scientists",
-                  "scientists.xlsx" = "scientists.xlsx",
-                  "\"data/scientists.xlsx\"" = "\"data/scientists.xlsx\""
-                )
+              div(class = "code-box",
+                  HTML("virus_dataset <- read_excel("),
+                  tags$input(id = "excel_input", type = "text", class = "inline-input"),
+                  HTML(")")
               ),
               
               actionButton("submit_excel", "▶ RUN CODE")
@@ -153,31 +155,39 @@ server <- function(input, output, session) {
               h3("Console"),
               verbatimTextOutput("excel_console"),
               br(),
-              uiOutput("scientists_table")
+              uiOutput("virus_table")
           )
       )
     })
   })
   
   observeEvent(input$submit_excel, {
-    req(input$excel_choice)
+    req(input$excel_input)
     
-    # Correct answer
-    if (input$excel_choice == "\"scientists.xlsx\"") {
+    # Laat ook zien wat er precies is ingevoerd
+    cat("excel_input =", input$excel_input, "\n")
+    
+    # Sta zowel met als zonder quotes toe
+    clean_input <- trimws(input$excel_input)
+    
+    if (clean_input %in% c("\"virus.xlsx\"", "virus.xlsx")) {
       
       output$excel_console <- renderText({
-        "✔ Correct!\nHet bestand is succesvol geladen in R als 'scientists_dataset'."
-      })
-      
-      output$scientists_table <- renderUI({
-        tagList(
-          h3("📊 Geladen dataset:"),
-          tableOutput("scientists_table_data")
+        paste0(
+          "✔ Correct!\nHet bestand is (in deze game) geladen als 'virus_dataset'.\n",
+          "Je invoer was: ", input$excel_input
         )
       })
       
-      output$scientists_table_data <- renderTable({
-        scientists_dataset
+      output$virus_table <- renderUI({
+        tagList(
+          h3("📊 Geladen dataset:"),
+          tableOutput("virus_table_data")
+        )
+      })
+      
+      output$virus_table_data <- renderTable({
+        virus_dataset
       })
       
       session$sendCustomMessage("confetti", TRUE)
@@ -185,11 +195,11 @@ server <- function(input, output, session) {
     }
     
     # Wrong answer → hide table + hint
-    output$scientists_table <- renderUI({ NULL })
+    output$virus_table <- renderUI({ NULL })
     
     output$excel_console <- renderText({
       paste0(
-        "✖ Fout.\nJe koos: read_excel(", input$excel_choice, ")\n\n",
+        "✖ Fout.\nJe typte: read_excel(", input$excel_input, ")\n\n",
         "Hint: Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx extensie."
       )
     })
