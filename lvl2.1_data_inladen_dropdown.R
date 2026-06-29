@@ -1,24 +1,18 @@
 library(shiny)
 library(shinyjs)
 
-scientists_dataset <- data.frame(
-  scientist = c(
-    "sci01","sci02","sci03","sci04","sci05",
-    "sci06","sci07","sci08","sci09","sci10",
-    "sci11","sci12","sci13","sci14","sci15",
-    "sci16","sci17","sci18","sci19","sci20"
+virus_dataset <- data.frame(
+  virus = c(
+    "VX-01", "CrimsonFlu", "OmegaSpore", "Nexavirus", "BlueAsh",
+    "PyroVex", "SilentMoth", "Gravemind", "Solaris-7", "HollowFang"
   ),
-  age_years = c(
-    34, 50, 41, 29, 46,
-    38, 52, 44, 31, 57,
-    36, 48, 40, 53, 28,
-    39, 45, 32, 55, 37
+  mean_onset_days = c(
+    3.2, 1.8, 5.6, 2.4, 4.1,
+    6.3, 7.8, 3.9, 2.1, 5.0
   ),
-  survival_days = c(
-    88, 20, 77, 55, 12,
-    91, 33, 67, 82, 14,
-    73, 29, 95, 18, 64,
-    87, 22, 79, 31, 70
+  sd_onset_days = c(
+    0.8, 0.5, 1.2, 0.6, 1.0,
+    1.4, 1.9, 0.7, 0.4, 1.1
   )
 )
 
@@ -53,48 +47,9 @@ ui <- fluidPage(
         min-height: 200px;
         white-space: pre-wrap;
       }
-    ")),
-    
-    # Confetti script
-    tags$script(HTML("
-      Shiny.addCustomMessageHandler('confetti', function(message) {
-        const colors = ['#ff3b3b', '#ffd93b', '#3bff57', '#3bd9ff', '#a93bff', '#ff8c3b'];
-
-        for (let i = 0; i < 150; i++) {
-          let conf = document.createElement('div');
-          let size = Math.random() * 8 + 4;
-
-          conf.style.position = 'fixed';
-          conf.style.width = size + 'px';
-          conf.style.height = size + 'px';
-          conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          conf.style.left = Math.random() * 100 + 'vw';
-          conf.style.top = '-10px';
-          conf.style.opacity = Math.random();
-
-          let duration = Math.random() * 3 + 2;
-          let drift = (Math.random() - 0.5) * 200;
-
-          conf.style.animation = `confettiFall ${duration}s linear forwards`;
-          conf.style.setProperty('--drift', drift + 'px');
-          conf.style.setProperty('--rotate', Math.random() * 360 + 'deg');
-
-          document.body.appendChild(conf);
-          setTimeout(() => conf.remove(), duration * 1000);
-        }
-      });
-
-      const style = document.createElement('style');
-      style.innerHTML = `
-      @keyframes confettiFall {
-        0% { transform: translateY(0) translateX(0) rotate(0deg); }
-        100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--rotate)); }
-      }`;
-      document.head.appendChild(style);
     "))
   ),
   
-  # Centered start button
   div(
     id = "start_wrapper",
     style = "
@@ -105,7 +60,7 @@ ui <- fluidPage(
     ",
     actionButton(
       "start_level",
-      "📂 Start Level 2.1: Load Scientists Dataset",
+      "📂 Start Level 2.1: Load Virus Dataset",
       style = "
         font-size: 1.5em;
         padding: 20px 40px;
@@ -131,18 +86,18 @@ server <- function(input, output, session) {
       div(class = "game-container",
           
           div(class = "editor",
-              h3("📂 Level 2.1: Load the Scientists Dataset"),
-              p("Gebruik read_excel() om het bestand scientists.xlsx te laden."),
+              h3("📂 Level 2.1: Load the Virus Dataset"),
+              p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
               p("Kies wat er tussen de haakjes moet staan:"),
               
               selectInput(
                 "excel_choice",
-                "scientists_dataset <- read_excel( ... )",
+                "virus_dataset <- read_excel( ... )",
                 choices = c(
-                  "\"scientists.xlsx\"" = "\"scientists.xlsx\"",
-                  "scientists" = "scientists",
-                  "scientists.xlsx" = "scientists.xlsx",
-                  "\"data/scientists.xlsx\"" = "\"data/scientists.xlsx\""
+                  "\"virus.xlsx\"" = "\"virus.xlsx\"",
+                  "virus" = "virus",
+                  "virus.xlsx" = "virus.xlsx",
+                  "\"data/virus.xlsx\"" = "\"data/virus.xlsx\""
                 )
               ),
               
@@ -153,7 +108,7 @@ server <- function(input, output, session) {
               h3("Console"),
               verbatimTextOutput("excel_console"),
               br(),
-              uiOutput("scientists_table")
+              uiOutput("virus_table")
           )
       )
     })
@@ -162,30 +117,28 @@ server <- function(input, output, session) {
   observeEvent(input$submit_excel, {
     req(input$excel_choice)
     
-    # Correct answer
-    if (input$excel_choice == "\"scientists.xlsx\"") {
+    if (input$excel_choice == "\"virus.xlsx\"") {
       
       output$excel_console <- renderText({
-        "✔ Correct!\nHet bestand is succesvol geladen in R als 'scientists_dataset'."
+        "✔ Correct!\nHet bestand is succesvol geladen in R als 'virus_dataset'."
       })
       
-      output$scientists_table <- renderUI({
+      output$virus_table <- renderUI({
         tagList(
           h3("📊 Geladen dataset:"),
-          tableOutput("scientists_table_data")
+          tableOutput("virus_table_data")
         )
       })
       
-      output$scientists_table_data <- renderTable({
-        scientists_dataset
+      output$virus_table_data <- renderTable({
+        virus_dataset
       })
       
       session$sendCustomMessage("confetti", TRUE)
       return()
     }
     
-    # Wrong answer → hide table + hint
-    output$scientists_table <- renderUI({ NULL })
+    output$virus_table <- renderUI({ NULL })
     
     output$excel_console <- renderText({
       paste0(
