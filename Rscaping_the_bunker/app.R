@@ -2,6 +2,7 @@
 library(shiny)
 library(shinyjs)
 library(tidyverse)
+library(later)
 
 # laden van source materiaal (level scripts en vraagtypefuncties)
 source("modules.R")
@@ -59,21 +60,76 @@ start_page_ui <- function() {
 
 # EINDSCHERM
 end_page_ui <- function() {
-  div(class = "landing-container",
+  
+  div(
+    class = "landing-container",
+    
+    h1("MISSION COMPLETE"),
+    
+    div(
       
-      h1("MISSIE VOLTOOID"),
+      id = "ending_text",
       
-      p("Het beveiligingssysteem is succesvol hersteld."),
-      p("Het virus is gestopt voordat het de oppervlakte kon bereiken."),
-      p("Tegen alle verwachtingen in heb jij de bunker gered."),
+      class = "terminal-output",
       
-      br(),
-      h2("🌍 De wereld is veilig... voor nu."),
-      br(),
+      tags$pre(
+        "",
+        id = "ending_terminal",
+        style="
+          color:#00FF00;
+          background:none;
+          border:none;
+          font-family:'Courier New', monospace;
+          font-size:18px;
+          text-align:left;
+          white-space:pre-wrap;
+          min-height:320px;
+          margin:25px auto;
+          text-shadow:0 0 8px #00FF00;
+        "
+      )
       
-      actionButton("confetti_btn", "🎉 Vier overwinning"),
-      actionButton("restart_game", "🔄 Opnieuw spelen")
+    ),
+    
+    div(
+      style="
+      overflow:hidden;
+      white-space:nowrap;
+      border-top:2px solid #00FF00;
+      border-bottom:2px solid #00FF00;
+      padding:12px;
+      margin-top:20px;
+      ",
+      
+      tags$div(
+        style="
+        display:inline-block;
+        padding-left:100%;
+        animation:ticker 25s linear infinite;
+        ",
+        
+        "DEVELOPERS • OLIVE OPREL • CHELAYSIAH STEBA • SUPERVISOR • BAS VAN GESTEL • PLAYTESTERS • TO BE DETERMINED • BUILT WITH R & SHINY • THANK YOU FOR PLAYING RSCAPING THE BUNKER •"
+      )
+      
+    ),
+    
+    br(),
+    br(),
+    
+    actionButton(
+      "confetti_btn",
+      "⚡ CYBER CELEBRATE",
+      class = "start-btn"
+    ),
+    
+    actionButton(
+      "end_transmission",
+      "END TRANSMISSION",
+      class = "start-btn"
+    )
+    
   )
+  
 }
 
 # ---------------------------------------------------------
@@ -136,6 +192,18 @@ ui <- fluidPage(
       .modal-title {
         color: #00FF00;
       }
+      @keyframes ticker{
+
+  from{
+    transform:translateX(0%);
+  }
+
+  to{
+    transform:translateX(-100%);
+  }
+  
+
+}
     ")),
     
     # ---------- JS ----------
@@ -239,6 +307,34 @@ Shiny.addCustomMessageHandler('redFlash', function(message){
 
 });
 
+Shiny.addCustomMessageHandler('endingType', function(message){
+
+  const terminal = document.getElementById('ending_terminal');
+
+  if(!terminal) return;
+
+  terminal.innerHTML = '';
+
+  let i = 0;
+
+  function type(){
+
+    if(i < message.length){
+
+      terminal.innerHTML += message.charAt(i);
+
+      i++;
+
+      setTimeout(type,20);
+
+    }
+
+  }
+
+  type();
+
+});
+
 "))
   ),
   
@@ -248,6 +344,28 @@ Shiny.addCustomMessageHandler('redFlash', function(message){
 # ---------------------------------------------------------
 # SERVER
 # ---------------------------------------------------------
+
+ending_text <- paste(
+
+"> INITIALIZING FINAL REPORT...",
+"> RESTORING SECURITY MODULES...",
+"> VERIFYING CONTAINMENT...",
+"> OPENING BUNKER DOORS...",
+"> CONNECTION STABLE",
+"",
+"MISSION SUCCESSFUL",
+"",
+"SYSTEM STATUS        : STABLE",
+"VIRUS CONTAINMENT    : SUCCESS",
+"ALL SECURITY MODULES : ONLINE",
+"BUNKER STATUS        : UNLOCKED",
+"",
+"> READY FOR TERMINATION? █",
+
+sep = "\n"
+
+)
+
 server <- function(input, output, session) {
   
   level2_1_server(input, output, session, current_page)
@@ -282,7 +400,26 @@ server <- function(input, output, session) {
       end_page_ui()
       
     }
+    
   })
+  
+  # ---------------------------------------------------------
+  # TYPEWRITER EFFECT EINDSCHERM
+  # ---------------------------------------------------------
+  observeEvent(current_page(), {
+    
+    req(current_page() == "end")
+    
+    later::later(function(){
+      
+      session$sendCustomMessage(
+        "endingType",
+        ending_text
+      )
+      
+    }, delay = 0.3)
+    
+  }, ignoreInit = TRUE)
   
   # ---------------------------------------------------------
   # TYPING EFFECT
@@ -385,10 +522,52 @@ server <- function(input, output, session) {
   })
   
   # ---------------------------------------------------------
-  # CONFETTI
+  # CONFETTI en stop app
   # ---------------------------------------------------------
   observeEvent(input$confetti_btn, {
     session$sendCustomMessage("confetti", TRUE)
+  })
+  
+  # ---------------------------------------------------------
+  # END TRANSMISSION
+  # ---------------------------------------------------------
+  observeEvent(input$end_transmission, {
+    
+    showModal(
+      modalDialog(
+        title = "Terminate connection?",
+        "Are you sure you want to terminate the connection?",
+        footer = tagList(
+          actionButton("play_again", "Play Again"),
+          actionButton("terminate_yes", "Terminate")
+        ),
+        easyClose = TRUE
+      )
+    )
+    
+  })
+  
+  observeEvent(input$play_again, {
+    
+    removeModal()
+    
+    current_page("intro")
+    
+    rv$current_line <- 1
+    rv$current_char <- 0
+    rv$is_pausing <- FALSE
+    
+    session$sendCustomMessage("updateText", "")
+    
+    shinyjs::show("skip_intro")
+    shinyjs::hide("start_game")
+    
+  })
+  
+  observeEvent(input$terminate_yes, {
+    
+    stopApp()
+    
   })
 }
 
