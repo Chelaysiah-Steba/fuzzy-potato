@@ -126,7 +126,14 @@ level2_1_server <- function(input, output, session, current_page) {
       
       session$sendCustomMessage("confetti", TRUE)
       
-      current_page("level2_2")
+      output$virus_table <- renderUI({
+        tagList(
+          h3("📊 Geladen dataset:"),
+          tableOutput("virus_table_data"),
+          br(),
+          actionButton("next_level2_2", "Volgende")
+        )
+      })
       
       return()
     }
@@ -140,6 +147,10 @@ level2_1_server <- function(input, output, session, current_page) {
         ")\n\n",
         "Hint: Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx extensie."
       )
+    })
+    
+    observeEvent(input$next_level2_2, {
+      current_page("level2_2")
     })
     
   })
