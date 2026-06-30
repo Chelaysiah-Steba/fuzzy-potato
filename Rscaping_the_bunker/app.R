@@ -140,84 +140,106 @@ ui <- fluidPage(
     
     # ---------- JS ----------
     tags$script(HTML("
-      Shiny.addCustomMessageHandler('updateText', function(message) {
-        document.getElementById('typed_text').innerHTML = message;
-      });
 
-      Shiny.addCustomMessageHandler('showStartButton', function(message) {
-        document.getElementById('start_game').style.display = 'inline-block';
-      });
+Shiny.addCustomMessageHandler('updateText', function(message) {
+  document.getElementById('typed_text').innerHTML = message;
+});
 
-      Shiny.addCustomMessageHandler('skipIntroText', function(message) {
-        document.getElementById('typed_text').innerHTML = message;
-      });
+Shiny.addCustomMessageHandler('showStartButton', function(message) {
+  document.getElementById('start_game').style.display = 'inline-block';
+});
 
-      Shiny.addCustomMessageHandler('confetti', function(message) {
-        const colors = ['#ff3b3b', '#ffd93b', '#3bff57', '#3bd9ff', '#a93bff', '#ff8c3b'];
+Shiny.addCustomMessageHandler('skipIntroText', function(message) {
+  document.getElementById('typed_text').innerHTML = message;
+});
 
-        for (let i = 0; i < 150; i++) {
-          let conf = document.createElement('div');
+Shiny.addCustomMessageHandler('confetti', function(message) {
 
-          let size = Math.random() * 8 + 4;
+  const chars = [
+    '0','1',
+    '#','+','*',
+    '[',']',
+    '{','}',
+    '<','>',
+    '/',
+    '\\\\',
+    '=',
+    'A','F','C','9'
+  ];
 
-          conf.style.position = 'fixed';
-          conf.style.width = size + 'px';
-          conf.style.height = size + 'px';
-          conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          conf.style.left = Math.random() * 100 + 'vw';
-          conf.style.top = '-10px';
-          conf.style.opacity = Math.random();
+  for(let i = 0; i < 220; i++){
 
-          let duration = Math.random() * 3 + 2;
-          let drift = (Math.random() - 0.5) * 200;
+    const p = document.createElement('div');
 
-          conf.style.animation = `confettiFall ${duration}s linear forwards`;
+    p.innerHTML = chars[Math.floor(Math.random()*chars.length)];
 
-          conf.style.setProperty('--drift', drift + 'px');
-          conf.style.setProperty('--rotate', Math.random() * 360 + 'deg');
+    p.style.position = 'fixed';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.top = '-30px';
 
-          document.body.appendChild(conf);
+    p.style.color = '#00ff66';
+    p.style.fontFamily = 'Courier New, monospace';
+    p.style.fontWeight = 'bold';
+    p.style.fontSize = (Math.random()*12 + 10) + 'px';
 
-          setTimeout(() => conf.remove(), duration * 1000);
+    p.style.textShadow = '0 0 10px #00ff00';
+    p.style.pointerEvents = 'none';
+    p.style.zIndex = '99999';
+
+    const drift = (Math.random()-0.5)*180;
+    const rotate = (Math.random()*720)-360;
+    const duration = 2000 + Math.random()*3000;
+
+    p.animate(
+      [
+        {
+          transform:'translate(0px,0px) rotate(0deg)',
+          opacity:1
+        },
+        {
+          transform:'translate('+drift+'px,110vh) rotate('+rotate+'deg)',
+          opacity:0
         }
-      });
+      ],
+      {
+        duration:duration,
+        easing:'linear'
+      }
+    );
 
-      Shiny.addCustomMessageHandler('greenFlash', function(message) {
+    document.body.appendChild(p);
 
-        document.body.style.transition = 'background-color 0.2s';
-        document.body.style.backgroundColor = '#003300';
+    setTimeout(function(){
+      p.remove();
+    }, duration);
 
-        setTimeout(function() {
-          document.body.style.backgroundColor = '#1c1c1c';
-        }, 2000);
+  }
 
-      });
+});
 
-      Shiny.addCustomMessageHandler('redFlash', function(message) {
+Shiny.addCustomMessageHandler('greenFlash', function(message){
 
-        document.body.style.transition = 'background-color 0.2s';
-        document.body.style.backgroundColor = '#4a0000';
+  document.body.style.transition = 'background-color 0.2s';
+  document.body.style.backgroundColor = '#003300';
 
-        setTimeout(function() {
-          document.body.style.backgroundColor = '#1c1c1c';
-        }, 2000);
+  setTimeout(function(){
+    document.body.style.backgroundColor = '#1c1c1c';
+  },2000);
 
-      });
+});
 
-      const style = document.createElement('style');
-      style.innerHTML = `
-        @keyframes confettiFall {
-          0% {
-            transform: translateY(0) rotate(0deg);
-          }
-          100% {
-            transform: translateY(100vh) translateX(var(--drift)) rotate(var(--rotate));
-          }
-        }
-      `;
-      document.head.appendChild(style);
+Shiny.addCustomMessageHandler('redFlash', function(message){
 
-    "))
+  document.body.style.transition = 'background-color 0.2s';
+  document.body.style.backgroundColor = '#4a0000';
+
+  setTimeout(function(){
+    document.body.style.backgroundColor = '#1c1c1c';
+  },2000);
+
+});
+
+"))
   ),
   
   uiOutput("main_ui")
