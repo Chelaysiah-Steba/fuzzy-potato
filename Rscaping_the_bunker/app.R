@@ -182,14 +182,41 @@ ui <- fluidPage(
         }
       });
 
+      Shiny.addCustomMessageHandler('greenFlash', function(message) {
+
+        document.body.style.transition = 'background-color 0.2s';
+        document.body.style.backgroundColor = '#003300';
+
+        setTimeout(function() {
+          document.body.style.backgroundColor = '#1c1c1c';
+        }, 2000);
+
+      });
+
+      Shiny.addCustomMessageHandler('redFlash', function(message) {
+
+        document.body.style.transition = 'background-color 0.2s';
+        document.body.style.backgroundColor = '#4a0000';
+
+        setTimeout(function() {
+          document.body.style.backgroundColor = '#1c1c1c';
+        }, 2000);
+
+      });
+
       const style = document.createElement('style');
       style.innerHTML = `
         @keyframes confettiFall {
-          0% { transform: translateY(0) rotate(0deg); }
-          100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--rotate)); }
+          0% {
+            transform: translateY(0) rotate(0deg);
+          }
+          100% {
+            transform: translateY(100vh) translateX(var(--drift)) rotate(var(--rotate));
+          }
         }
       `;
       document.head.appendChild(style);
+
     "))
   ),
   

@@ -66,6 +66,16 @@ level2_1_ui <- function() {
           min-height: 200px;
           white-space: pre-wrap;
         }
+
+        .next-btn{
+          margin-top:20px;
+          background:#1c1c1c;
+          color:#00FF00;
+          border:2px solid #00FF00;
+          padding:10px 20px;
+          font-family:'Courier New';
+          cursor:pointer;
+        }
       "))
     ),
     
@@ -101,58 +111,88 @@ level2_1_ui <- function() {
   )
 }
 
-level2_1_server <- function(input, output, session, current_page) {
+level2_1_server <- function(input, output, session, current_page){
   
   question <- render_question(excel_question)
   
-  observeEvent(input$submit_excel, {
+  observeEvent(input$submit_excel,{
     
-    if (question$check(input)) {
+    if(question$check(input)){
+      
+      session$sendCustomMessage("greenFlash", TRUE)
       
       output$excel_console <- renderText({
-        "✔ Correct!\nHet bestand is succesvol geladen in R als 'virus_dataset'."
+        
+        paste(
+          "🟢 SECURITY PROTOCOL UPDATED",
+          "",
+          "Module 1/4 geactiveerd.",
+          "",
+          "Virus Database Module",
+          "STATUS: ONLINE",
+          sep="\n"
+        )
+        
       })
       
       output$virus_table <- renderUI({
+        
         tagList(
-          h3("📊 Geladen dataset:"),
-          tableOutput("virus_table_data")
+          
+          h3("📊 Geladen dataset"),
+          
+          tableOutput("virus_table_data"),
+          
+          br(),
+          
+          actionButton(
+            "next_level2_2",
+            "Volgende",
+            class = "next-btn"
+          )
+          
         )
+        
       })
       
       output$virus_table_data <- renderTable({
         virus_dataset
       })
       
-      session$sendCustomMessage("confetti", TRUE)
+    } else {
       
-      output$virus_table <- renderUI({
-        tagList(
-          h3("📊 Geladen dataset:"),
-          tableOutput("virus_table_data"),
-          br(),
-          actionButton("next_level2_2", "Volgende")
+      session$sendCustomMessage("redFlash", TRUE)
+      
+      output$virus_table <- renderUI(NULL)
+      
+      output$excel_console <- renderText({
+        
+        paste(
+          "🔴 SECURITY PROTOCOL FAILED",
+          "",
+          "Module activation unsuccessful.",
+          "",
+          paste0(
+            "Je koos: read_excel(",
+            input$excel_choice,
+            ")"
+          ),
+          "",
+          "HINT",
+          "Bestandsnamen zijn tekst.",
+          "Gebruik daarom aanhalingstekens én de .xlsx-extensie.",
+          "",
+          sep = "\n"
         )
+        
       })
       
-      return()
     }
     
-    output$virus_table <- renderUI(NULL)
-    
-    output$excel_console <- renderText({
-      paste0(
-        "✖ Fout.\nJe koos: read_excel(",
-        input$excel_choice,
-        ")\n\n",
-        "Hint: Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx extensie."
-      )
-    })
-    
-    observeEvent(input$next_level2_2, {
-      current_page("level2_2")
-    })
-    
+  })
+  
+  observeEvent(input$next_level2_2,{
+    current_page("level2_2")
   })
   
 }
