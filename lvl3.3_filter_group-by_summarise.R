@@ -39,7 +39,7 @@ ui <- fluidPage(
       }
 
       .inline-input {
-        width: 120px;
+        width: 140px;
         background-color: #000000;
         color: #00FF00;
         border: 2px solid #00FF00;
@@ -70,6 +70,7 @@ ui <- fluidPage(
       .console {
         background-color: #000000;
         white-space: pre-wrap;
+        font-size: 1.05em;
       }
 
       button {
@@ -96,7 +97,7 @@ server <- function(input, output, session) {
     div(class = "game-container",
         
         div(class = "editor",
-            h3("Level 3.3: Analyse van tidy data"),
+            h3("Level 3.3: Analyse van tidy data (zonder group_by)"),
             p("Opdracht: vul alle velden correct in."),
             
             div(class = "code-box",
@@ -118,17 +119,7 @@ server <- function(input, output, session) {
                   placeholder = "yes"
                 ),
                 
-                HTML(") |> "),
-                
-                selectInput(
-                  "group_func",
-                  NULL,
-                  choices = c("group_by()", "rowwise()"),
-                  width = "160px",
-                  selectize = FALSE
-                ),
-                
-                HTML("(symptom_onset_days) |> summarise("),
+                HTML(") |> summarise("),
                 
                 HTML("mean = mean("),
                 tags$input(
@@ -152,7 +143,7 @@ server <- function(input, output, session) {
                 selectInput(
                   "count_func",
                   NULL,
-                  choices = c("count()", "n()"),
+                  choices = c("n()", "count()"),
                   width = "120px",
                   selectize = FALSE
                 ),
@@ -171,25 +162,55 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$run_code, {
-    req(input$compare_op, input$compare_value,
-        input$group_func, input$mean_value, input$sd_value, input$count_func)
     
+    # Check correctness
+    correct <- (
+      input$compare_op == "==" &&
+        input$compare_value == "yes" &&
+        input$mean_value == "symptom_onset_days" &&
+        input$sd_value == "symptom_onset_days" &&
+        input$count_func == "count()"
+    )
+    
+    if (!correct) {
+      output$console_output <- renderText({
+        paste0(
+          "✖ Fout.\n\nHints:\n",
+          "- Gebruik == voor vergelijking\n",
+          "- Vergelijk met 'yes'\n",
+          "- mean() moet symptom_onset_days gebruiken\n",
+          "- sd() moet symptom_onset_days gebruiken\n",
+          "- Gebruik count() voor n\n"
+        )
+      })
+      return()
+    }
+    
+    # Build correct code
     code <- paste0(
       "tidy_scientists |> ",
-      "filter(on_site ", input$compare_op, " '", input$compare_value, "') |> ",
-      sub("\\(\\)", "", input$group_func), "(symptom_onset_days) |> ",
-      "summarise(mean = mean(", input$mean_value, "), ",
-      "SD = sd(", input$sd_value, "), ",
-      "n = ", input$count_func, ")"
+      "filter(on_site == 'yes') |> ",
+      "summarise(mean = mean(symptom_onset_days), ",
+      "SD = sd(symptom_onset_days), ",
+      "n = count())"
     )
     
-    result <- tryCatch(
-      eval(parse(text = code)),
-      error = function(e) e$message
-    )
+    result <- tidy_scientists |>
+      filter(on_site == "yes") |>
+      summarise(
+        mean = mean(symptom_onset_days),
+        SD = sd(symptom_onset_days),
+        n = dplyr::count()
+      )
     
     output$console_output <- renderText({
-      paste("▶ Code uitgevoerd:\n", code, "\n\nResultaat:\n", capture.output(print(result)))
+      paste(
+        "✔ Correct!\n\nVolledige code:\n",
+        code,
+        "\n\nOutput in R:\n",
+        capture.output(print(result)),
+        collapse = "\n"
+      )
     })
   })
 }
