@@ -38,24 +38,22 @@ level2_intro_server <- function(input, output, session, current_page) {
         
         footer = tagList(
           
-          modalButton("Sluiten"),
-          
           actionButton(
-            "continue_btn",
-            "Start Level 2",
+            "continue_level2",
+            "Doorgaan",
             class = "start-btn"
           )
           
         ),
         
-        easyClose = TRUE,
+        easyClose = FALSE,
         size = "l"
       )
     )
     
   })
   
-  observeEvent(input$continue_btn, {
+  observeEvent(input$continue_level2, {
     
     removeModal()
     

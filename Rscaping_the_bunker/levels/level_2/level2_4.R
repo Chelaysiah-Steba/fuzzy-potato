@@ -54,65 +54,63 @@ plot_ylab_question <- list(
 )
 
 level2_4_ui <- function() {
-  
   title_q <- render_question(plot_title_question)
   subtitle_q <- render_question(plot_subtitle_question)
   x_q <- render_question(plot_xlab_question)
   y_q <- render_question(plot_ylab_question)
   
   fluidPage(
-    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
-      body {
-        background-color: #1c1c1c;
-        color: #00FF00;
-        font-family: 'Courier New', monospace;
-      }
+body {
+background-color: #1c1c1c;
+color: #00FF00;
+font-family: 'Courier New', monospace;
+}
 
-      .code-box {
-        background-color: #000000;
-        border: 3px solid #00FF00;
-        padding: 20px;
-        margin-bottom: 20px;
-        white-space: pre-wrap;
-        font-size: 1.1em;
-      }
+.code-box {
+background-color: #000000;
+border: 3px solid #00FF00;
+padding: 20px;
+margin-bottom: 20px;
+white-space: pre-wrap;
+font-size: 1.1em;
+}
 
-      .game-container {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-      }
+.game-container {
+display: flex;
+gap: 20px;
+margin-top: 20px;
+}
 
-      .editor, .console {
-        width: 50%;
-        padding: 15px;
-        border: 2px solid #00FF00;
-        background-color: #1c1c1c;
-      }
+.editor, .console {
+width: 50%;
+padding: 15px;
+border: 2px solid #00FF00;
+background-color: #1c1c1c;
+}
 
-      .console {
-        background-color: #000000;
-        white-space: pre-wrap;
-      }
+.console {
+background-color: #000000;
+white-space: pre-wrap;
+}
 
-      button {
-        background-color: #1c1c1c;
-        color: #00FF00;
-        border: 2px solid #00FF00;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 1.2em;
-      }
+button, .btn {
+background-color: #1c1c1c;
+color: #00FF00;
+border: 2px solid #00FF00;
+padding: 10px 20px;
+cursor: pointer;
+font-size: 1.2em;
+}
 
-      button:hover {
-        background-color: #00FF00;
-        color: #1c1c1c;
-      }
-      "))
+button:hover, .btn:hover {
+background-color: #00FF00;
+color: #1c1c1c;
+}
+"))
     ),
     
     div(
@@ -129,41 +127,40 @@ level2_4_ui <- function() {
         
         div(
           class = "code-box",
-      HTML("ggplot(virus_dataset, aes(
-  x = virus,
-  y = mean_onset_days,
-  color = onset_group
+          HTML("ggplot(virus_dataset, aes(
+x = virus,
+y = mean_onset_days,
+color = onset_group
 )) +
-  geom_point(size = 3) +
-  geom_errorbar(
-    aes(
-      ymin = mean_onset_days - sd_onset_days,
-      ymax = mean_onset_days + sd_onset_days
-    ),
-    width = 0.2
-  ) +
-  theme_minimal() +
-  labs(
-    title = "),
-      title_q$ui,
-      HTML(",
-    subtitle = "),
-      subtitle_q$ui,
-      HTML(",
-    x = "),
-      x_q$ui,
-      HTML(",
-    y = "),
-      y_q$ui,
-      HTML("
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )")
+geom_point(size = 3) +
+geom_errorbar(
+aes(
+ymin = mean_onset_days - sd_onset_days,
+ymax = mean_onset_days + sd_onset_days
+),
+width = 0.2
+) +
+theme_minimal() +
+labs(
+title = "),
+          title_q$ui,
+          HTML(",
+subtitle = "),
+          subtitle_q$ui,
+          HTML(",
+x = "),
+          x_q$ui,
+          HTML(",
+y = "),
+          y_q$ui,
+          HTML("
+) +
+theme(
+axis.text.x = element_text(angle = 45, hjust = 1)
+)")
         ),
-      
-      actionButton("run_label", "▶ RUN CODE"),
-      
+        
+        actionButton("run_label", "▶ RUN CODE")
       ),
       
       div(
@@ -174,23 +171,18 @@ level2_4_ui <- function() {
         verbatimTextOutput("label_console"),
         
         uiOutput("label_content")
-      
+      )
     )
-  )
-  
-  )
-}
+  ) }
 
 level2_4_server <- function(input, output, session, current_page) {
   
   if (!"onset_group" %in% names(virus_dataset)) {
-    
     virus_dataset$onset_group <- cut(
       virus_dataset$mean_onset_days,
       breaks = c(0, 2, 4, 6, 8),
       labels = c("0-2", "2-4", "4-6", "6-8")
     )
-    
   }
   
   output$label_content <- renderUI(NULL)
@@ -202,10 +194,13 @@ level2_4_server <- function(input, output, session, current_page) {
     x_q <- render_question(plot_xlab_question)
     y_q <- render_question(plot_ylab_question)
     
+    x_answer <- trimws(as.character(input$plot_xlab))
+    x_ok <- x_answer %in% c("Virus", "Virusnaam")
+    
     if (
       isTRUE(title_q$check(input)) &&
       isTRUE(subtitle_q$check(input)) &&
-      isTRUE(x_q$check(input)) &&
+      isTRUE(x_ok) &&
       isTRUE(y_q$check(input))
     ) {
       
@@ -226,11 +221,7 @@ level2_4_server <- function(input, output, session, current_page) {
       })
       
       output$label_content <- renderUI({
-        tagList(
-          plotOutput("label_plot"),
-          br(),
-          actionButton("next_level2_5", "Volgende", class = "next-btn")
-        )
+        plotOutput("label_plot")
       })
       
       output$label_plot <- renderPlot({
@@ -263,6 +254,10 @@ level2_4_server <- function(input, output, session, current_page) {
           )
       })
       
+      later::later(function() {
+        current_page("end")
+      }, delay = 2)
+      
       return()
     }
     
@@ -280,9 +275,5 @@ level2_4_server <- function(input, output, session, current_page) {
     })
     
     output$label_content <- renderUI(NULL)
-  })
-  
-  observeEvent(input$next_level2_5, {
-    current_page("transition_level2_3")
   })
 }
