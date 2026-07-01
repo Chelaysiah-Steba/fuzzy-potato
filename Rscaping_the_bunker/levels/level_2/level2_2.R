@@ -1,21 +1,16 @@
-tidy_scientists <- data.frame(
-  Scientist = c(
-    "sci01","sci02","sci03","sci04","sci05",
-    "sci06","sci07","sci08","sci09","sci10",
-    "sci11","sci12","sci13","sci14","sci15",
-    "sci16","sci17","sci18","sci19","sci20"
+#hoi Chelaysiah 
+virus_dataset <- data.frame(
+  virus = c(
+    "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
+    "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
-  age_years = c(
-    34, 50, 41, 29, 46,
-    38, 52, 44, 31, 57,
-    36, 48, 40, 53, 28,
-    39, 45, 32, 55, 37
+  mean_onset_days = c( 
+    3.2, 1.8, 5.6, 2.4, 4.1,
+    6.3, 7.8, 3.9, 2.1, 5.0
   ),
-  survival_days = c(
-    88, 20, 77, 55, 12,
-    91, 33, 67, 82, 14,
-    73, 29, 95, 18, 64,
-    87, 22, 79, 31, 70
+  sd_onset_days = c(
+    0.8, 0.5, 1.2, 0.6, 1.0,
+    1.4, 1.9, 0.7, 0.4, 1.1
   )
 )
 

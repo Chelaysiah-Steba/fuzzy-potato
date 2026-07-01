@@ -1,0 +1,172 @@
+library(shiny)
+library(shinyjs)
+library(ggplot2)
+
+tidy_scientists <- data.frame(
+  Scientist = c(
+    "sci01","sci02","sci03","sci04","sci05",
+    "sci06","sci07","sci08","sci09","sci10",
+    "sci11","sci12","sci13","sci14","sci15",
+    "sci16","sci17","sci18","sci19","sci20"
+  ),
+  age_years = c(
+    34, 50, 41, 29, 46,
+    38, 52, 44, 31, 57,
+    36, 48, 40, 53, 28,
+    39, 45, 32, 55, 37
+  ),
+  symptom_onset_days = c(
+    3, 2, 6, 2, 4,
+    7, 8, 4, 2, 5,
+    3, 2, 6, 2, 4,
+    7, 8, 4, 2, 5
+  )
+)
+
+ui <- fluidPage(
+  useShinyjs(),
+  
+  tags$head(
+    tags$style(HTML("
+      body {
+        background-color: #1c1c1c;
+        color: #00FF00;
+        font-family: 'Courier New', monospace;
+      }
+
+      .code-box {
+        background-color: #000000;
+        border: 3px solid #00FF00;
+        padding: 20px;
+        margin-bottom: 20px;
+        white-space: pre-wrap;
+        font-size: 1.1em;
+      }
+
+      .inline-input {
+        display: inline-block;
+        width: 160px;
+        background-color: #000000;
+        color: #00FF00;
+        border: 2px solid #00FF00;
+        font-family: 'Courier New', monospace;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+      .game-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .editor, .console {
+        width: 50%;
+        padding: 15px;
+        border: 2px solid #00FF00;
+        background-color: #1c1c1c;
+      }
+
+      .console {
+        background-color: #000000;
+        white-space: pre-wrap;
+      }
+
+      button {
+        background-color: #1c1c1c;
+        color: #00FF00;
+        border: 2px solid #00FF00;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 1.2em;
+      }
+
+      button:hover {
+        background-color: #00FF00;
+        color: #1c1c1c;
+      }
+    "))
+  ),
+  
+  div(
+    class = "game-container",
+    
+    div(class = "editor",
+        h3("Level 2.3: Voeg kleur toe met as.factor()"),
+        p("Opdracht: Pas de kleur van de dots aan zodat er zichtbaar wordt welke scientist het is."),
+        
+        div(class = "code-box",
+            HTML("ggplot(scientists_datasets, aes(
+  x = age_years,
+  y = survival_days,
+  color = as.factor("),
+            tags$input(id = "color_input", type = "text", class = "inline-input"),
+            HTML(")
+)) +
+  geom_point() +
+  theme_minimal()")
+        ),
+        
+        actionButton("run_colour", "▶ RUN CODE")
+    ),
+    
+    div(class = "console",
+        h3("Console"),
+        verbatimTextOutput("colour_console"),
+        plotOutput("colour_plot")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  observeEvent(input$run_colour, {
+    req(input$color_input)
+    
+    correct_color <- input$color_input == "scientist"
+    
+    if (correct_color) {
+      
+      output$colour_console <- renderText({
+        paste0(
+          "✔ Correct!\nJe hebt de kleur aesthetic goed ingevuld.\n\n",
+          "Volledige code:\n",
+          "ggplot(scientists_dataset, aes(\n",
+          "  x = age_years,\n",
+          "  y = survival_days,\n",
+          "  color = as.factor(scientist)\n",
+          ")) +\n",
+          "  geom_point() +\n",
+          "  theme_minimal()"
+        )
+      })
+      
+      output$colour_plot <- renderPlot({
+        ggplot(tidy_scientists,
+               aes(age_years, survival_days, color = as.factor(scientist))) +
+          geom_point(size = 3) +
+          theme_minimal(base_family = "Courier New") +
+          theme(
+            plot.background = element_rect(fill = "black", color = NA),
+            panel.background = element_rect(fill = "black"),
+            text = element_text(color = "#00FF00"),
+            axis.text = element_text(color = "#00FF00")
+          )
+      })
+      
+      session$sendCustomMessage("confetti", TRUE)
+      return()
+    }
+    
+    # WRONG ANSWER → NO PLOT
+    output$colour_console <- renderText({
+      paste0(
+        "✖ Fout.\nVul alleen in wat er tussen de haakjes moet staan.\n\n"
+      )
+    })
+    
+    output$colour_plot <- renderPlot(NULL)
+  })
+}
+
+shinyApp(ui, server)
