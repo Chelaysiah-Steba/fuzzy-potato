@@ -2,6 +2,7 @@
 library(shiny)
 library(shinyjs)
 library(tidyverse)
+library(later)
 
 # laden van source materiaal (level scripts en vraagtypefuncties)
 source("modules.R")
@@ -9,6 +10,7 @@ source("levels/level_2/level2_1.R")
 source("levels/level_2/level2_2.R")
 source("levels/level_2/level2_3.R")
 source("levels/level_2/level2_4.R")
+source("levels/level_2/level2_5.R")
 
 
 # ---------------------------------------------------------
@@ -59,21 +61,76 @@ start_page_ui <- function() {
 
 # EINDSCHERM
 end_page_ui <- function() {
-  div(class = "landing-container",
+  
+  div(
+    class = "landing-container",
+    
+    h1("MISSION COMPLETE"),
+    
+    div(
       
-      h1("MISSIE VOLTOOID"),
+      id = "ending_text",
       
-      p("Het beveiligingssysteem is succesvol hersteld."),
-      p("Het virus is gestopt voordat het de oppervlakte kon bereiken."),
-      p("Tegen alle verwachtingen in heb jij de bunker gered."),
+      class = "terminal-output",
       
-      br(),
-      h2("🌍 De wereld is veilig... voor nu."),
-      br(),
+      tags$pre(
+        "",
+        id = "ending_terminal",
+        style="
+          color:#00FF00;
+          background:none;
+          border:none;
+          font-family:'Courier New', monospace;
+          font-size:18px;
+          text-align:left;
+          white-space:pre-wrap;
+          min-height:320px;
+          margin:25px auto;
+          text-shadow:0 0 8px #00FF00;
+        "
+      )
       
-      actionButton("confetti_btn", "🎉 Vier overwinning"),
-      actionButton("restart_game", "🔄 Opnieuw spelen")
+    ),
+    
+    div(
+      style="
+      overflow:hidden;
+      white-space:nowrap;
+      border-top:2px solid #00FF00;
+      border-bottom:2px solid #00FF00;
+      padding:12px;
+      margin-top:20px;
+      ",
+      
+      tags$div(
+        style="
+        display:inline-block;
+        padding-left:100%;
+        animation:ticker 25s linear infinite;
+        ",
+        
+        "DEVELOPERS • OLIVE OPREL • CHELAYSIAH STEBA • SUPERVISOR • BAS VAN GESTEL • PLAYTESTERS • TO BE DETERMINED • BUILT WITH R & SHINY • THANK YOU FOR PLAYING RSCAPING THE BUNKER •"
+      )
+      
+    ),
+    
+    br(),
+    br(),
+    
+    actionButton(
+      "confetti_btn",
+      "CELEBRATE",
+      class = "start-btn"
+    ),
+    
+    actionButton(
+      "end_transmission",
+      "END TRANSMISSION",
+      class = "start-btn"
+    )
+    
   )
+  
 }
 
 # ---------------------------------------------------------
@@ -136,61 +193,150 @@ ui <- fluidPage(
       .modal-title {
         color: #00FF00;
       }
+      @keyframes ticker{
+
+  from{
+    transform:translateX(0%);
+  }
+
+  to{
+    transform:translateX(-100%);
+  }
+  
+
+}
     ")),
     
     # ---------- JS ----------
     tags$script(HTML("
-      Shiny.addCustomMessageHandler('updateText', function(message) {
-        document.getElementById('typed_text').innerHTML = message;
-      });
 
-      Shiny.addCustomMessageHandler('showStartButton', function(message) {
-        document.getElementById('start_game').style.display = 'inline-block';
-      });
+Shiny.addCustomMessageHandler('updateText', function(message) {
+  document.getElementById('typed_text').innerHTML = message;
+});
 
-      Shiny.addCustomMessageHandler('skipIntroText', function(message) {
-        document.getElementById('typed_text').innerHTML = message;
-      });
+Shiny.addCustomMessageHandler('showStartButton', function(message) {
+  document.getElementById('start_game').style.display = 'inline-block';
+});
 
-      Shiny.addCustomMessageHandler('confetti', function(message) {
-        const colors = ['#ff3b3b', '#ffd93b', '#3bff57', '#3bd9ff', '#a93bff', '#ff8c3b'];
+Shiny.addCustomMessageHandler('skipIntroText', function(message) {
+  document.getElementById('typed_text').innerHTML = message;
+});
 
-        for (let i = 0; i < 150; i++) {
-          let conf = document.createElement('div');
+Shiny.addCustomMessageHandler('confetti', function(message) {
 
-          let size = Math.random() * 8 + 4;
+  const chars = [
+    '0','1',
+    '#','+','*',
+    '[',']',
+    '{','}',
+    '<','>',
+    '/',
+    '\\\\',
+    '=',
+    'A','F','C','9'
+  ];
 
-          conf.style.position = 'fixed';
-          conf.style.width = size + 'px';
-          conf.style.height = size + 'px';
-          conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          conf.style.left = Math.random() * 100 + 'vw';
-          conf.style.top = '-10px';
-          conf.style.opacity = Math.random();
+  for(let i = 0; i < 220; i++){
 
-          let duration = Math.random() * 3 + 2;
-          let drift = (Math.random() - 0.5) * 200;
+    const p = document.createElement('div');
 
-          conf.style.animation = `confettiFall ${duration}s linear forwards`;
+    p.innerHTML = chars[Math.floor(Math.random()*chars.length)];
 
-          conf.style.setProperty('--drift', drift + 'px');
-          conf.style.setProperty('--rotate', Math.random() * 360 + 'deg');
+    p.style.position = 'fixed';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.top = '-30px';
 
-          document.body.appendChild(conf);
+    p.style.color = '#00ff66';
+    p.style.fontFamily = 'Courier New, monospace';
+    p.style.fontWeight = 'bold';
+    p.style.fontSize = (Math.random()*12 + 10) + 'px';
 
-          setTimeout(() => conf.remove(), duration * 1000);
+    p.style.textShadow = '0 0 10px #00ff00';
+    p.style.pointerEvents = 'none';
+    p.style.zIndex = '99999';
+
+    const drift = (Math.random()-0.5)*180;
+    const rotate = (Math.random()*720)-360;
+    const duration = 2000 + Math.random()*3000;
+
+    p.animate(
+      [
+        {
+          transform:'translate(0px,0px) rotate(0deg)',
+          opacity:1
+        },
+        {
+          transform:'translate('+drift+'px,110vh) rotate('+rotate+'deg)',
+          opacity:0
         }
-      });
+      ],
+      {
+        duration:duration,
+        easing:'linear'
+      }
+    );
 
-      const style = document.createElement('style');
-      style.innerHTML = `
-        @keyframes confettiFall {
-          0% { transform: translateY(0) rotate(0deg); }
-          100% { transform: translateY(100vh) translateX(var(--drift)) rotate(var(--rotate)); }
-        }
-      `;
-      document.head.appendChild(style);
-    "))
+    document.body.appendChild(p);
+
+    setTimeout(function(){
+      p.remove();
+    }, duration);
+
+  }
+
+});
+
+Shiny.addCustomMessageHandler('greenFlash', function(message){
+
+  document.body.style.transition = 'background-color 0.2s';
+  document.body.style.backgroundColor = '#003300';
+
+  setTimeout(function(){
+    document.body.style.backgroundColor = '#1c1c1c';
+  },2000);
+
+});
+
+Shiny.addCustomMessageHandler('redFlash', function(message){
+
+  document.body.style.transition = 'background-color 0.2s';
+  document.body.style.backgroundColor = '#4a0000';
+
+  setTimeout(function(){
+    document.body.style.backgroundColor = '#1c1c1c';
+  },2000);
+
+});
+
+Shiny.addCustomMessageHandler('endingType', function(message){
+
+  const terminal = document.getElementById('ending_terminal');
+
+  if(!terminal) return;
+
+  terminal.innerHTML = '';
+
+  let i = 0;
+
+  function type(){
+
+    if(i < message.length){
+
+      terminal.innerHTML += message.charAt(i);
+
+      i++;
+
+      setTimeout(type,20);
+
+    }
+
+  }
+
+  type();
+
+});
+
+"))
   ),
   
   uiOutput("main_ui")
@@ -199,6 +345,28 @@ ui <- fluidPage(
 # ---------------------------------------------------------
 # SERVER
 # ---------------------------------------------------------
+
+ending_text <- paste(
+
+"> INITIALIZING FINAL REPORT...",
+"> RESTORING SECURITY MODULES...",
+"> VERIFYING CONTAINMENT...",
+"> OPENING BUNKER DOORS...",
+"> CONNECTION STABLE",
+"",
+"MISSION SUCCESSFUL",
+"",
+"SYSTEM STATUS        : STABLE",
+"VIRUS CONTAINMENT    : SUCCESS",
+"ALL SECURITY MODULES : ONLINE",
+"BUNKER STATUS        : UNLOCKED",
+"",
+"> READY FOR TERMINATION? █",
+
+sep = "\n"
+
+)
+
 server <- function(input, output, session) {
   
   level2_1_server(input, output, session, current_page)
@@ -233,7 +401,26 @@ server <- function(input, output, session) {
       end_page_ui()
       
     }
+    
   })
+  
+  # ---------------------------------------------------------
+  # TYPEWRITER EFFECT EINDSCHERM
+  # ---------------------------------------------------------
+  observeEvent(current_page(), {
+    
+    req(current_page() == "end")
+    
+    later::later(function(){
+      
+      session$sendCustomMessage(
+        "endingType",
+        ending_text
+      )
+      
+    }, delay = 0.3)
+    
+  }, ignoreInit = TRUE)
   
   # ---------------------------------------------------------
   # TYPING EFFECT
@@ -336,10 +523,52 @@ server <- function(input, output, session) {
   })
   
   # ---------------------------------------------------------
-  # CONFETTI
+  # CONFETTI en stop app
   # ---------------------------------------------------------
   observeEvent(input$confetti_btn, {
     session$sendCustomMessage("confetti", TRUE)
+  })
+  
+  # ---------------------------------------------------------
+  # END TRANSMISSION
+  # ---------------------------------------------------------
+  observeEvent(input$end_transmission, {
+    
+    showModal(
+      modalDialog(
+        title = "Terminate connection?",
+        "Are you sure you want to terminate the connection?",
+        footer = tagList(
+          actionButton("play_again", "Play Again"),
+          actionButton("terminate_yes", "Terminate")
+        ),
+        easyClose = TRUE
+      )
+    )
+    
+  })
+  
+  observeEvent(input$play_again, {
+    
+    removeModal()
+    
+    current_page("intro")
+    
+    rv$current_line <- 1
+    rv$current_char <- 0
+    rv$is_pausing <- FALSE
+    
+    session$sendCustomMessage("updateText", "")
+    
+    shinyjs::show("skip_intro")
+    shinyjs::hide("start_game")
+    
+  })
+  
+  observeEvent(input$terminate_yes, {
+    
+    stopApp()
+    
   })
 }
 
