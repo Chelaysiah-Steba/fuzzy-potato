@@ -119,7 +119,7 @@ end_page_ui <- function() {
     
     actionButton(
       "confetti_btn",
-      "⚡ CYBER CELEBRATE",
+      "CELEBRATE",
       class = "start-btn"
     ),
     
