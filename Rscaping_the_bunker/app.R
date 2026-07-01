@@ -32,7 +32,7 @@ source("levels/level_3/level3_4.R")
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
-current_page <- reactiveVal("level1_1")   # startpagina
+current_page <- reactiveVal("intro")   # startpagina
 
 # ---------------------------------------------------------
 # INTRO TEKST (typing effect)
