@@ -32,7 +32,7 @@ source("levels/level_3/level3_4.R")
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
-current_page <- reactiveVal("intro")   # startpagina
+current_page <- reactiveVal("level1_1")   # startpagina
 
 # ---------------------------------------------------------
 # INTRO TEKST (typing effect)
@@ -384,6 +384,10 @@ sep = "\n"
 )
 
 server <- function(input, output, session) {
+  
+  observe({
+    print(current_page())
+  })
   
   transition_opening_1_server(input, output, session, current_page)
   level1_intro_server(input, output, session, current_page)
