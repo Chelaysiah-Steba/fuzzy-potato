@@ -1,9 +1,10 @@
+#hoi Chelaysiah :)
 virus_dataset <- data.frame(
   virus = c(
-    "VX-01", "CrimsonFlu", "OmegaSpore", "Nexavirus", "BlueAsh",
-    "PyroVex", "SilentMoth", "Gravemind", "Solaris-7", "HollowFang"
+    "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
+    "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
-  mean_onset_days = c(
+  mean_onset_days = c( 
     3.2, 1.8, 5.6, 2.4, 4.1,
     6.3, 7.8, 3.9, 2.1, 5.0
   ),
