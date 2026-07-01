@@ -76,7 +76,14 @@ q_dropdown <- function(id, prompt, options, answer) {
       choices = options
     ),
     check = function(input) {
-      input[[id]] == answer
+      
+      value <- input[[id]]
+      
+      if (is.null(value) || value == "") {
+        return(FALSE)
+      }
+      
+      identical(value, answer)
     }
   )
 }
@@ -103,10 +110,20 @@ q_open <- function(id, prompt, answers, use_regex = FALSE) {
       label = prompt
     ),
     check = function(input) {
-      user <- trimws(input[[id]])
+      
+      user <- input[[id]]
+      
+      if (is.null(user) || trimws(user) == "") {
+        return(FALSE)
+      }
+      
+      user <- trimws(user)
       
       if (use_regex) {
-        any(sapply(answers, function(pattern) grepl(pattern, user, ignore.case = TRUE)))
+        any(sapply(
+          answers,
+          function(pattern) grepl(pattern, user, ignore.case = TRUE)
+        ))
       } else {
         tolower(user) %in% tolower(answers)
       }

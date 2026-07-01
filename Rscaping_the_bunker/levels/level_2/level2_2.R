@@ -1,215 +1,216 @@
-#hoi Chelaysiah :)
-virus_dataset <- data.frame(
-  virus = c(
-    "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
-    "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
-  ),
-  mean_onset_days = c( 
-    3.2, 1.8, 5.6, 2.4, 4.1,
-    6.3, 7.8, 3.9, 2.1, 5.0
-  ),
-  sd_onset_days = c(
-    0.8, 0.5, 1.2, 0.6, 1.0,
-    1.4, 1.9, 0.7, 0.4, 1.1
-  )
-)
+# level2_2.R
+virus_dataset <- virus_dataset[order(virus_dataset$mean_onset_days), ]
 
 x_question <- list(
-  id = "x_input",
-  type = "open",
-  prompt = "X-as",
-  answers = c("age_years")
+  id="x_input",
+  type="open",
+  prompt="X-as",
+  answers=c("virus")
 )
 
 y_question <- list(
-  id = "y_input",
-  type = "open",
-  prompt = "Y-as",
-  answers = c("survival_days")
+  id="y_input",
+  type="open",
+  prompt="Y-as",
+  answers=c("mean_onset_days")
 )
 
 geom_question <- list(
-  id = "geom_choice",
-  type = "dropdown",
-  prompt = "Kies de juiste geom",
-  options = c(
-    "geom_point()" = "geom_point()",
-    "geom_line()" = "geom_line()",
-    "geom_bar()" = "geom_bar()",
-    "geom_histogram()" = "geom_histogram()"
+  id="geom_choice",
+  type="dropdown",
+  prompt="Geom",
+  options=c(
+    "geom_point()"="geom_point()",
+    "geom_line()"="geom_line()",
+    "geom_bar()"="geom_bar()",
+    "geom_histogram()"="geom_histogram()"
   ),
-  answer = "geom_point()"
+  answer="geom_point()"
 )
 
-level2_2_ui <- function() {
-  
-  fluidPage(
-    
-    useShinyjs(),
-    
-    tags$head(
-      tags$style(HTML("
-      body {
-        background-color: #1c1c1c;
-        color: #00FF00;
-        font-family: 'Courier New', monospace;
-      }
-
-      #start_wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60vh;
-      }
-
-      .code-box {
-        background-color: #000000;
-        border: 3px solid #00FF00;
-        padding: 10px;
-        margin-bottom: 5px;
-        font-family: 'Courier New', monospace;
-        white-space: pre-wrap;
-      }
-
-      .game-container {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .editor, .console {
-        width: 50%;
-        padding: 10px;
-        border: 2px solid #00FF00;
-        background-color: #1c1c1c;
-      }
-
-      .console {
-        background-color: #000000;
-      }
-      "))
-    ),
-    
-    div(
-      id = "start_wrapper",
-      actionButton("start_scatter", "📊 Start Level 2.2: Maak een scatterplot")
-    ),
-    
-    uiOutput("game_ui")
-    
-  )
-  
-}
-
-level2_2_server <- function(input, output, session, current_page) {
+level2_2_ui <- function(){
   
   x_q <- render_question(x_question)
   y_q <- render_question(y_question)
   geom_q <- render_question(geom_question)
   
-  observeEvent(input$start_scatter, {
+  fluidPage(
     
-    removeUI(selector = "#start_wrapper", immediate = TRUE)
+    useShinyjs(),
     
-    output$game_ui <- renderUI({
-      
-      div(class = "game-container",
-          
-          div(class = "editor",
-              
-              h3("Level 2.2: Maak een scatterplot"),
-              
-              p("Opdracht: kies de juiste functie en vul de lege plekken in."),
-              
-              div(class = "code-box",
-                  
-                  HTML("ggplot(tidy_scientists, aes(x = "),
-                  
-                  x_q$ui,
-                  
-                  HTML(", y = "),
-                  
-                  y_q$ui,
-                  
-                  HTML(")) +"),
-                  
-                  geom_q$ui,
-                  
-                  HTML("+ theme_minimal()")
-                  
-              ),
-              
-              actionButton("run_scatter", "▶ RUN CODE")
-          ),
-          
-          div(class = "console",
-              
-              h3("Console"),
-              
-              verbatimTextOutput("scatter_console"),
-              
-              plotOutput("scatter_plot", height = "300px")
-          )
-      )
-      
-    })
+    tags$head(tags$style(HTML("
+body{background:#1c1c1c;color:#00FF00;font-family:'Courier New',monospace;}
+.game-container{display:flex;gap:20px;margin-top:20px;}
+.editor,.console{width:50%;padding:15px;border:2px solid #00FF00;}
+.editor{background:#1c1c1c;}
+.console{background:#000;white-space:pre-wrap;}
+.code-box{background:#000;border:1px solid #00FF00;padding:10px;}
+.next-btn{margin-top:20px;background:#1c1c1c;color:#00FF00;border:2px solid #00FF00;}
+"))),
     
+    div(class="game-container",
+        
+        div(class="editor",
+            h3("📊 Level 2.2: Visualiseer de virusgegevens"),
+            p("Maak een scatterplot waarin je de virussen uitzet tegen hun mean onset day. Kies een geschikte geom om de punten te tonen. De foutbalken worden automatisch toegevoegd."),
+            
+            div(class="code-box",
+                HTML("ggplot(virus_dataset, aes(x = "),
+                x_q$ui,
+                HTML(", y = "),
+                y_q$ui,
+                HTML(")) +"),
+                geom_q$ui,
+                HTML("
++ geom_errorbar(
+    aes(
+      ymin = mean_onset_days - sd_onset_days,
+      ymax = mean_onset_days + sd_onset_days
+    ),
+    width = 0.2
+  ) +
+  labs(
+    title = 'Gemiddelde onsettijd per virus',
+    subtitle = 'Foutbalken geven de standaarddeviatie (SD) weer',
+    x = 'Virus',
+    y = 'Gemiddelde onsettijd (dagen)'
+  ) +
+  theme_minimal()")
+            ),
+            actionButton("submit_scatter","▶ RUN CODE")
+        ),
+        
+        div(class="console",
+            h3("Console"),
+            verbatimTextOutput("scatter_console"),
+            uiOutput("console_content")
+        )
+    )
+  )
+}
+
+level2_2_server <- function(input,output,session,current_page){
+  
+  x_q <- render_question(x_question)
+  y_q <- render_question(y_question)
+  geom_q <- render_question(geom_question)
+  
+  output$console_content <- renderUI({
+    tagList(
+      h3("📊 Geladen dataset"),
+      tableOutput("virus_table_data")
+    )
   })
   
-  observeEvent(input$run_scatter, {
+  output$virus_table_data <- renderTable({
+    virus_dataset
+  })
+  
+  observeEvent(input$submit_scatter,{
     
-    if (x_q$check(input) &&
-        y_q$check(input) &&
-        geom_q$check(input)) {
+    x_answer <- trimws(input$x_input)
+    y_answer <- trimws(input$y_input)
+    geom_answer <- input$geom_choice
+    
+    correct_x <- tolower(x_answer) == "virus"
+    correct_y <- tolower(y_answer) == "mean_onset_days"
+    correct_geom <- geom_answer == "geom_point()"
+    
+    if(correct_x && correct_y && correct_geom){
+      
+      session$sendCustomMessage("greenFlash",TRUE)
       
       output$scatter_console <- renderText({
-        
-        paste0(
-          "✔ Correct!\nJe hebt de juiste functie gekozen en alle velden correct ingevuld.\n\n",
-          "Volledige code:\n",
-          "ggplot(tidy_scientists, aes(x = age_years, y = survival_days)) +\n",
-          "geom_point() +\n",
-          "theme_minimal()"
+        paste("🟢 SECURITY PROTOCOL UPDATED","","Module 2/4 geactiveerd.","","Virus Database Module","STATUS: ONLINE",sep="\n")
+      })
+      
+      output$console_content <- renderUI({
+        tagList(
+          plotOutput("scatter_plot",height="400px"),
+          br(),
+          actionButton("next_level2_3","Volgende",class="next-btn")
         )
-        
       })
       
       output$scatter_plot <- renderPlot({
-        
-        ggplot(tidy_scientists,
-               aes(age_years, survival_days)) +
-          geom_point(color = "#00FF00", size = 3) +
-          theme_minimal(base_family = "Courier New") +
+        ggplot(virus_dataset,
+               aes(x=virus,y=mean_onset_days))+
+          geom_point(size=3,color="#00FF00")+
+          geom_errorbar(aes(ymin=mean_onset_days-sd_onset_days,
+                            ymax=mean_onset_days+sd_onset_days),width=.2,color="#00FF00")+
+          labs(title="Gemiddelde onsettijd per virus",
+               subtitle="Foutbalken geven de standaarddeviatie (SD) weer",
+               x="Virus",
+               y="Gemiddelde onsettijd (dagen)")+
+          theme_minimal() +
           theme(
-            plot.background = element_rect(fill = "black", color = NA),
-            panel.background = element_rect(fill = "black"),
-            text = element_text(color = "#00FF00"),
-            axis.text = element_text(color = "#00FF00")
+            axis.text.x = element_text(angle = 45, hjust = 1)
           )
-        
       })
       
-      session$sendCustomMessage("confetti", TRUE)
+    } else {
       
-      current_page("level2_3")
+      session$sendCustomMessage("redFlash",TRUE)
       
-      return()
+      output$console_content <- renderUI(NULL)
       
+      hint <- ""
+      
+      if(!correct_geom){
+        
+        hint <- "Een scatterplot gebruikt punten. Kies de juiste geom()."
+        
+      } else if(
+        x_answer %in% c('"virus"', "'virus'")
+      ){
+        
+        hint <- "Kolomnamen gebruik je zonder aanhalingstekens."
+        
+      } else if(
+        tolower(x_answer) == "mean_onset_days" &&
+        tolower(y_answer) == "virus"
+      ){
+        
+        hint <- "Een bekende categorie hoort op de x-as. De gemeten variabele hoort op de y-as."
+        
+      } else if(
+        tolower(y_answer) == "sd_onset_days"
+      ){
+        
+        hint <- "Lees de opdracht nog eens goed. Welke variabele moet op de y-as?"
+        
+      } else if(
+        tolower(x_answer) == "sd_onset_days"
+      ){
+        
+        hint <- "Lees de opdracht nog eens goed. Welke variabele moet op de x-as?"
+        
+      } else {
+        
+        hint <- paste(
+          "X-as: virus",
+          "Y-as: mean_onset_days",
+          "Gebruik een scatterplot met geom_point().",
+          sep="\n"
+        )
+        
+      }
+      
+      output$scatter_console <- renderText({
+        paste(
+          "🔴 SECURITY PROTOCOL FAILED",
+          "",
+          "Module activation unsuccessful.",
+          "",
+          "HINT",
+          hint,
+          sep="\n"
+        )
+      })
     }
-    
-    output$scatter_console <- renderText({
-      
-      paste0(
-        "✖ Fout.\nControleer je invoer.\n\n",
-        "Hint: Een scatterplot gebruikt punten → geom_point().\n",
-        "X = age_years\n",
-        "Y = survival_days"
-      )
-      
-    })
-    
-    output$scatter_plot <- renderPlot(NULL)
-    
   })
   
+  observeEvent(input$next_level2_3,{
+    current_page("level2_3")
+  })
 }
