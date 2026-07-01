@@ -207,7 +207,7 @@ labs("
       
       session$sendCustomMessage("confetti", TRUE)
       
-      current_page("end")
+      current_page("level2_5")
       
       return()
       
