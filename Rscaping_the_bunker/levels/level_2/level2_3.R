@@ -144,7 +144,7 @@ level2_3_server <- function(input, output, session, current_page) {
 
     answer <- trimws(input$color_input)
 
-    if (question$check(input)) {
+    if (isTRUE(question$check(input))) {
       
       session$sendCustomMessage("greenFlash", TRUE)
 

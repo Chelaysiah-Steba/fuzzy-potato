@@ -1,56 +1,64 @@
-#hoi Chelaysiah :)
-virus_dataset <- data.frame(
-  virus = c(
-    "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
-    "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
-  ),
-  mean_onset_days = c( 
-    3.2, 1.8, 5.6, 2.4, 4.1,
-    6.3, 7.8, 3.9, 2.1, 5.0
-  ),
-  sd_onset_days = c(
-    0.8, 0.5, 1.2, 0.6, 1.0,
-    1.4, 1.9, 0.7, 0.4, 1.1
-  )
-)
-
-title_question <- list(
-  id = "title_choice",
+plot_title_question <- list(
+  id = "plot_title",
   type = "dropdown",
-  prompt = "Titel",
+  prompt = "Grafiektitel",
   options = c(
-    "\"Scatterplot\"" = "\"Scatterplot\"",
-    "\"Survival vs Age\"" = "\"Survival vs Age\"",
-    "\"Age and Days\"" = "\"Age and Days\""
+    "Verspreiding van virussen in de populatie",
+    "Aantal besmettingen per virus",
+    "Variatie in onsetgroepen",
+    "onsetttijd per virus",
+    "Gemiddelde onsettijd per virus"
   ),
-  answer = "\"Survival vs Age\""
+  answer = "Gemiddelde onsettijd per virus"
 )
 
-xlabel_question <- list(
-  id = "xlabel_choice",
+plot_subtitle_question <- list(
+  id = "plot_subtitle",
+  type = "dropdown",
+  prompt = "Subtitel",
+  options = c(
+    "Foutbalken tonen het aantal metingen",
+    "Foutbalken geven de maximale waarde weer",
+    "Foutbalken tonen het 95%-betrouwbaarheidsinterval",
+    "Foutbalken tonen de standaarddeviatie"
+  ),
+  answer = "Foutbalken tonen de standaarddeviatie"
+)
+
+plot_xlab_question <- list(
+  id = "plot_xlab",
   type = "dropdown",
   prompt = "X-as label",
   options = c(
-    "\"Age (years)\"" = "\"Age (years)\"",
-    "\"age_years\"" = "\"age_years\"",
-    "\"Scientist Age\"" = "\"Scientist Age\""
+    "Onsetgroep",
+    "Aantal patiënten",
+    "Gemiddelde SD-waarde",
+    "Gemiddelde onsettijd",
+    "Virus",
+    "Virusnaam"
   ),
-  answer = "\"Age (years)\""
+  answer = c("Virus", "Virusnaam")
 )
 
-ylabel_question <- list(
-  id = "ylabel_choice",
+plot_ylab_question <- list(
+  id = "plot_ylab",
   type = "dropdown",
   prompt = "Y-as label",
   options = c(
-    "\"Survival (days)\"" = "\"Survival (days)\"",
-    "\"survival_days\"" = "\"survival_days\"",
-    "\"Days alive\"" = "\"Days alive\""
+    "Totale duur van infectie ((dagen)",
+    "Aantal dagen tot herstel",
+    "Variatie in onset (SD)",
+    "Gemiddelde onsettijd (dagen)"
   ),
-  answer = "\"Survival (days)\""
+  answer = "Gemiddelde onsettijd (dagen)"
 )
 
 level2_4_ui <- function() {
+  
+  title_q <- render_question(plot_title_question)
+  subtitle_q <- render_question(plot_subtitle_question)
+  x_q <- render_question(plot_xlab_question)
+  y_q <- render_question(plot_ylab_question)
   
   fluidPage(
     
@@ -63,157 +71,218 @@ level2_4_ui <- function() {
         color: #00FF00;
         font-family: 'Courier New', monospace;
       }
-      .game-container {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-      }
-      .editor, .console {
-        width: 50%;
-        padding: 15px;
-        border: 2px solid #00FF00;
-      }
-      .editor {
-        background-color: #1c1c1c;
-      }
-      .console {
-        background-color: #000000;
-        white-space: pre-wrap;
-      }
+
       .code-box {
         background-color: #000000;
         border: 3px solid #00FF00;
         padding: 20px;
         margin-bottom: 20px;
         white-space: pre-wrap;
+        font-size: 1.1em;
+      }
+
+      .game-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .editor, .console {
+        width: 50%;
+        padding: 15px;
+        border: 2px solid #00FF00;
+        background-color: #1c1c1c;
+      }
+
+      .console {
+        background-color: #000000;
+        white-space: pre-wrap;
+      }
+
+      button {
+        background-color: #1c1c1c;
+        color: #00FF00;
+        border: 2px solid #00FF00;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 1.2em;
+      }
+
+      button:hover {
+        background-color: #00FF00;
+        color: #1c1c1c;
       }
       "))
     ),
     
     div(
-      id = "start_wrapper_level24",
-      style = "
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        height:60vh;
-      ",
+      class = "game-container",
       
-      actionButton(
-        "start_level24",
-        "📝 Start Level 2.4: Kies de juiste titel en labels"
-      )
+      div(
+        class = "editor",
+        
+        h3("Level 2.4: Geef de grafiek de juiste labels"),
+        
+        p("Vul de grafiektitel, subtitel, x-as label en y-as label in."),
+        
+        p("Kies steeds het juiste antwoord uit de dropdowns in de code."),
+        
+        div(
+          class = "code-box",
+      HTML("ggplot(virus_dataset, aes(
+  x = virus,
+  y = mean_onset_days,
+  color = onset_group
+)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(
+      ymin = mean_onset_days - sd_onset_days,
+      ymax = mean_onset_days + sd_onset_days
     ),
-    
-    uiOutput("game_ui")
-    
+    width = 0.2
+  ) +
+  theme_minimal() +
+  labs(
+    title = "),
+      title_q$ui,
+      HTML(",
+    subtitle = "),
+      subtitle_q$ui,
+      HTML(",
+    x = "),
+      x_q$ui,
+      HTML(",
+    y = "),
+      y_q$ui,
+      HTML("
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )")
+        ),
+      
+      actionButton("run_label", "▶ RUN CODE"),
+      
+      ),
+      
+      div(
+        class = "console",
+        
+        h3("Console"),
+        
+        verbatimTextOutput("label_console"),
+        
+        uiOutput("label_content")
+      
+    )
   )
   
+  )
 }
 
 level2_4_server <- function(input, output, session, current_page) {
   
-  title_q <- render_question(title_question)
-  xlabel_q <- render_question(xlabel_question)
-  ylabel_q <- render_question(ylabel_question)
+  if (!"onset_group" %in% names(virus_dataset)) {
+    
+    virus_dataset$onset_group <- cut(
+      virus_dataset$mean_onset_days,
+      breaks = c(0, 2, 4, 6, 8),
+      labels = c("0-2", "2-4", "4-6", "6-8")
+    )
+    
+  }
   
-  observeEvent(input$start_level24, {
+  output$label_content <- renderUI(NULL)
+  
+  observeEvent(input$run_label, {
     
-    removeUI(selector = "#start_wrapper_level24", immediate = TRUE)
+    title_q <- render_question(plot_title_question)
+    subtitle_q <- render_question(plot_subtitle_question)
+    x_q <- render_question(plot_xlab_question)
+    y_q <- render_question(plot_ylab_question)
     
-    output$game_ui <- renderUI({
+    if (
+      isTRUE(title_q$check(input)) &&
+      isTRUE(subtitle_q$check(input)) &&
+      isTRUE(x_q$check(input)) &&
+      isTRUE(y_q$check(input))
+    ) {
       
-      div(
-        class = "game-container",
-        
-        div(
-          class = "editor",
-          
-          h3("📝 Level 2.4: Kies de juiste titel en labels"),
-          
-          p("Kies de correcte titel, x-as label en y-as label."),
-          
-          div(
-            class = "code-box",
-            
-            HTML(
-              "ggplot(scientists_dataset, aes(age_years, survival_days)) +
-geom_point() +
-labs("
-            ),
-            
-            title_q$ui,
-            
-            xlabel_q$ui,
-            
-            ylabel_q$ui
-            
-          ),
-          
-          actionButton("run_level24", "▶ RUN CODE")
-          
-        ),
-        
-        div(
-          class = "console",
-          
-          h3("Console"),
-          
-          verbatimTextOutput("console_level24"),
-          
-          plotOutput("plot_level24")
+      session$sendCustomMessage("greenFlash", TRUE)
+      
+      output$label_console <- renderText({
+        paste(
+          "🟢 SECURITY PROTOCOL UPDATED",
+          "",
+          "Module 4/4 geactiveerd.",
+          "",
+          "Graph Label Module",
+          "STATUS: ONLINE",
+          "",
+          "De grafiek is nu voorzien van de juiste titel, subtitel en assenlabels.",
+          sep = "\n"
         )
-        
-      )
-      
-    })
-    
-  })
-  
-  observeEvent(input$run_level24, {
-    
-    if (title_q$check(input) &&
-        xlabel_q$check(input) &&
-        ylabel_q$check(input)) {
-      
-      output$console_level24 <- renderText({
-        "✔ Correct! Je hebt de juiste titel en labels gekozen."
       })
       
-      output$plot_level24 <- renderPlot({
-        
-        ggplot(scientists_dataset,
-               aes(age_years, survival_days)) +
-          geom_point(color = "#00FF00", size = 3) +
-          labs(
-            title = "Survival vs Age",
-            x = "Age (years)",
-            y = "Survival (days)"
-          ) +
-          theme_minimal(base_family = "Courier New") +
-          theme(
-            plot.background = element_rect(fill = "black", color = NA),
-            panel.background = element_rect(fill = "black"),
-            text = element_text(color = "#00FF00"),
-            axis.text = element_text(color = "#00FF00")
+      output$label_content <- renderUI({
+        tagList(
+          plotOutput("label_plot"),
+          br(),
+          actionButton("next_level2_5", "Volgende", class = "next-btn")
+        )
+      })
+      
+      output$label_plot <- renderPlot({
+        ggplot(
+          virus_dataset,
+          aes(
+            x = virus,
+            y = mean_onset_days,
+            color = onset_group
           )
-        
+        ) +
+          geom_point(size = 3) +
+          geom_errorbar(
+            aes(
+              ymin = mean_onset_days - sd_onset_days,
+              ymax = mean_onset_days + sd_onset_days
+            ),
+            width = 0.2
+          ) +
+          theme_minimal() +
+          labs(
+            title = "Gemiddelde onsettijd per virus",
+            subtitle = "Foutbalken tonen de standaarddeviatie",
+            x = "Virus",
+            y = "Gemiddelde onsettijd (dagen)",
+            color = "Onset groep"
+          ) +
+          theme(
+            axis.text.x = element_text(angle = 45, hjust = 1)
+          )
       })
-      
-      session$sendCustomMessage("confetti", TRUE)
-      
-      current_page("level2_5")
       
       return()
-      
     }
     
-    output$console_level24 <- renderText({
-      "✖ Fout. Controleer je titel en labels.\nHint: Denk aan duidelijke, beschrijvende labels."
+    session$sendCustomMessage("redFlash", TRUE)
+    
+    output$label_console <- renderText({
+      paste(
+        "🔴 SECURITY PROTOCOL FAILED",
+        "",
+        "Eén of meerdere labels zijn nog fout.",
+        "",
+        "Controleer of je de juiste titel, subtitel en assenlabels hebt gekozen.",
+        sep = "\n"
+      )
     })
     
-    output$plot_level24 <- renderPlot(NULL)
-    
+    output$label_content <- renderUI(NULL)
   })
   
+  observeEvent(input$next_level2_5, {
+    current_page("level2_5")
+  })
 }
