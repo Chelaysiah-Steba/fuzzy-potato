@@ -172,28 +172,7 @@ flash.classList.add('active');
       div(
         class = "editor",
         
-        h3("🔐 Level 1.4: Security Database"),
-        
-        p("De Security Database is succesvol hersteld."),
-        
-        p("Om de centrale beveiligingssystemen opnieuw te activeren moet een authenticatiecode worden gegenereerd."),
-        
-        p("Lees eerst het bestand security_database.rds in met readRDS()."),
-        
-        p("Bepaal vervolgens:"),
-        
-        p("- het aantal rijen;"),
-        p("- het aantal kolommen;"),
-        p("- de kolomnamen;"),
-        p("- het aantal observaties per sector met behulp van count()."),
-        
-        p("Gebruik deze gegevens om de authenticatiecode samen te stellen en activeer het beveiligingssysteem."),
-        
-        br(),
-        
-        question$ui,
-        
-        actionButton("load_db", "▶ RUN CODE")
+        uiOutput("editor_ui")
       ),
       
       div(
@@ -203,14 +182,11 @@ flash.classList.add('active');
         
         verbatimTextOutput("console_output"),
         
-        br(),
-        
-        uiOutput("database_output"),
-        
         uiOutput("auth_ui")
       )
     )
-  ) }
+  )
+}
 
 level1_4_server <- function(input, output, session, current_page) {
   
@@ -221,34 +197,104 @@ level1_4_server <- function(input, output, session, current_page) {
       prompt = "security_database <- readRDS( ... )",
       options = c(
         "\"security_database.rds\"" = "\"security_database.rds\"",
-        "\"security_database\"" = "\"security_database\"",
         "security_database.rds" = "security_database.rds",
+        "\"security_database\"" = "\"security_database\"",
         "\"database_security.rds\"" = "\"database_security.rds\""
       ),
       answer = "\"security_database.rds\""
     )
   )
   
+  db <- reactiveVal(NULL)
+  step <- reactiveVal(1)
+  auth_ready <- reactiveVal(FALSE)
+  auth_done <- reactiveVal(FALSE)
+  
   output$console_output <- renderText({
     ""
-  })
-  
-  output$database_output <- renderUI({
-    NULL
   })
   
   output$auth_ui <- renderUI({
     NULL
   })
   
+  output$editor_ui <- renderUI({
+    if (!auth_done()) {
+      tagList(
+        h3("🔐 Level 1.4: Security Database"),
+        p("De Security Database is succesvol hersteld."),
+        p("Om de centrale beveiligingssystemen opnieuw te activeren moet een authenticatiecode worden gegenereerd."),
+        p("Lees eerst het bestand in met readRDS()."),
+        if (step() == 1) {
+          tagList(
+            question$ui,
+            actionButton("load_db", "▶ RUN CODE")
+          )
+        } else if (step() == 2) {
+          tagList(
+            h4("Geladen dataset"),
+            tableOutput("security_database_table"),
+            br(),
+            h4("Opdracht 1"),
+            p("Voer deze code uit:"),
+            div(class = "code-box", HTML("nrow(security_database)")),
+            textInput("answer_1", NULL, "", placeholder = "Voer de output in"),
+            actionButton("run_1", "▶ RUN")
+          )
+        } else if (step() == 3) {
+          tagList(
+            h4("Geladen dataset"),
+            tableOutput("security_database_table"),
+            br(),
+            h4("Opdracht 2"),
+            p("Voer deze code uit:"),
+            div(class = "code-box", HTML("ncol(security_database)")),
+            textInput("answer_2", NULL, "", placeholder = "Voer de output in"),
+            actionButton("run_2", "▶ RUN")
+          )
+        } else if (step() == 4) {
+          tagList(
+            h4("Geladen dataset"),
+            tableOutput("security_database_table"),
+            br(),
+            h4("Opdracht 3"),
+            p("Voer deze code uit:"),
+            div(class = "code-box", HTML("colnames(security_database)")),
+            textInput("answer_3", NULL, "", placeholder = "Voer de output in"),
+            actionButton("run_3", "▶ RUN")
+          )
+        } else if (step() == 5) {
+          tagList(
+            h4("Geladen dataset"),
+            tableOutput("security_database_table"),
+            br(),
+            h4("Opdracht 4"),
+            p("Voer deze code uit:"),
+            div(class = "code-box", HTML("count(security_database, sector)")),
+            textInput("answer_4", NULL, "", placeholder = "Voer de output in"),
+            actionButton("run_4", "▶ RUN")
+          )
+        } else if (step() == 6 && auth_ready()) {
+          tagList(
+            h4("Authenticatiecode"),
+            textInput("auth_code_input", "Voer de authenticatiecode in:", "", placeholder = "Authenticatiecode"),
+            actionButton("activate_security", "ACTIVATE SECURITY", class = "start-btn")
+          )
+        }
+      )
+    } else {
+      tagList(
+        h4("Authenticatiecode"),
+        textInput("auth_code_input", "Voer de authenticatiecode in:", "", placeholder = "Authenticatiecode"),
+        actionButton("activate_security", "ACTIVATE SECURITY", class = "start-btn")
+      )
+    }
+  })
+  
   observeEvent(input$load_db, {
-    
     if (question$check(input)) {
-      
       session$sendCustomMessage("greenFlash", TRUE)
-      
-      db <- readRDS("security_database.rds")
-      
+      db(readRDS("security_database.rds"))
       output$console_output <- renderText({
         paste(
           "🟢 SECURITY DATABASE RESTORED",
@@ -258,41 +304,9 @@ level1_4_server <- function(input, output, session, current_page) {
           sep = "\n"
         )
       })
-      
-      output$database_output <- renderUI({
-        tagList(
-          h4("Geladen dataset"),
-          tableOutput("security_database_table"),
-          br(),
-          h4("Part 2"),
-          p("Bepaal de volgende waarden om de authenticatiecode samen te stellen:"),
-          p("- aantal rijen;"),
-          p("- aantal kolommen;"),
-          p("- kolomnamen;"),
-          p("- count() per sector in de volgorde Alpha, Beta, Delta, Gamma."),
-          p("De authenticatiecode bestaat uit deze waarden direct achter elkaar, zonder spaties."),
-          p("Voorbeeld: 1043223"),
-          textInput("auth_code_input", "Authenticatiecode:", "", placeholder = "Voer de code in"),
-          actionButton("activate_security", "ACTIVATE SECURITY", class = "start-btn")
-        )
-      })
-      
-      output$security_database_table <- renderTable({
-        db
-      })
-      
+      step(2)
     } else {
-      
       session$sendCustomMessage("redFlash", TRUE)
-      
-      output$database_output <- renderUI({
-        NULL
-      })
-      
-      output$auth_ui <- renderUI({
-        NULL
-      })
-      
       output$console_output <- renderText({
         paste(
           "🔴 DATABASE LOAD FAILED",
@@ -305,32 +319,126 @@ level1_4_server <- function(input, output, session, current_page) {
           sep = "\n"
         )
       })
-      
     }
-    
+  })
+  
+  observeEvent(input$run_1, {
+    req(db())
+    ans <- trimws(gsub('"', '', input$answer_1))
+    if (ans == "[1] 10") {
+      session$sendCustomMessage("greenFlash", TRUE)
+      output$console_output <- renderText({
+        paste(
+          "> nrow(security_database)",
+          "",
+          "[1] 10",
+          sep = "\n"
+        )
+      })
+      step(3)
+    } else {
+      session$sendCustomMessage("redFlash", TRUE)
+      output$console_output <- renderText({
+        "❌ Incorrect.\n\nControleer de output opnieuw."
+      })
+    }
+  })
+  
+  observeEvent(input$run_2, {
+    req(db())
+    ans <- trimws(gsub('"', '', input$answer_2))
+    if (ans == "[1] 4") {
+      session$sendCustomMessage("greenFlash", TRUE)
+      output$console_output <- renderText({
+        paste(
+          "> ncol(security_database)",
+          "",
+          "[1] 4",
+          sep = "\n"
+        )
+      })
+      step(4)
+    } else {
+      session$sendCustomMessage("redFlash", TRUE)
+      output$console_output <- renderText({
+        "❌ Incorrect.\n\nControleer de output opnieuw."
+      })
+    }
+  })
+  
+  observeEvent(input$run_3, {
+    req(db())
+    expected <- capture.output(colnames(db()))
+    ans <- trimws(gsub('"', '', input$answer_3))
+    ok <- identical(ans, paste(expected, collapse = "\n")) || identical(ans, paste0(expected, collapse = "\n"))
+    if (ok) {
+      session$sendCustomMessage("greenFlash", TRUE)
+      output$console_output <- renderText({
+        paste(
+          "> colnames(security_database)",
+          "",
+          "[1] \"sample_id\"",
+          "[2] \"sector\"",
+          "[3] \"terminal\"",
+          "[4] \"status\"",
+          sep = "\n"
+        )
+      })
+      step(5)
+    } else {
+      session$sendCustomMessage("redFlash", TRUE)
+      output$console_output <- renderText({
+        "❌ Incorrect.\n\nControleer de output opnieuw."
+      })
+    }
+  })
+  
+  observeEvent(input$run_4, {
+    req(db())
+    counts <- count(db(), sector)
+    ans <- trimws(gsub('"', '', input$answer_4))
+    ok <- identical(ans, paste(capture.output(counts), collapse = "\n")) || identical(ans, paste0(capture.output(counts), collapse = "\n"))
+    if (ok) {
+      session$sendCustomMessage("greenFlash", TRUE)
+      output$console_output <- renderText({
+        paste(
+          "> count(security_database, sector)",
+          "",
+          "# A tibble: 4 x 2",
+          "",
+          "  sector     n",
+          "  <chr>  <int>",
+          "1 Alpha      3",
+          "2 Beta       3",
+          "3 Delta      2",
+          "4 Gamma      2",
+          sep = "\n"
+        )
+      })
+      auth_ready(TRUE)
+      step(6)
+    } else {
+      session$sendCustomMessage("redFlash", TRUE)
+      output$console_output <- renderText({
+        "❌ Incorrect.\n\nControleer de output opnieuw."
+      })
+    }
   })
   
   observeEvent(input$activate_security, {
-    
     req(input$auth_code_input)
-    
-    db <- readRDS("security_database.rds")
-    
-    row_count <- nrow(db)
-    col_count <- ncol(db)
-    sector_counts <- count(db, sector)
+    dbx <- db()
+    row_count <- nrow(dbx)
+    col_count <- ncol(dbx)
+    sector_counts <- count(dbx, sector)
     alpha_count <- sector_counts$n[sector_counts$sector == "Alpha"]
     beta_count <- sector_counts$n[sector_counts$sector == "Beta"]
     delta_count <- sector_counts$n[sector_counts$sector == "Delta"]
     gamma_count <- sector_counts$n[sector_counts$sector == "Gamma"]
-    
     correct_code <- paste0(row_count, col_count, alpha_count, beta_count, delta_count, gamma_count)
-    entered_code <- gsub('"', '', trimws(input$auth_code_input))
-    
+    entered_code <- trimws(gsub('"', '', input$auth_code_input))
     if (entered_code == correct_code) {
-      
       session$sendCustomMessage("greenFlash", TRUE)
-      
       output$console_output <- renderText({
         paste(
           "🟢 AUTHENTICATION SUCCESSFUL",
@@ -342,17 +450,12 @@ level1_4_server <- function(input, output, session, current_page) {
           sep = "\n"
         )
       })
-      
+      auth_done(TRUE)
       output$auth_ui <- renderUI({
-        tagList(
-          actionButton("continue_level1_4", "Continue", class = "next-btn")
-        )
+        actionButton("continue_level1_4", "Continue", class = "next-btn")
       })
-      
     } else {
-      
       session$sendCustomMessage("redFlash", TRUE)
-      
       output$console_output <- renderText({
         paste(
           "🔴 AUTHENTICATION FAILED",
@@ -367,9 +470,7 @@ level1_4_server <- function(input, output, session, current_page) {
           sep = "\n"
         )
       })
-      
     }
-    
   })
   
   observeEvent(input$continue_level1_4, {
