@@ -111,16 +111,7 @@ flash.classList.add('active');
       div(
         class = "editor",
         
-        h3("⚠️ Level 1.2: Error analyseren"),
-        
-        p("Run the code om de foutmelding te inspecteren."),
-        
-        div(
-          class = "code-box",
-          HTML("boot_sequence()")
-        ),
-        
-        actionButton("run_code", "▶ RUN CODE")
+        uiOutput("editor_ui")
       ),
       
       div(
@@ -130,22 +121,43 @@ flash.classList.add('active');
         
         verbatimTextOutput("console_output"),
         
-        br(),
+        hidden(
+          actionButton(
+            "next_level1_3",
+            "Volgende",
+            class = "next-btn"
+          )
+        )
         
-        uiOutput("answer_ui")
       )
     )
   ) }
 
 level1_2_server <- function(input, output, session, current_page) {
   
+  output$editor_ui <- renderUI({
+    
+    tagList(
+      
+      h3("⚠️ Level 1.2: Error analyseren"),
+      
+      p("Run the code om de foutmelding te inspecteren."),
+      
+      div(
+        class = "code-box",
+        HTML("boot_sequence()")
+      ),
+      
+      actionButton("run_code", "▶ RUN CODE")
+      
+    )
+    
+  })
+  
   output$console_output <- renderText({
     ""
   })
   
-  output$answer_ui <- renderUI({
-    NULL
-  })
   
   observeEvent(input$run_code, {
     
@@ -164,7 +176,7 @@ level1_2_server <- function(input, output, session, current_page) {
       
     })
     
-    output$answer_ui <- renderUI({
+    output$editor_ui <- renderUI({
       
       tagList(
         h4("Resultaat"),
@@ -178,7 +190,8 @@ level1_2_server <- function(input, output, session, current_page) {
             "Er zit een typefout in de code"
           )
         ),
-        actionButton("submit_q1", "Submit", class = "start-btn")
+        actionButton("submit_q1", "Submit", class = "start-btn"),
+        
       )
       
     })
@@ -191,13 +204,7 @@ level1_2_server <- function(input, output, session, current_page) {
     
     if (input$q1 == "De functie komt uit een package dat niet geladen is") {
       
-      output$answer_ui <- renderUI({
-        
-        tagList(
-          actionButton("next_level1_3", "Volgende", class = "next-btn")
-        )
-        
-      })
+      shinyjs::show("next_level1_3")
       
     } else {
       
