@@ -1,4 +1,3 @@
-# level2_2.R
 virus_dataset <- virus_dataset[order(virus_dataset$mean_onset_days), ]
 
 x_question <- list(
@@ -69,13 +68,9 @@ body{background:#1c1c1c;color:#00FF00;font-family:'Courier New',monospace;}
     ),
     width = 0.2
   ) +
-  labs(
-    title = 'Gemiddelde onsettijd per virus',
-    subtitle = 'Foutbalken geven de standaarddeviatie (SD) weer',
-    x = 'Virus',
-    y = 'Gemiddelde onsettijd (dagen)'
-  ) +
-  theme_minimal()")
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+  )")
             ),
             actionButton("submit_scatter","▶ RUN CODE")
         ),
@@ -138,11 +133,13 @@ level2_2_server <- function(input,output,session,current_page){
           geom_point(size=3,color="#00FF00")+
           geom_errorbar(aes(ymin=mean_onset_days-sd_onset_days,
                             ymax=mean_onset_days+sd_onset_days),width=.2,color="#00FF00")+
-          labs(title="Gemiddelde onsettijd per virus",
-               subtitle="Foutbalken geven de standaarddeviatie (SD) weer",
-               x="Virus",
-               y="Gemiddelde onsettijd (dagen)")+
           theme_minimal() +
+          labs(
+            title = NULL,
+            subtitle = NULL,
+            x = NULL,
+            y = NULL
+          )+
           theme(
             axis.text.x = element_text(angle = 45, hjust = 1)
           )
