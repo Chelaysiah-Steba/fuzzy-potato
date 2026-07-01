@@ -12,6 +12,7 @@ source("pop-ups/level1_intro.R")
 source("levels/level_1/level1_1.R")
 source("levels/level_1/level1_2.R")
 source("levels/level_1/level1_3.R")
+source("levels/level_1/level1_4.R")
 
 source("transitions/transition1_2.R")
 source("pop-ups/level2_intro.R")
@@ -390,6 +391,7 @@ server <- function(input, output, session) {
   level1_1_server(input, output, session, current_page)
   level1_2_server(input, output, session, current_page)
   level1_3_server(input, output, session, current_page)
+  level1_4_server(input, output, session, current_page)
   
   transition_1_2_server(input, output, session, current_page)
   level2_intro_server(input, output, session, current_page)
@@ -399,13 +401,15 @@ server <- function(input, output, session) {
   level2_3_server(input, output, session, current_page)
   level2_4_server(input, output, session, current_page)
   
-  transition_2_3_server(input, output, session, current_page)
-  level3_intro_server(input, output, session, current_page)
+  # tijdelijk uit
   
-  level3_1_server(input, output, session, current_page)
-  level3_2_server(input, output, session, current_page)
-  level3_3_server(input, output, session, current_page)
-  level3_4_server(input, output, session, current_page)
+  # transition_2_3_server(input, output, session, current_page)
+  # level3_intro_server(input, output, session, current_page)
+  
+  # level3_1_server(input, output, session, current_page)
+  # level3_2_server(input, output, session, current_page)
+  # level3_3_server(input, output, session, current_page)
+  # level3_4_server(input, output, session, current_page)
   
   # ROUTER
   output$main_ui <- renderUI({
@@ -426,6 +430,9 @@ server <- function(input, output, session) {
       
     } else if(current_page()=="level1_3"){
       level1_3_ui()
+      
+    } else if(current_page()=="level1_4"){
+      level1_4_ui()
       
     } else if(current_page()=="transition1_2"){
       transition1_2_ui()
