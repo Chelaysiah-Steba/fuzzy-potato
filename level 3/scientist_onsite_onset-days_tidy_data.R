@@ -6,11 +6,12 @@ tidy_scientists <- data.frame(
     "sci16","sci17","sci18","sci19","sci20"
   ),
     on_site = c(
-      yes, no, yes, yes, yes,
-      no, yes, yes, no, no,
-      yes, no, no, no, yes,
-      yes, yes, no, yes, yes
-    ),
+      on_site = c(
+        "yes", "no", "yes", "yes", "yes",
+        "no", "yes", "yes", "no", "no",
+        "yes", "no", "no", "no", "yes",
+        "yes", "yes", "no", "yes", "yes"
+      ),
     symptom_onset_days = c(
       5, 7, 3, 4, 4,
       6, 3, 4, 5, 6,
