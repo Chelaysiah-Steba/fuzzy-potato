@@ -5,17 +5,17 @@ tidy_scientists <- data.frame(
     "sci11","sci12","sci13","sci14","sci15",
     "sci16","sci17","sci18","sci19","sci20"
   ),
-    age_years = c(
-      34, 50, 41, 29, 46,
-      38, 52, 44, 31, 57,
-      36, 48, 40, 53, 28,
-      39, 45, 32, 55, 37
+    on_site = c(
+      yes, no, yes, yes, yes,
+      no, yes, yes, no, no,
+      yes, no, no, no, yes,
+      yes, yes, no, yes, yes
     ),
     symptom_onset_days = c(
-      3, 2, 6, 2, 4,
-      7, 8, 4, 2, 5,
-      3, 2, 6, 2, 4,
-      7, 8, 4, 2, 5
+      5, 7, 3, 4, 4,
+      6, 3, 4, 5, 6,
+      5, 7, 6, 5, 4,
+      3, 5, 7, 4, 3
     )
   )
   
