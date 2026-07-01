@@ -4,9 +4,14 @@ library(shinyjs)
 library(tidyverse)
 
 untidy_df <- data.frame(
-  Scientist = c("Sci01","Sci01","Sci02","Sci02","Sci03","Sci03"),
-  Measurement = c("Age_years","Survival_days","Age_years","Survival_days","Age_years","Survival_days"),
-  Value = c(34,82,29,91,41,77)
+  Scientist = c(
+    "sci01","sci01","sci02","sci02","sci03","sci03","sci04","sci04","sci05","sci05"
+  ),
+  MeasurementType = rep(c("on_site", "symptom_onset_days"), times = 5),
+  MeasurementValue = c(
+    # on_site, onset_days, etc
+    "yes", 5, "no", 7,"yes", 3,"yes", 4,"yes", 4
+  )
 )
 
 ui <- fluidPage(
@@ -83,6 +88,7 @@ server <- function(input, output, session) {
           
           div(class = "editor",
               h3("🔍 Level 3.2: Tidy herkenning"),
+              p("Hieronder is een deel van de zojuist ingeladen tabel te zien"),
               p("Is deze tabel tidy?"),
               
               tableOutput("untidy_table"),

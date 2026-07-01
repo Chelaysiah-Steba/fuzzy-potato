@@ -1,10 +1,21 @@
 library(shiny)
 library(shinyjs)
 
-scientists_dataset <- data.frame(
-  Scientist = c("Sci01","Sci01","Sci02","Sci02","Sci03","Sci03"),
-  Measurement = c("Age_years","Survival_days","Age_years","Survival_days","Age_years","Survival_days"),
-  Value = c(34,82,29,91,41,77)
+untidy_scientists <- data.frame(
+  Scientist = c(
+    "sci01","sci01","sci02","sci02","sci03","sci03","sci04","sci04","sci05","sci05",
+    "sci06","sci06","sci07","sci07","sci08","sci08","sci09","sci09","sci10","sci10",
+    "sci11","sci11","sci12","sci12","sci13","sci13","sci14","sci14","sci15","sci15",
+    "sci16","sci16","sci17","sci17","sci18","sci18","sci19","sci19","sci20","sci20"
+  ),
+  MeasurementType = rep(c("on_site", "symptom_onset_days"), times = 20),
+  MeasurementValue = c(
+    # on_site, onset_days, etc
+    "yes", 5, "no", 7,"yes", 3,"yes", 4,"yes", 4,
+    "no", 6, "yes", 3, "yes", 4, "no", 5, "no", 6,
+    "yes", 5, "no", 7, "no", 6, "no", 5, "yes", 4,
+    "yes", 3, "yes", 5, "no", 7, "yes", 4, "yes", 3
+  )
 )
 
 ui <- fluidPage(
@@ -136,7 +147,7 @@ server <- function(input, output, session) {
       })
       
       output$scientists_table_data <- renderTable({
-        scientists_dataset
+        untidy_scientists
       })
       
       session$sendCustomMessage("confetti", TRUE)
