@@ -195,21 +195,14 @@ server <- function(input, output, session) {
       "n = count())"
     )
     
-    result <- tidy_scientists |>
-      filter(on_site == "yes") |>
-      summarise(
-        mean = mean(symptom_onset_days),
-        SD = sd(symptom_onset_days),
-        n = dplyr::count()
-      )
-    
     output$console_output <- renderText({
       paste(
         "✔ Correct!\n\nVolledige code:\n",
         code,
         "\n\nOutput in R:\n",
-        capture.output(print(result)),
-        collapse = "\n"
+        "\n\n#A tibble: 1 × 3
+        mean     SD     n
+        3.9167 0.9965   12:\n"
       )
     })
   })
