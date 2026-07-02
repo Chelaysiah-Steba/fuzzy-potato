@@ -1,4 +1,3 @@
-#hoi Chelaysiah :)
 virus_dataset <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
@@ -193,7 +192,7 @@ level2_1_server <- function(input, output, session, current_page){
   })
   
   observeEvent(input$next_level2_2,{
-    current_page("end")
+    current_page("level2_2")
   })
   
 }

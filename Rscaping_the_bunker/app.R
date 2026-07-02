@@ -7,11 +7,27 @@ library(later)
 
 # laden van source materiaal (level scripts en vraagtypefuncties)
 source("modules.R")
+
+source("transitions/transition_opening_1.R")
+source("pop-ups/level1_intro.R")
+source("levels/level_1/level1_1.R")
+source("levels/level_1/level1_2.R")
+source("levels/level_1/level1_3.R")
+source("levels/level_1/level1_4.R")
+
+source("transitions/transition1_2.R")
+source("pop-ups/level2_intro.R")
 source("levels/level_2/level2_1.R")
 source("levels/level_2/level2_2.R")
 source("levels/level_2/level2_3.R")
 source("levels/level_2/level2_4.R")
-source("levels/level_2/level2_5.R")
+
+source("transitions/transition2_3.R")
+source("pop-ups/level3_intro.R")
+source("levels/level_3/level3_1.R")
+source("levels/level_3/level3_2.R")
+source("levels/level_3/level3_3.R")
+source("levels/level_3/level3_4.R")
 
 
 # ---------------------------------------------------------
@@ -370,16 +386,63 @@ sep = "\n"
 
 server <- function(input, output, session) {
   
+  observe({
+    print(current_page())
+  })
+  
+  transition_opening_1_server(input, output, session, current_page)
+  level1_intro_server(input, output, session, current_page)
+  
+  level1_1_server(input, output, session, current_page)
+  level1_2_server(input, output, session, current_page)
+  level1_3_server(input, output, session, current_page)
+  level1_4_server(input, output, session, current_page)
+  
+  transition_1_2_server(input, output, session, current_page)
+  level2_intro_server(input, output, session, current_page)
+  
   level2_1_server(input, output, session, current_page)
   level2_2_server(input, output, session, current_page)
   level2_3_server(input, output, session, current_page)
   level2_4_server(input, output, session, current_page)
+  
+  # tijdelijk uit
+  
+  # transition_2_3_server(input, output, session, current_page)
+  # level3_intro_server(input, output, session, current_page)
+  
+  # level3_1_server(input, output, session, current_page)
+  # level3_2_server(input, output, session, current_page)
+  # level3_3_server(input, output, session, current_page)
+  # level3_4_server(input, output, session, current_page)
   
   # ROUTER
   output$main_ui <- renderUI({
     if (current_page() == "intro") {
       
       start_page_ui()
+      
+    } else if(current_page()=="transition_opening_1"){
+      transition_opening_1_ui()
+      
+    } else if(current_page()=="level1_intro"){
+      
+    } else if(current_page()=="level1_1"){
+      level1_1_ui()
+      
+    } else if(current_page()=="level1_2"){
+      level1_2_ui()
+      
+    } else if(current_page()=="level1_3"){
+      level1_3_ui()
+      
+    } else if(current_page()=="level1_4"){
+      level1_4_ui()
+      
+    } else if(current_page()=="transition1_2"){
+      transition1_2_ui()
+      
+    } else if(current_page()=="level2_intro"){
       
     } else if (current_page() == "level2_1") {
       
@@ -396,6 +459,27 @@ server <- function(input, output, session) {
     } else if (current_page() == "level2_4") {
       
       level2_4_ui()
+      
+    } else if(current_page()=="transition_level2_3"){
+      
+      transition_level2_3_ui()
+      
+    } else if(current_page()=="level3_intro"){
+      
+    } else if(current_page()=="level3_1"){
+      level3_1_ui()
+      
+    } else if(current_page()=="level3_2"){
+      level3_2_ui()
+      
+    } else if(current_page()=="level3_3"){
+      level3_3_ui()
+      
+    } else if(current_page()=="level3_4"){
+      level3_4_ui()
+      
+    } else if(current_page()=="transition_level3_4"){
+      transition_level3_4_ui()
       
     } else if (current_page() == "end") {
       
@@ -485,29 +569,6 @@ server <- function(input, output, session) {
     session$sendCustomMessage("showStartButton", TRUE)
     
     shinyjs::hide("skip_intro")
-  })
-  
-  # ---------------------------------------------------------
-  # START GAME → INFO POP-UP
-  # ---------------------------------------------------------
-  observeEvent(input$start_game, {
-    showModal(modalDialog(
-      title = "LEVEL 2 — Introductie",
-      "Tijdens het stabiliseren van het beveiligingssysteem is vastgesteld dat correcte data‑invoer essentieel is. Ruwe laboratoriumbestanden worden aangeleverd als TSV‑data, die alleen veilig verwerkt kan worden wanneer het juiste scheidingsteken en decimaalformaat worden ingesteld. Na het inlezen moet de onderzoeker controleren of alle variabelen correct zijn geïnterpreteerd, omdat foutieve kolomtypes het virusmonitoringsysteem kunnen verstoren. Voor het analyseren van verspreidingspatronen gebruikt het systeem visualisaties: scatterplots om relaties tussen metingen te detecteren, histogrammen om verdelingen te beoordelen en boxplots om afwijkingen en mogelijke besmettingspieken te identificeren. Heldere labels zijn noodzakelijk om snel beslissingen te nemen. Deze kennis is vereist om de volgende beveiligingslaag te activeren.",
-      footer = tagList(
-        modalButton("Sluiten"),
-        actionButton("continue_btn", "Ga verder")
-      ),
-      easyClose = TRUE
-    ))
-  })
-  
-  # ---------------------------------------------------------
-  # INFO POP-UP → level 2.1
-  # ---------------------------------------------------------
-  observeEvent(input$continue_btn, {
-    current_page("level2_1")
-    removeModal()
   })
   
   # ---------------------------------------------------------

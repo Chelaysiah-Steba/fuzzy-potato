@@ -76,7 +76,14 @@ q_dropdown <- function(id, prompt, options, answer) {
       choices = options
     ),
     check = function(input) {
-      input[[id]] == answer
+      
+      value <- input[[id]]
+      
+      if (is.null(value) || value == "") {
+        return(FALSE)
+      }
+      
+      identical(value, answer)
     }
   )
 }
@@ -103,10 +110,20 @@ q_open <- function(id, prompt, answers, use_regex = FALSE) {
       label = prompt
     ),
     check = function(input) {
-      user <- trimws(input[[id]])
+      
+      user <- input[[id]]
+      
+      if (is.null(user) || trimws(user) == "") {
+        return(FALSE)
+      }
+      
+      user <- trimws(user)
       
       if (use_regex) {
-        any(sapply(answers, function(pattern) grepl(pattern, user, ignore.case = TRUE)))
+        any(sapply(
+          answers,
+          function(pattern) grepl(pattern, user, ignore.case = TRUE)
+        ))
       } else {
         tolower(user) %in% tolower(answers)
       }
@@ -198,11 +215,14 @@ q_combo <- function(id, prompt, parts) {
 ###############################################################
 
 render_question <- function(q) {
+  
+  use_regex <- if (is.null(q$use_regex)) FALSE else q$use_regex
+  
   switch(q$type,
          "mc_single" = q_mc_single(q$id, q$prompt, q$options, q$answer),
          "mc_multi"  = q_mc_multi(q$id, q$prompt, q$options, q$answers),
          "dropdown"  = q_dropdown(q$id, q$prompt, q$options, q$answer),
-         "open"      = q_open(q$id, q$prompt, q$answers, q$use_regex),
+         "open"      = q_open(q$id, q$prompt, q$answers, use_regex),
          "arrange"   = q_arrange(q$id, q$prompt, q$items, q$correct_order),
          "combo"     = q_combo(q$id, q$prompt, q$parts)
   )
