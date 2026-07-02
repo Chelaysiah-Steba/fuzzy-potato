@@ -18,22 +18,49 @@ ui <- fluidPage(
   tags$head(
     tags$style(HTML("
       body { background-color: #1c1c1c; color: #00FF00; font-family: 'Courier New', monospace; }
-      .game-container { display: flex; gap: 20px; margin-top: 20px; }
-      .editor, .console {
-        width: 50%; padding: 15px; border: 2px solid #00FF00;
-        font-family: 'Courier New', monospace; text-align: left;
+
+      .game-container { 
+        display: flex; 
+        gap: 20px; 
+        margin-top: 20px; 
       }
+
+      .editor, .console {
+        width: 50%; 
+        padding: 15px; 
+        border: 2px solid #00FF00;
+        font-family: 'Courier New', monospace; 
+        text-align: left;
+      }
+
       .editor { background-color: #1c1c1c; }
       .console { background-color: #000000; white-space: pre-wrap; }
-      pre, pre * { color: #00FF00 !important; font-family: 'Courier New', monospace !important; }
-      input {
-        background-color: #000000 !important; color: #00FF00 !important;
-        border: 2px solid #00FF00 !important; font-family: 'Courier New', monospace !important;
-        width: 400px;
+
+      pre, pre * { 
+        color: #00FF00 !important; 
+        font-family: 'Courier New', monospace !important; 
       }
+
+      /* REMOVE WHITE BOX COMPLETELY */
+      input {
+        background: none !important;
+        color: #00FF00 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 16px;
+        width: 420px;
+      }
+
       button {
-        background-color: #000000 !important; color: #00FF00 !important;
-        border: 2px solid #00FF00 !important; font-family: 'Courier New', monospace !important;
+        background-color: #000000 !important; 
+        color: #00FF00 !important;
+        border: 2px solid #00FF00 !important; 
+        font-family: 'Courier New', monospace !important;
       }
     "))
   ),
@@ -46,19 +73,21 @@ server <- function(input, output, session) {
   output$game_ui <- renderUI({
     div(class = "game-container",
         
-        # LEFT SIDE — CODEBLOCK
         div(class = "editor",
             h3("📂 Level 4.1 — Laad de DNA concentratie dataset"),
             
             tags$pre(
-              tags$input(id = "file_input", type = "text", 
-                         placeholder = 'read_excel("DNA_concentrations.xlsx")')
+              "dna_ct_dataset <- ",
+              tags$input(
+                id = "file_input", 
+                type = "text",
+                placeholder = 'read_excel("DNA_concentrations.xlsx")'
+              )
             ),
             
             actionButton("run", "▶ RUN CODE")
         ),
         
-        # RIGHT SIDE — CONSOLE
         div(class = "console",
             h3("Console"),
             verbatimTextOutput("console_out"),
@@ -69,7 +98,6 @@ server <- function(input, output, session) {
   
   observeEvent(input$run, {
     
-    # ✔ Student must type EXACTLY the full expression
     correct <- input$file_input == 'read_excel("DNA_concentrations.xlsx")'
     
     if (correct) {
