@@ -1,14 +1,4 @@
-level1_intro_ui <- function() {
-  div(
-    class = "popup-container",
-    h2("Level 1 — Intro"),
-    p("Welkom bij Level 1!"),
-    actionButton("go_level1_1", "Ga verder", class = "start-btn")
-  )
-}
-
-
-level1_intro_server <- function(input, output, session, current_page) {
+level1_intro_test_server <- function(input, output, session, current_page) {
   
   observeEvent(input$start_game, {
     
@@ -25,7 +15,7 @@ level1_intro_server <- function(input, output, session, current_page) {
           p(
             "Aan jou de taak om de toegang tot de databases te herstellen."
           ),
-          
+         
           br(),
           
           tags$b(

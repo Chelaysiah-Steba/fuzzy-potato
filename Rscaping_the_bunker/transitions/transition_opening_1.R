@@ -1,5 +1,5 @@
 transition_opening_1_ui <- function() {
-  tags$div(
+  fluidPage(
     useShinyjs(),
     tags$head(
       tags$style(HTML("

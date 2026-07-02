@@ -362,6 +362,24 @@ Shiny.addCustomMessageHandler('endingType', function(message){
 # ---------------------------------------------------------
 # SERVER
 # ---------------------------------------------------------
+start_page_server <- function(input, output, session, current_page) {
+  
+  # Skip: toon volledige tekst + startknop
+  observeEvent(input$skip_intro, {
+    
+    # 1. Stop type-effect door een custom message naar JS te sturen
+    session$sendCustomMessage("updateText", paste(lines, collapse = "\n"))
+    
+    # 2. Startknop zichtbaar maken
+    session$sendCustomMessage("showStartButton", TRUE)
+  })
+  
+  # Start Missie → naar transition pagina
+  observeEvent(input$start_game, {
+    current_page("transition_opening_1")
+  })
+}
+
 
 ending_text <- paste(
 
@@ -390,6 +408,7 @@ server <- function(input, output, session) {
     print(current_page())
   })
   
+  start_page_server(input, output, session, current_page)
   transition_opening_1_server(input, output, session, current_page)
   level1_intro_server(input, output, session, current_page)
   
@@ -426,8 +445,9 @@ server <- function(input, output, session) {
       transition_opening_1_ui()
       
     } else if(current_page()=="level1_intro"){
+      level1_intro_ui()
       
-    } else if(current_page()=="level1_1"){
+    }else if(current_page()=="level1_1"){
       level1_1_ui()
       
     } else if(current_page()=="level1_2"){
