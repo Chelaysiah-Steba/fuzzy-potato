@@ -1,3 +1,4 @@
+
 # laden van packages
 library(shiny)
 library(shinyjs)
@@ -576,3 +577,4 @@ server <- function(input, output, session) {
 # RUN APP
 # ---------------------------------------------------------
 shinyApp(ui, server)
+
