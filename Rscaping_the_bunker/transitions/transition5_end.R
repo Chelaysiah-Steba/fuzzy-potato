@@ -1,11 +1,11 @@
-transition_5_ending_ui <- function() {
+transition5_end_ui <- function() {
   uiOutput("hx1_lines")
 }
 
-transition_5_ending_server <- function(input, output, session, current_page) {
+transition5_end_server <- function(input, output, session, current_page) {
   
   output$hx1_lines <- renderUI({
-    req(current_page() == "transition_5_ending")
+    req(current_page() == "transition5_end")
     
     tagList(
       tags$div(

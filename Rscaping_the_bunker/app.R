@@ -41,6 +41,8 @@ source("levels/level_5/level5_3.R")
 source("levels/level_5/level5_4.R")
 source("levels/level_5/level5_5.R")
 
+source("transitions/transition5_end.R")
+
 
 # ---------------------------------------------------------
 # STATE MACHINE
@@ -455,6 +457,7 @@ server <- function(input, output, session) {
   level5_2_server(input, output, session, current_page)
   level5_3_server(input, output, session, current_page)
   level5_4_server(input, output, session, current_page)
+  level5_5_server(input, output, session, current_page)
   
   transition5_end_server(input, output, session, current_page)
   
@@ -568,9 +571,13 @@ server <- function(input, output, session) {
       
       level5_4_ui()
       
-    } else if (current_page() == "transition_5_end") {
+    } else if (current_page() == "level5_5") {
       
-      transition_5_end_ui()
+      level5_5_ui()
+      
+    } else if (current_page() == "transition5_end") {
+      
+      transition5_end_ui()
       
     } else if (current_page() == "end") {
       
