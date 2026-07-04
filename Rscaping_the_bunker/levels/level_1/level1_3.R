@@ -216,7 +216,7 @@ level1_3_server <- function(input, output, session, current_page) {
         paste0(
           "✖ Incorrect command.\n",
           "You typed: ", clean, "\n\n",
-          "Hint: Load the missing module with:\n",
+          "Hint: laad de missende module met:\n",
           "library(bootSequenceR)"
         )
       })
@@ -226,7 +226,7 @@ level1_3_server <- function(input, output, session, current_page) {
   })
   
   observeEvent(input$next_level1_4, {
-    current_page("level1_4")
+    current_page("transition1_2")
   })
   
 }

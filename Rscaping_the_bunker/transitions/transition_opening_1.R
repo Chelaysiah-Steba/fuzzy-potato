@@ -7,7 +7,7 @@ transition_opening_1_server <- function(input, output, session, current_page) {
         class = "landing-container",
         tags$h1(class = "game-title", "Titel"),
         tags$div(class = "intro-text", "Tekst"),
-        actionButton("hx_continue_btn", "Verder naar level 1 intro", class = "start-btn")
+        actionButton("hx_continue_btn", "Doorgaan", class = "start-btn")
       )
     )
   })
