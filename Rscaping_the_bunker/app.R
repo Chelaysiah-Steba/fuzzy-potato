@@ -8,8 +8,6 @@ library(htmltools)
 # laden van source materiaal (level scripts en vraagtypefuncties)
 source("modules.R")
 
-source("transitions/login_screen.R")
-
 source("transitions/transition_opening_1.R")
 source("pop-ups/level1_intro.R")
 source("levels/level_1/level1_1.R")
@@ -374,9 +372,9 @@ start_page_server <- function(input, output, session, current_page) {
     session$sendCustomMessage("showStartButton", TRUE)
   })
   
-  # Start Missie → naar login
+  # Start Missie → transition
   observeEvent(input$start_game, {
-    current_page("login_screen")
+    current_page("transition_opening_1")
   })
 }
 
@@ -409,7 +407,6 @@ server <- function(input, output, session) {
   })
   
   start_page_server(input, output, session, current_page)
-  login_screen_server(input, output, session, current_page)
   transition_opening_1_server(input, output, session, current_page)
   level1_intro_server(input, output, session, current_page)
   
@@ -442,16 +439,13 @@ server <- function(input, output, session) {
       
       start_page_ui()
       
-    } else if(current_page()=="login_screen"){
-      login_screen_ui()
-      
-    } else if(current_page()=="transition_opening_1"){
+    } else if (current_page()=="transition_opening_1") {
       transition_opening_1_ui()
       
     } else if(current_page()=="level1_intro"){
       level1_intro_ui()
       
-    }else if(current_page()=="level1_1"){
+    } else if(current_page()=="level1_1"){
       level1_1_ui()
       
     } else if(current_page()=="level1_2"){
