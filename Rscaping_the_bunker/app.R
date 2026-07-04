@@ -383,24 +383,24 @@ start_page_server <- function(input, output, session, current_page) {
 
 
 ending_text <- paste(
-
-"> INITIALIZING FINAL REPORT...",
-"> RESTORING SECURITY MODULES...",
-"> VERIFYING CONTAINMENT...",
-"> OPENING BUNKER DOORS...",
-"> CONNECTION STABLE",
-"",
-"MISSION SUCCESSFUL",
-"",
-"SYSTEM STATUS        : STABLE",
-"VIRUS CONTAINMENT    : SUCCESS",
-"ALL SECURITY MODULES : ONLINE",
-"BUNKER STATUS        : UNLOCKED",
-"",
-"> READY FOR TERMINATION? █",
-
-sep = "\n"
-
+  
+  "> INITIALIZING FINAL REPORT...",
+  "> RESTORING SECURITY MODULES...",
+  "> VERIFYING CONTAINMENT...",
+  "> OPENING BUNKER DOORS...",
+  "> CONNECTION STABLE",
+  "",
+  "MISSION SUCCESSFUL",
+  "",
+  "SYSTEM STATUS        : STABLE",
+  "VIRUS CONTAINMENT    : SUCCESS",
+  "ALL SECURITY MODULES : ONLINE",
+  "BUNKER STATUS        : UNLOCKED",
+  "",
+  "> READY FOR TERMINATION? █",
+  
+  sep = "\n"
+  
 )
 
 server <- function(input, output, session) {

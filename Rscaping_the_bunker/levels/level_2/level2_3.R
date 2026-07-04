@@ -6,11 +6,11 @@ color_question <- list(
 )
 
 level2_3_ui <- function() {
-
+  
   fluidPage(
-
+    
     useShinyjs(),
-
+    
     tags$head(
       tags$style(HTML("
       body {
@@ -61,71 +61,71 @@ level2_3_ui <- function() {
       }
       "))
     ),
-
+    
     div(
-
+      
       class = "game-container",
-
+      
       div(
-
+        
         class = "editor",
-
+        
         h3("Level 2.3: Categoriseer de virussen"),
-
+        
         p(
           "Het systeem heeft automatisch een nieuwe kolom toegevoegd (onset_group) waarin de gemiddelde onsettijd is ingedeeld in categorieën."
         ),
-
+        
         p(
           "Gebruik deze nieuwe kolom in as.factor() zodat iedere onsetcategorie een eigen kleur krijgt."
         ),
-
+        
         div(
-
+          
           class = "code-box",
-
+          
           HTML(
-"ggplot(virus_dataset, aes(
+            "ggplot(virus_dataset, aes(
   x = mean_onset_days,
   y = sd_onset_days,
   color = as.factor("
           ),
-
+          
           render_question(color_question)$ui,
-
+          
           HTML(
-")
+            ")
 )) +
   geom_point(size = 3) +
   theme_minimal()"
           )
-
+          
         ),
-
+        
         actionButton("run_colour", "▶ RUN CODE")
-
+        
       ),
-
+      
       div(
-
+        
         class = "console",
-
+        
         h3("Console"),
-
+        
         verbatimTextOutput("colour_console"),
         
         uiOutput("colour_content")
-
+        
       )
-
+      
     )
-
+    
   )
-
+  
 }
 
 level2_3_server <- function(input, output, session, current_page) {
-
+  
   question <- render_question(color_question)
   
   if (!"onset_group" %in% names(virus_dataset)) {
@@ -139,15 +139,15 @@ level2_3_server <- function(input, output, session, current_page) {
   }
   
   output$colour_content <- renderUI(NULL)
-
+  
   observeEvent(input$run_colour, {
-
+    
     answer <- trimws(input$color_input)
-
+    
     if (isTRUE(question$check(input))) {
       
       session$sendCustomMessage("greenFlash", TRUE)
-
+      
       output$colour_console <- renderText({
         
         paste(
@@ -166,7 +166,7 @@ level2_3_server <- function(input, output, session, current_page) {
         )
         
       })
-
+      
       output$colour_content <- renderUI({
         
         tagList(
@@ -221,37 +221,37 @@ level2_3_server <- function(input, output, session, current_page) {
           )
         
       })
-
       
-
+      
+      
       return()
-
+      
     }
     
     session$sendCustomMessage("redFlash", TRUE)
-
+    
     hint <- if (answer == "") {
-
+      
       "✖ Er ontbreekt nog een variabele."
-
+      
     } else if (tolower(answer) == "virus") {
-
+      
       "✖ Dat geeft iedere virusnaam een eigen kleur. Het systeem wil juist de nieuwe categorieën gebruiken."
-
+      
     } else if (tolower(answer) == "mean_onset_days") {
-
+      
       "✖ Dat is een numerieke variabele. Kijk welke nieuwe kolom het systeem heeft aangemaakt."
-
+      
     } else if (tolower(answer) == "sd_onset_days") {
-
+      
       "✖ Deze kolom bevat de spreiding. Gebruik de kolom met de onsetcategorieën."
-
+      
     } else {
-
+      
       "✖ Bijna. Gebruik de nieuwe kolom die de virussen indeelt in de categorieën 0-2, 2-4, 4-6 en 6-8 dagen."
-
+      
     }
-
+    
     output$colour_console <- renderText({
       
       paste(
@@ -268,9 +268,9 @@ level2_3_server <- function(input, output, session, current_page) {
       )
       
     })
-
+    
     output$colour_content <- renderUI(NULL)
-
+    
   })
   
   observeEvent(input$next_level2_4,{
@@ -278,5 +278,5 @@ level2_3_server <- function(input, output, session, current_page) {
     current_page("level2_4")
     
   })
-
+  
 }

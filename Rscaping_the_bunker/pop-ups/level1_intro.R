@@ -1,4 +1,4 @@
-level1_intro_test_server <- function(input, output, session, current_page) {
+level1_intro_server <- function(input, output, session, current_page) {
   
   observeEvent(input$start_game, {
     
@@ -15,7 +15,7 @@ level1_intro_test_server <- function(input, output, session, current_page) {
           p(
             "Aan jou de taak om de toegang tot de databases te herstellen."
           ),
-         
+          
           br(),
           
           tags$b(
