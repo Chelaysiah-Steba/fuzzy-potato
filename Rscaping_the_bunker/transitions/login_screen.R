@@ -1,5 +1,3 @@
-library(shiny)
-
 login_screen_ui <- function() {
   fluidPage(
     tags$head(
