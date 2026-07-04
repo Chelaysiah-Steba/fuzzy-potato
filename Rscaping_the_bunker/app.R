@@ -33,15 +33,13 @@ source("levels/level_4/level4_2.R")
 source("levels/level_4/level4_3.R")
 source("levels/level_4/level4_4.R")
 source("levels/level_4/level4_5.R")
-source("levels/level_4/level4_6.R")
-source("levels/level_4/level4_7.R")
 
-source("transitions/transition2_3.R")
-source("levels/level_3/level3_1.R")
-source("levels/level_3/level3_2.R")
-source("levels/level_3/level3_3.R")
-source("levels/level_3/level3_4.R")
-source("levels/level_3/level3_5.R")
+source("transitions/transition4_5.R")
+source("levels/level_5/level5_1.R")
+source("levels/level_5/level5_2.R")
+source("levels/level_5/level5_3.R")
+source("levels/level_5/level5_4.R")
+source("levels/level_5/level5_5.R")
 
 
 # ---------------------------------------------------------
@@ -436,31 +434,29 @@ server <- function(input, output, session) {
   level2_4_server(input, output, session, current_page)
   
   
-  transition_2_3_server(input, output, session, current_page)
+  transition2_3_server(input, output, session, current_page)
   
   level3_1_server(input, output, session, current_page)
   level3_2_server(input, output, session, current_page)
   level3_3_server(input, output, session, current_page)
   level3_4_server(input, output, session, current_page)
   
-  transition_3_4_server(input, output, session, current_page)
+  transition3_4_server(input, output, session, current_page)
   
   level4_1_server(input, output, session, current_page)
   level4_2_server(input, output, session, current_page)
   level4_3_server(input, output, session, current_page)
   level4_4_server(input, output, session, current_page)
   level4_5_server(input, output, session, current_page)
-  level4_6_server(input, output, session, current_page)
-  level4_7_server(input, output, session, current_page)
   
-  transition_4_5_server(input, output, session, current_page)
+  transition4_5_server(input, output, session, current_page)
   
   level5_1_server(input, output, session, current_page)
   level5_2_server(input, output, session, current_page)
   level5_3_server(input, output, session, current_page)
   level5_4_server(input, output, session, current_page)
   
-  transition_5_end_server(input, output, session, current_page)
+  transition5_end_server(input, output, session, current_page)
   
   # ROUTER
   output$main_ui <- renderUI({
@@ -551,14 +547,6 @@ server <- function(input, output, session) {
     } else if (current_page() == "level4_5") {
       
       level4_5_ui()
-      
-    } else if (current_page() == "level4_6") {
-      
-      level4_6_ui()
-      
-    } else if (current_page() == "level4_7") {
-      
-      level4_7_ui()
       
     } else if (current_page() == "transition_4_5") {
       
