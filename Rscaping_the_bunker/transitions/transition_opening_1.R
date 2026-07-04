@@ -1,18 +1,26 @@
+transition_opening_1_ui <- function() {
+  uiOutput("hx1_lines")
+}
+
 transition_opening_1_server <- function(input, output, session, current_page) {
-  output$hx_lines <- renderUI({
+  
+  output$hx1_lines <- renderUI({
     req(current_page() == "transition_opening_1")
     
     tagList(
       tags$div(
         class = "landing-container",
-        tags$h1(class = "game-title", "Titel"),
-        tags$div(class = "intro-text", "Tekst"),
-        actionButton("hx_continue_btn", "Doorgaan", class = "start-btn")
+        tags$h1(class = "game-title", "LEVEL 1"),
+        tags$div(
+          class = "intro-text",
+          "De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd.\n\nAlleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."
+        ),
+        actionButton("hx_continue_btn_1", "Doorgaan", class = "start-btn")
       )
     )
   })
   
-  observeEvent(input$hx_continue_btn, {
+  observeEvent(input$hx_continue_btn_1, {
     showModal(
       modalDialog(
         title = "LEVEL 1 — Introductie",

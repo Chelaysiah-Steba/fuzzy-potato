@@ -1,7 +1,3 @@
-library(shiny)
-library(shinyjs)
-library(dplyr)
-
 tidy_scientists <- data.frame(
   Scientist = paste0("sci", sprintf("%02d", 1:20)),
   on_site = c(
@@ -18,82 +14,78 @@ tidy_scientists <- data.frame(
   )
 )
 
-ui <- fluidPage(
-  useShinyjs(),
-  
-  tags$head(
-    tags$style(HTML("
-      body {
-        background-color: #1c1c1c;
-        color: #00FF00;
-        font-family: 'Courier New', monospace;
-      }
-
-      .code-box {
-        background-color: #000000;
-        border: 3px solid #00FF00;
-        padding: 8px;
-        margin-bottom: 5px;
-        font-size: 1.05em;
-        line-height: 1.1em;
-      }
-
-      .inline-input {
-        width: 140px;
-        background-color: #000000;
-        color: #00FF00;
-        border: 2px solid #00FF00;
-        margin: 0 3px;
-        height: 26px;
-      }
-
-      .inline-dropdown {
-        background-color: #000000;
-        color: #00FF00;
-        border: 2px solid #00FF00;
-        margin-left: 3px;
-        height: 30px;
-      }
-
-      .game-container {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .editor, .console {
-        width: 50%;
-        padding: 10px;
-        border: 2px solid #00FF00;
-      }
-
-      .console {
-        background-color: #000000;
-        white-space: pre-wrap;
-        font-size: 1.05em;
-      }
-
-      button {
-        background-color: #1c1c1c;
-        color: #00FF00;
-        border: 2px solid #00FF00;
-        padding: 8px 16px;
-        cursor: pointer;
-      }
-
-      button:hover {
-        background-color: #00FF00;
-        color: #1c1c1c;
-      }
-    "))
-  ),
-  
-  uiOutput("game_ui")
-)
-
-server <- function(input, output, session) {
-  
-  output$game_ui <- renderUI({
+level3_3_ui <- function() {
+  fluidPage(
+    useShinyjs(),
+    
+    tags$head(
+      tags$style(HTML("
+        body {
+          background-color: #1c1c1c;
+          color: #00FF00;
+          font-family: 'Courier New', monospace;
+        }
+        .code-box {
+          background-color: #000000;
+          border: 3px solid #00FF00;
+          padding: 8px;
+          margin-bottom: 5px;
+          font-size: 1.05em;
+          line-height: 1.1em;
+        }
+        .inline-input {
+          width: 140px;
+          background-color: #000000;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          margin: 0 3px;
+          height: 26px;
+        }
+        .inline-dropdown {
+          background-color: #000000;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          margin-left: 3px;
+          height: 30px;
+        }
+        .game-container {
+          display: flex;
+          gap: 10px;
+          margin-top: 10px;
+        }
+        .editor, .console {
+          width: 50%;
+          padding: 10px;
+          border: 2px solid #00FF00;
+        }
+        .console {
+          background-color: #000000;
+          white-space: pre-wrap;
+          font-size: 1.05em;
+        }
+        button {
+          background-color: #1c1c1c;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          padding: 8px 16px;
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: #00FF00;
+          color: #1c1c1c;
+        }
+        .next-btn {
+          margin-top: 20px;
+          background: #1c1c1c;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          padding: 10px 20px;
+          font-family: 'Courier New';
+          cursor: pointer;
+        }
+      "))
+    ),
+    
     div(class = "game-container",
         
         div(class = "editor",
@@ -101,7 +93,6 @@ server <- function(input, output, session) {
             p("Opdracht: vul alle velden correct in."),
             
             div(class = "code-box",
-                
                 HTML("tidy_scientists |> filter(on_site "),
                 
                 selectInput(
@@ -156,14 +147,17 @@ server <- function(input, output, session) {
         
         div(class = "console",
             h3("Console"),
-            verbatimTextOutput("console_output")
+            verbatimTextOutput("console_output"),
+            uiOutput("next_ui")
         )
     )
-  })
+  )
+}
+
+level3_3_server <- function(input, output, session, current_page) {
   
   observeEvent(input$run_code, {
     
-    # Check correctness
     correct <- (
       input$compare_op == "==" &&
         input$compare_value == "yes" &&
@@ -173,20 +167,26 @@ server <- function(input, output, session) {
     )
     
     if (!correct) {
+      session$sendCustomMessage("redFlash", TRUE)
+      
       output$console_output <- renderText({
         paste0(
-          "✖ Fout.\n\nHints:\n",
-          "- Gebruik == voor vergelijking\n",
-          "- Vergelijk met 'yes'\n",
-          "- mean() moet symptom_onset_days gebruiken\n",
-          "- sd() moet symptom_onset_days gebruiken\n",
-          "- Gebruik count() voor n\n"
+          "🔴 FOUT\n\n",
+          "Hints:\n",
+          if (input$compare_op != "==") "- Gebruik == voor vergelijking\n" else "",
+          if (input$compare_value != "yes") "- Vergelijk met 'yes'\n" else "",
+          if (input$mean_value != "symptom_onset_days") "- mean() moet symptom_onset_days gebruiken\n" else "",
+          if (input$sd_value != "symptom_onset_days") "- sd() moet symptom_onset_days gebruiken\n" else "",
+          if (input$count_func != "count()") "- Gebruik count() voor n\n" else ""
         )
       })
+      
+      output$next_ui <- renderUI(NULL)
       return()
     }
     
-    # Build correct code
+    session$sendCustomMessage("greenFlash", TRUE)
+    
     code <- paste0(
       "tidy_scientists |> ",
       "filter(on_site == 'yes') |> ",
@@ -197,15 +197,26 @@ server <- function(input, output, session) {
     
     output$console_output <- renderText({
       paste(
-        "✔ Correct!\n\nVolledige code:\n",
+        "🟢 CORRECT",
+        "",
+        "Volledige code:",
         code,
-        "\n\nOutput in R:\n",
-        "\n\n#A tibble: 1 × 3
-        mean     SD     n
-        3.9167 0.9965   12:\n"
+        "",
+        "Output in R:",
+        "",
+        "# A tibble: 1 × 3",
+        "mean     SD     n",
+        "3.9167 0.9965   12",
+        sep = "\n"
       )
     })
+    
+    output$next_ui <- renderUI({
+      actionButton("next_level3_4", "Volgende", class = "next-btn")
+    })
+  })
+  
+  observeEvent(input$next_level3_4, {
+    current_page("3_4")
   })
 }
-
-shinyApp(ui, server)
