@@ -1,4 +1,3 @@
-
 # laden van packages
 library(shiny)
 library(shinyjs)
