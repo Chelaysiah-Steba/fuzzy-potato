@@ -167,6 +167,6 @@ level3_4_server <- function(input, output, session, current_page) {
   })
   
   observeEvent(input$next_level3_5, {
-    current_page("3_5")
+    current_page("level3_5")
   })
 }

@@ -1,10 +1,10 @@
 transition3_4_ui <- function() {
-  uiOutput("hx1_lines")
+  uiOutput("hx4_lines")
 }
 
 transition3_4_server <- function(input, output, session, current_page) {
   
-  output$hx1_lines <- renderUI({
+  output$hx4_lines <- renderUI({
     req(current_page() == "transition3_4")
     
     tagList(

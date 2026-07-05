@@ -47,7 +47,7 @@ source("transitions/transition5_end.R")
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
-current_page <- reactiveVal("transition_opening_1")   # startpagina
+current_page <- reactiveVal("intro")   # startpagina
 
 # ---------------------------------------------------------
 # INTRO TEKST (typing effect)
@@ -386,7 +386,7 @@ start_page_server <- function(input, output, session, current_page) {
     session$sendCustomMessage("showStartButton", TRUE)
   })
   
-  # Start Missie → transition
+  # Start Missie -> transition opening naar level 1
   observeEvent(input$start_game, {
     current_page("transition_opening_1")
   })
@@ -507,9 +507,9 @@ server <- function(input, output, session) {
       
       level2_4_ui()
       
-    } else if (current_page() == "transition_2_3") {
+    } else if (current_page() == "transition2_3") {
       
-      transition_2_3_ui()
+      transition2_3_ui()
       
     } else if (current_page() == "level3_1") {
       
@@ -527,9 +527,9 @@ server <- function(input, output, session) {
       
       level3_4_ui()
       
-    } else if (current_page() == "transition_3_4") {
+    } else if (current_page() == "transition3_4") {
       
-      transition_3_4_ui()
+      transition3_4_ui()
       
     } else if (current_page() == "level4_1") {
       
@@ -551,9 +551,9 @@ server <- function(input, output, session) {
       
       level4_5_ui()
       
-    } else if (current_page() == "transition_4_5") {
+    } else if (current_page() == "transition4_5") {
       
-      transition_4_5_ui()
+      transition4_5_ui()
       
     } else if (current_page() == "level5_1") {
       

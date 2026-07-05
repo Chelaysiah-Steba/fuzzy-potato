@@ -255,7 +255,7 @@ level2_4_server <- function(input, output, session, current_page) {
       })
       
       later::later(function() {
-        current_page("end")
+        current_page("transition2_3")
       }, delay = 2)
       
       return()

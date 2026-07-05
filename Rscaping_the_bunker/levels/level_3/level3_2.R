@@ -67,7 +67,7 @@ level3_2_ui <- function() {
           label = "Kies het juiste antwoord:",
           choices = list(
             "a) ja, dit is tidy data" = "a",
-            "b) nee, de age en survival rate staan niet in aparte kolommen" = "b",
+            "b) nee, de variabelen staan niet in aparte kolommen." = "b",
             "c) nee, de kolommen zijn niet alfabetisch geordend" = "c",
             "d) nee, want voor elke scientist zijn er meerdere metingen" = "d"
           )
@@ -79,7 +79,8 @@ level3_2_ui <- function() {
       div(
         class = "console",
         h3("Console"),
-        verbatimTextOutput("excel_console")
+        verbatimTextOutput("excel_console"),
+        uiOutput("game_next")
       )
     )
   )
@@ -91,12 +92,16 @@ level3_2_server <- function(input, output, session, current_page) {
     untidy_df
   })
   
+  output$game_next <- renderUI({
+    NULL
+  })
+  
   observeEvent(input$submit_excel, {
     req(input$tidy_answer)
     
     correct <- "b"
     
-    if (input$tidy_answer == correct) {
+    if (identical(input$tidy_answer, correct)) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
@@ -109,10 +114,6 @@ level3_2_server <- function(input, output, session, current_page) {
           "STATUS: ONLINE",
           sep = "\n"
         )
-      })
-      
-      output$untidy_table <- renderTable({
-        untidy_df
       })
       
       output$game_next <- renderUI({
@@ -134,10 +135,14 @@ level3_2_server <- function(input, output, session, current_page) {
           sep = "\n"
         )
       })
+      
+      output$game_next <- renderUI({
+        NULL
+      })
     }
   })
   
   observeEvent(input$next_level3_3, {
-    current_page("3_3")
+    current_page("level3_3")
   })
 }

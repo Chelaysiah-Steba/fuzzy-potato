@@ -166,7 +166,7 @@ level3_3_server <- function(input, output, session, current_page) {
         input$count_func == "count()"
     )
     
-    if (!correct) {
+    if (!isTRUE(correct)) {
       session$sendCustomMessage("redFlash", TRUE)
       
       output$console_output <- renderText({
@@ -217,6 +217,6 @@ level3_3_server <- function(input, output, session, current_page) {
   })
   
   observeEvent(input$next_level3_4, {
-    current_page("3_4")
+    current_page("level3_4")
   })
 }

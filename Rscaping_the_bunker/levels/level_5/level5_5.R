@@ -92,7 +92,7 @@ level5_5_server <- function(input, output, session, current_page) {
           geom_hline(yintercept = 150, color = "red", linewidth = 1.2)
       })
       output$next_ui55 <- renderUI({
-        actionButton("next_transition5_endion", "Volgende", class = "next-btn")
+        actionButton("next_transition5_end", "Volgende", class = "next-btn")
       })
     } else {
       session$sendCustomMessage("redFlash", TRUE)

@@ -1,8 +1,3 @@
-library(shiny)
-library(bslib)
-library(shinyjs)
-library(tidyverse)
-
 virus_dataset <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
