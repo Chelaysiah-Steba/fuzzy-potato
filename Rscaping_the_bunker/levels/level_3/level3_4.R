@@ -155,5 +155,9 @@
         output$next_ui <- renderUI(NULL)
       }
     })
+    observeEvent(input$next_level3_5, {
+      current_page("level3_5")
+    })
   }
+  
     

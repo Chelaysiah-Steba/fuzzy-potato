@@ -442,6 +442,7 @@ server <- function(input, output, session) {
   level3_2_server(input, output, session, current_page)
   level3_3_server(input, output, session, current_page)
   level3_4_server(input, output, session, current_page)
+  level3_5_server(input, output, session, current_page)
   
   transition3_4_server(input, output, session, current_page)
   
@@ -526,6 +527,10 @@ server <- function(input, output, session) {
     } else if (current_page() == "level3_4") {
       
       level3_4_ui()
+      
+    } else if (current_page() == "level3_5") {
+      
+      level3_5_ui()
       
     } else if (current_page() == "transition3_4") {
       

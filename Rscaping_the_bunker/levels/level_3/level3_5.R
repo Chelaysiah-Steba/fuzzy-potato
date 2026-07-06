@@ -1,3 +1,7 @@
+library(shiny)
+library(shinyjs)
+
+# --- Data ---
 virus_dataset <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
@@ -13,10 +17,9 @@ escaped_virus_dataset <- data.frame(
   sd_onset_days = 0.9
 )
 
+# --- UI ---
 level3_5_ui <- function() {
   fluidPage(
-    useShinyjs(),
-    
     tags$head(
       tags$style(HTML("
         body {
@@ -64,7 +67,7 @@ level3_5_ui <- function() {
             p("Kijkend naar deze informatie, welk virus is vrijgekomen in de bunker?"),
             
             radioButtons(
-              inputId = "virus_answer",
+              inputId = "virus_answer_3_5",
               label = "Kies het juiste antwoord:",
               choices = list(
                 "a) Livo-01" = "a",
@@ -80,7 +83,7 @@ level3_5_ui <- function() {
               )
             ),
             
-            actionButton("submit_excel", "▶ RUN CODE")
+            actionButton("submit_excel_3_5", "▶ RUN CODE")
         ),
         
         div(class = "console",
@@ -96,6 +99,7 @@ level3_5_ui <- function() {
   )
 }
 
+# --- Server ---
 level3_5_server <- function(input, output, session, current_page) {
   
   output$virus_table_data <- renderTable({
@@ -106,12 +110,12 @@ level3_5_server <- function(input, output, session, current_page) {
     escaped_virus_dataset
   })
   
-  observeEvent(input$submit_excel, {
-    req(input$virus_answer)
+  observeEvent(input$submit_excel_3_5, {
+    req(input$virus_answer_3_5)
     
-    correct <- "h"
+    correct <- "h"  # Avron Pathogen
     
-    if (input$virus_answer == correct) {
+    if (input$virus_answer_3_5 == correct) {
       session$sendCustomMessage("greenFlash", TRUE)
       
       output$excel_console <- renderText({
@@ -127,7 +131,7 @@ level3_5_server <- function(input, output, session, current_page) {
       
       output$excel_console <- renderText({
         paste0(
-          "✖ Fout.\nJe koos antwoord: ", input$virus_answer, "\n\n",
+          "✖ Fout.\nJe koos antwoord: ", input$virus_answer_3_5, "\n\n",
           "Hint: Kijk nog eens goed naar de mean_onset_days en SD van het vrijgekomen virus."
         )
       })
