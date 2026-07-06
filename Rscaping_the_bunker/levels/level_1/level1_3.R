@@ -152,10 +152,9 @@ flash.classList.add('active');
         
         div(
           class = "code-box",
-          HTML("boot_sequence()")
+          textInput("fix_input", "", placeholder = "type je code"),
+          HTML("boot_sequence()"),
         ),
-        
-        textInput("fix_input", "Typ je code:", "", placeholder = "type je code"),
         
         actionButton("run_fix", "▶ RUN CODE")
       ),

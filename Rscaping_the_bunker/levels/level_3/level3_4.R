@@ -1,172 +1,159 @@
-library(shiny)
-library(ggplot2)
-library(sortable)
-
-tidy_scientists <- data.frame(
-  Scientist = c(
-    "sci01","sci02","sci03","sci04","sci05",
-    "sci06","sci07","sci08","sci09","sci10",
-    "sci11","sci12","sci13","sci14","sci15",
-    "sci16","sci17","sci18","sci19","sci20"
-  ),
-  on_site = c(
-    1,0,1,1,1,
-    0,1,1,0,0,
-    1,0,0,0,1,
-    1,1,0,1,1
-  ),
-  symptom_onset_days = c(
-    5,7,3,4,4,
-    6,3,4,5,6,
-    5,7,6,5,4,
-    3,5,7,4,3
-  )
-)
-
-level3_4_ui <- function() {
-  fluidPage(
-    tags$head(
-      tags$style(HTML("
-        body {
-          background-color: #000000;
-          color: #39FF14;
-          font-family: 'Courier New';
-        }
-
-        .rank-list-item {
-          background-color: #000000 !important;
-          color: #39FF14 !important;
-          border: 1px solid #39FF14 !important;
-          padding: 8px;
-          margin-bottom: 6px;
-          font-family: 'Courier New';
-        }
-
-        #plot-area {
-          border: 1px solid #39FF14;
-          padding: 10px;
-          margin-top: 20px;
-        }
-
-        .game-container {
-          display: flex;
-          gap: 20px;
-          margin-top: 20px;
-        }
-
-        .editor, .console {
-          width: 50%;
-          padding: 15px;
-          border: 2px solid #39FF14;
-          text-align: left;
-        }
-
-        .editor {
-          background-color: #000000;
-          min-height: 200px;
-        }
-
-        .console {
-          background-color: #000000;
-          min-height: 200px;
-          white-space: pre-wrap;
-        }
-
-        .next-btn {
-          margin-top: 20px;
-          background: #000000;
-          color: #39FF14;
-          border: 2px solid #39FF14;
-          padding: 10px 20px;
-          font-family: 'Courier New';
-          cursor: pointer;
-        }
-      "))
+  library(shiny)
+  library(ggplot2)
+  library(sortable)
+  
+  tidy_scientists <- data.frame(
+    Scientist = c(
+      "sci01","sci02","sci03","sci04","sci05",
+      "sci06","sci07","sci08","sci09","sci10",
+      "sci11","sci12","sci13","sci14","sci15",
+      "sci16","sci17","sci18","sci19","sci20"
     ),
-    
-    div(
-      class = "game-container",
-      
-      div(
-        class = "editor",
-        h3("LEVEL 3.4 — Zet de barplot-code in de juiste volgorde"),
-        p("Sleep de code-stukken hieronder in de juiste volgorde om een barplot met foutbalken te maken."),
-        
-        rank_list(
-          text = "Versleep de code-stukken:",
-          labels = c(
-            'geom_bar(stat = "identity") +',
-            'geom_errorbar(aes(ymin = symptom_onset_days - on_site, ymax = symptom_onset_days + on_site), width = 0.2) +',
-            'theme_minimal()',
-            'labs(title = "symptom onset days per scientist") +',
-            'ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +'
-          ),
-          input_id = "ordered_code"
-        ),
-        
-        actionButton("check", "Check code", class = "btn btn-success")
+    on_site = c(
+      1,0,1,1,1,
+      0,1,1,0,0,
+      1,0,0,0,1,
+      1,1,0,1,1
+    ),
+    symptom_onset_days = c(
+      5,7,3,4,4,
+      6,3,4,5,6,
+      5,7,6,5,4,
+      3,5,7,4,3
+    )
+  )
+  
+  level3_4_ui <- function() {
+    fluidPage(
+      tags$head(
+        tags$style(HTML("
+          body {
+            background-color: #000000;
+            color: #39FF14;
+            font-family: 'Courier New';
+          }
+  
+          .rank-list-item {
+            background-color: #000000 !important;
+            color: #39FF14 !important;
+            border: 1px solid #39FF14 !important;
+            padding: 8px;
+            margin-bottom: 6px;
+            font-family: 'Courier New';
+          }
+  
+          #plot-area {
+            border: 1px solid #39FF14;
+            padding: 10px;
+            margin-top: 20px;
+          }
+  
+          .game-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+          }
+  
+          .editor, .console {
+            width: 50%;
+            padding: 15px;
+            border: 2px solid #39FF14;
+            text-align: left;
+          }
+  
+          .editor {
+            background-color: #000000;
+            min-height: 200px;
+          }
+  
+          .console {
+            background-color: #000000;
+            min-height: 200px;
+            white-space: pre-wrap;
+          }
+  
+          .next-btn {
+            margin-top: 20px;
+            background: #000000;
+            color: #39FF14;
+            border: 2px solid #39FF14;
+            padding: 10px 20px;
+            font-family: 'Courier New';
+            cursor: pointer;
+          }
+        "))
       ),
       
       div(
-        class = "console",
-        h3("Console"),
-        verbatimTextOutput("feedback"),
-        br(),
-        plotOutput("plot"),
-        uiOutput("next_ui")
+        class = "game-container",
+        
+        div(
+          class = "editor",
+          h3("LEVEL 3.4 — Zet de barplot-code in de juiste volgorde"),
+          p("Sleep de code-stukken hieronder in de juiste volgorde om een barplot met foutbalken te maken."),
+          
+          rank_list(
+            text = "Versleep de code-stukken:",
+            labels = c(
+              'geom_bar(stat = "identity") +',
+              'geom_errorbar(aes(ymin = symptom_onset_days - on_site, ymax = symptom_onset_days + on_site), width = 0.2) +',
+              'theme_minimal()',
+              'labs(title = "symptom onset days per scientist") +',
+              'ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +'
+            ),
+            input_id = "ordered_code"
+          ),
+          
+          actionButton("check", "Check code", class = "btn btn-success")
+        ),
+        
+        div(
+          class = "console",
+          h3("Console"),
+          verbatimTextOutput("feedback"),
+          br(),
+          plotOutput("plot"),
+          uiOutput("next_ui")
+        )
       )
     )
-  )
-}
-
-level3_4_server <- function(input, output, session, current_page) {
+  }
   
-  required_order <- c(
-    'ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +',
-    'geom_bar(stat = "identity") +',
-    'geom_errorbar(aes(ymin = symptom_onset_days - on_site, ymax = symptom_onset_days + on_site), width = 0.2) +',
-    'labs(title = "symptom onset days per scientist") +',
-    'theme_minimal()'
-  )
-  
-  observeEvent(input$check, {
-    req(input$ordered_code)
+  level3_4_server <- function(input, output, session, current_page) {
     
-    if (identical(input$ordered_code, required_order)) {
+    required_first <- 'ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +'
+    
+    observeEvent(input$check, {
+      req(input$ordered_code)
       
-      session$sendCustomMessage("greenFlash", TRUE)
-      
-      output$feedback <- renderText("✔ Correct! De code staat in de juiste volgorde.")
-      
-      output$plot <- renderPlot({
-        ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +
-          geom_bar(stat = "identity") +
-          geom_errorbar(aes(
-            ymin = symptom_onset_days - on_site,
-            ymax = symptom_onset_days + on_site
-          ), width = 0.2) +
-          labs(title = "symptom onset days per scientist") +
-          theme_minimal()
-      })
-      
-      output$next_ui <- renderUI({
-        actionButton("next_level3_5", "Volgende", class = "next-btn")
-      })
-      
-    } else {
-      
-      session$sendCustomMessage("redFlash", TRUE)
-      
-      output$feedback <- renderText(
-        "✘ Niet helemaal goed. De eerste stap moet de ggplot-regel zijn en daarna volgen barplot, foutbalken, titel en thema."
-      )
-      
-      output$plot <- renderPlot(NULL)
-      output$next_ui <- renderUI(NULL)
-    }
-  })
-  
-  observeEvent(input$next_level3_5, {
-    current_page("level3_5")
-  })
-}
+      if (input$ordered_code[1] == required_first) {
+        
+        session$sendCustomMessage("greenFlash", TRUE)
+        
+        output$feedback <- renderText("✔ Correct! De ggplot-regel staat bovenaan.")
+        
+        output$plot <- renderPlot({
+          ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +
+            geom_bar(stat = "identity") +
+            geom_errorbar(aes(
+              ymin = symptom_onset_days - on_site,
+              ymax = symptom_onset_days + on_site
+            ), width = 0.2) +
+            labs(title = "symptom onset days per scientist") +
+            theme_minimal()
+        })
+        
+        output$next_ui <- renderUI({
+          actionButton("next_level3_5", "Volgende", class = "next-btn")
+        })
+        
+      } else {
+        
+        output$feedback <- renderText("✖ Fout. De eerste regel moet de ggplot-regel zijn.")
+        output$plot <- renderPlot(NULL)
+        
+        output$next_ui <- renderUI(NULL)
+      }
+    })
+  }
+    
