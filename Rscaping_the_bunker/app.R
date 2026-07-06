@@ -47,7 +47,7 @@ source("transitions/transition5_end.R")
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
-current_page <- reactiveVal("level3_4")   # startpagina
+current_page <- reactiveVal("intro")   # startpagina
 
 # ---------------------------------------------------------
 # INTRO TEKST (typing effect)
