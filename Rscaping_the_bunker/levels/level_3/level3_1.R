@@ -89,15 +89,15 @@ level3_1_ui <- function() {
           HTML(")")
         ),
         
-        actionButton("submit_excel", "▶ RUN CODE")
+        actionButton("submit_excel_l3_1", "▶ RUN CODE")
       ),
       
       div(
         class = "console",
         h3("Console"),
-        verbatimTextOutput("excel_console"),
+        verbatimTextOutput("excel_console_l3_1"),
         br(),
-        uiOutput("scientists_table")
+        uiOutput("scientists_table_l3_1")
       )
     )
   )
@@ -105,7 +105,19 @@ level3_1_ui <- function() {
 
 level3_1_server <- function(input, output, session, current_page) {
   
-  observeEvent(input$submit_excel, {
+  output$excel_console_l3_1 <- renderText({
+    ""
+  })
+  
+  output$scientists_table_l3_1 <- renderUI({
+    NULL
+  })
+  
+  output$scientists_table_data_l3_1 <- renderTable({
+    untidy_scientists
+  }, rownames = FALSE)
+  
+  observeEvent(input$submit_excel_l3_1, {
     req(input$excel_input)
     
     clean_input <- trimws(input$excel_input)
@@ -114,7 +126,7 @@ level3_1_server <- function(input, output, session, current_page) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      output$excel_console <- renderText({
+      output$excel_console_l3_1 <- renderText({
         paste(
           "🟢 CORRECT",
           "",
@@ -125,37 +137,35 @@ level3_1_server <- function(input, output, session, current_page) {
         )
       })
       
-      output$scientists_table <- renderUI({
+      output$scientists_table_l3_1 <- renderUI({
         tagList(
           h3("📊 Geladen dataset"),
-          tableOutput("scientists_table_data"),
+          tableOutput("scientists_table_data_l3_1"),
           br(),
           actionButton("next_level3_2", "Volgende", class = "next-btn")
         )
-      })
-      
-      output$scientists_table_data <- renderTable({
-        untidy_scientists
       })
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$scientists_table <- renderUI(NULL)
+      output$scientists_table_l3_1 <- renderUI(NULL)
       
-      output$excel_console <- renderText({
+      output$excel_console_l3_1 <- renderText({
+        msg <- if (grepl("\\.xlsx", clean_input)) {
+          "Gebruik aanhalingstekens rond de bestandsnaam."
+        } else {
+          "Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx-extensie."
+        }
+        
         paste(
           "🔴 FOUT",
           "",
           paste0("Je typte: read_excel(", input$excel_input, ")"),
           "",
           "HINT",
-          if (grepl("\\.xlsx", clean_input)) {
-            "Gebruik aanhalingstekens rond de bestandsnaam."
-          } else {
-            "Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx-extensie."
-          },
+          msg,
           sep = "\n"
         )
       })
