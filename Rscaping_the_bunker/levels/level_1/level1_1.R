@@ -87,40 +87,39 @@ cursor:pointer;
         
         h3("Console"),
         
-        verbatimTextOutput("console_output"),
+        verbatimTextOutput("console_output_l1_1"),
         
         br(),
         
-        uiOutput("sector_table")
+        uiOutput("sector_table_l1_1")
       )
     )
-  ) }
+  )
+}
 
 level1_1_server <- function(input, output, session, current_page) {
   
-  output$console_output <- renderText({
+  output$console_output_l1_1 <- renderText({
     ""
   })
   
-  output$sector_table <- renderUI({
+  output$sector_table_l1_1 <- renderUI({
     NULL
   })
   
   observeEvent(input$run_code, {
     
-    output$sector_table <- renderUI({
+    output$sector_table_l1_1 <- renderUI({
       tagList(
         actionButton("next_level1_2", "Volgende", class = "next-btn")
       )
     })
     
-    output$console_output <- renderText({
-      
+    output$console_output_l1_1 <- renderText({
       paste0(
         "✖ System error.\n",
         "Module 'bootSequenceR' is missing.\n\n"
       )
-      
     })
     
   })
@@ -128,5 +127,4 @@ level1_1_server <- function(input, output, session, current_page) {
   observeEvent(input$next_level1_2, {
     current_page("level1_2")
   })
-  
 }

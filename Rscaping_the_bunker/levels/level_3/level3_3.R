@@ -87,7 +87,6 @@ level3_3_ui <- function() {
     ),
     
     div(class = "game-container",
-        
         div(class = "editor",
             h3("Level 3.3: Analyse van tidy data (zonder group_by)"),
             p("Opdracht: vul alle velden correct in."),
@@ -147,8 +146,8 @@ level3_3_ui <- function() {
         
         div(class = "console",
             h3("Console"),
-            verbatimTextOutput("console_output"),
-            uiOutput("next_ui")
+            verbatimTextOutput("console_output_l3_3"),
+            uiOutput("next_ui_l3_3")
         )
     )
   )
@@ -156,32 +155,44 @@ level3_3_ui <- function() {
 
 level3_3_server <- function(input, output, session, current_page) {
   
+  output$console_output_l3_3 <- renderText({
+    ""
+  })
+  
+  output$next_ui_l3_3 <- renderUI({
+    NULL
+  })
+  
   observeEvent(input$run_code, {
     
+    compare_value <- trimws(input$compare_value %||% "")
+    mean_value <- trimws(input$mean_value %||% "")
+    sd_value <- trimws(input$sd_value %||% "")
+    
     correct <- (
-      input$compare_op == "==" &&
-        input$compare_value == "yes" &&
-        input$mean_value == "symptom_onset_days" &&
-        input$sd_value == "symptom_onset_days" &&
-        input$count_func == "count()"
+      identical(input$compare_op, "==") &&
+        identical(compare_value, "yes") &&
+        identical(mean_value, "symptom_onset_days") &&
+        identical(sd_value, "symptom_onset_days") &&
+        identical(input$count_func, "count()")
     )
     
     if (!isTRUE(correct)) {
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$console_output <- renderText({
-        paste0(
-          "🔴 FOUT\n\n",
-          "Hints:\n",
-          if (input$compare_op != "==") "- Gebruik == voor vergelijking\n" else "",
-          if (input$compare_value != "yes") "- Vergelijk met 'yes'\n" else "",
-          if (input$mean_value != "symptom_onset_days") "- mean() moet symptom_onset_days gebruiken\n" else "",
-          if (input$sd_value != "symptom_onset_days") "- sd() moet symptom_onset_days gebruiken\n" else "",
-          if (input$count_func != "count()") "- Gebruik count() voor n\n" else ""
-        )
+      hints <- c(
+        if (!identical(input$compare_op, "==")) "- Gebruik == voor vergelijking" else NULL,
+        if (!identical(compare_value, "yes")) "- Vergelijk met 'yes'" else NULL,
+        if (!identical(mean_value, "symptom_onset_days")) "- mean() moet symptom_onset_days gebruiken" else NULL,
+        if (!identical(sd_value, "symptom_onset_days")) "- sd() moet symptom_onset_days gebruiken" else NULL,
+        if (!identical(input$count_func, "count()")) "- Gebruik count() voor n" else NULL
+      )
+      
+      output$console_output_l3_3 <- renderText({
+        paste(c("🔴 FOUT", "", "Hints:", hints), collapse = "\n")
       })
       
-      output$next_ui <- renderUI(NULL)
+      output$next_ui_l3_3 <- renderUI(NULL)
       return()
     }
     
@@ -195,7 +206,7 @@ level3_3_server <- function(input, output, session, current_page) {
       "n = count())"
     )
     
-    output$console_output <- renderText({
+    output$console_output_l3_3 <- renderText({
       paste(
         "🟢 CORRECT",
         "",
@@ -211,7 +222,7 @@ level3_3_server <- function(input, output, session, current_page) {
       )
     })
     
-    output$next_ui <- renderUI({
+    output$next_ui_l3_3 <- renderUI({
       actionButton("next_level3_4", "Volgende", class = "next-btn")
     })
   })

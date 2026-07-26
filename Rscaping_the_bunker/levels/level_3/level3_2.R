@@ -60,10 +60,10 @@ level3_2_ui <- function() {
         p("Hieronder is een deel van de zojuist ingeladen tabel te zien."),
         p("Is deze tabel tidy?"),
         
-        tableOutput("untidy_table"),
+        tableOutput("untidy_table_l3_2"),
         
         radioButtons(
-          inputId = "tidy_answer",
+          inputId = "tidy_answer_l3_2",
           label = "Kies het juiste antwoord:",
           choices = list(
             "a) ja, dit is tidy data" = "a",
@@ -73,14 +73,14 @@ level3_2_ui <- function() {
           )
         ),
         
-        actionButton("submit_excel", "▶ RUN CODE")
+        actionButton("submit_excel_l3_2", "▶ RUN CODE")
       ),
       
       div(
         class = "console",
         h3("Console"),
-        verbatimTextOutput("excel_console"),
-        uiOutput("game_next")
+        verbatimTextOutput("excel_console_l3_2"),
+        uiOutput("game_next_l3_2")
       )
     )
   )
@@ -88,24 +88,28 @@ level3_2_ui <- function() {
 
 level3_2_server <- function(input, output, session, current_page) {
   
-  output$untidy_table <- renderTable({
+  output$untidy_table_l3_2 <- renderTable({
     untidy_df
-  })
+  }, rownames = FALSE)
   
-  output$game_next <- renderUI({
+  output$game_next_l3_2 <- renderUI({
     NULL
   })
   
-  observeEvent(input$submit_excel, {
-    req(input$tidy_answer)
+  output$excel_console_l3_2 <- renderText({
+    ""
+  })
+  
+  observeEvent(input$submit_excel_l3_2, {
+    req(input$tidy_answer_l3_2)
     
     correct <- "b"
     
-    if (identical(input$tidy_answer, correct)) {
+    if (identical(input$tidy_answer_l3_2, correct)) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      output$excel_console <- renderText({
+      output$excel_console_l3_2 <- renderText({
         paste(
           "🟢 CORRECT",
           "",
@@ -116,7 +120,7 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      output$game_next <- renderUI({
+      output$game_next_l3_2 <- renderUI({
         actionButton("next_level3_3", "Volgende", class = "next-btn")
       })
       
@@ -124,11 +128,11 @@ level3_2_server <- function(input, output, session, current_page) {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$excel_console <- renderText({
+      output$excel_console_l3_2 <- renderText({
         paste(
           "🔴 FOUT",
           "",
-          paste0("Je koos antwoord: ", input$tidy_answer),
+          paste0("Je koos antwoord: ", input$tidy_answer_l3_2),
           "",
           "HINT",
           "Alle variabelen horen aparte kolommen te zijn.",
@@ -136,7 +140,7 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      output$game_next <- renderUI({
+      output$game_next_l3_2 <- renderUI({
         NULL
       })
     }

@@ -1,7 +1,6 @@
 library(shiny)
 library(shinyjs)
 
-# --- Data ---
 virus_dataset <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
@@ -17,7 +16,6 @@ escaped_virus_dataset <- data.frame(
   sd_onset_days = 0.9
 )
 
-# --- UI ---
 level3_5_ui <- function() {
   fluidPage(
     tags$head(
@@ -60,7 +58,6 @@ level3_5_ui <- function() {
     ),
     
     div(class = "game-container",
-        
         div(class = "editor",
             h3("🔍 Level 3.5: Virus lokalisatie"),
             p("Hiernaast zijn de gemiddelden en SD waarden van de virussen te zien."),
@@ -88,55 +85,62 @@ level3_5_ui <- function() {
         
         div(class = "console",
             h3("Console"),
-            verbatimTextOutput("excel_console"),
+            verbatimTextOutput("excel_console_3_5"),
             h3("Virus Dataset:"),
-            tableOutput("virus_table_data"),
+            tableOutput("virus_table_data_3_5"),
             h3("Escaped Virus Dataset:"),
-            tableOutput("escaped_virus_table_data"),
-            uiOutput("next_ui")
+            tableOutput("escaped_virus_table_data_3_5"),
+            uiOutput("next_ui_3_5")
         )
     )
   )
 }
 
-# --- Server ---
 level3_5_server <- function(input, output, session, current_page) {
   
-  output$virus_table_data <- renderTable({
+  output$virus_table_data_3_5 <- renderTable({
     virus_dataset
+  }, rownames = FALSE)
+  
+  output$escaped_virus_table_data_3_5 <- renderTable({
+    escaped_virus_dataset
+  }, rownames = FALSE)
+  
+  output$excel_console_3_5 <- renderText({
+    ""
   })
   
-  output$escaped_virus_table_data <- renderTable({
-    escaped_virus_dataset
+  output$next_ui_3_5 <- renderUI({
+    NULL
   })
   
   observeEvent(input$submit_excel_3_5, {
     req(input$virus_answer_3_5)
     
-    correct <- "h"  # Avron Pathogen
+    correct <- "h"
     
-    if (input$virus_answer_3_5 == correct) {
+    if (identical(input$virus_answer_3_5, correct)) {
       session$sendCustomMessage("greenFlash", TRUE)
       
-      output$excel_console <- renderText({
+      output$excel_console_3_5 <- renderText({
         "✔ Correct!\nDe mean_onset_days en SD komen het best overeen met die van Avron Pathogen."
       })
       
-      output$next_ui <- renderUI({
+      output$next_ui_3_5 <- renderUI({
         actionButton("next_transition3_4", "Volgende", class = "next-btn")
       })
       
     } else {
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$excel_console <- renderText({
+      output$excel_console_3_5 <- renderText({
         paste0(
           "✖ Fout.\nJe koos antwoord: ", input$virus_answer_3_5, "\n\n",
           "Hint: Kijk nog eens goed naar de mean_onset_days en SD van het vrijgekomen virus."
         )
       })
       
-      output$next_ui <- renderUI(NULL)
+      output$next_ui_3_5 <- renderUI(NULL)
     }
   })
   
