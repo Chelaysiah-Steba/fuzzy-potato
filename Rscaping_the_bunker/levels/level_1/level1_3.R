@@ -35,22 +35,6 @@ min-height: 200px;
 white-space: pre-wrap;
 }
 
-.code-box {
-background-color: #000000;
-border: 2px solid #00FF00;
-padding: 10px;
-margin-top: 10px;
-}
-
-.inline-input {
-width: 300px;
-background-color: #000000;
-color: #00FF00;
-border: 2px solid #00FF00;
-font-family: 'Courier New', monospace;
-padding: 5px;
-}
-
 .next-btn{
 margin-top:20px;
 background:#1c1c1c;
@@ -83,55 +67,29 @@ background: rgba(255, 0, 0, 0);
 animation: redFlash 0.35s ease-out 1;
 }
 
-.green-flash {
-position: fixed;
-inset: 0;
-pointer-events: none;
-z-index: 9999;
-background: rgba(0, 255, 0, 0);
-}
-
-.green-flash.active {
-animation: greenFlash 0.35s ease-out 1;
-}
-
 @keyframes redFlash {
 0% { background: rgba(255,0,0,0); }
 20% { background: rgba(255,0,0,0.18); }
 100% { background: rgba(255,0,0,0); }
-}
-
-@keyframes greenFlash {
-0% { background: rgba(0,255,0,0); }
-20% { background: rgba(0,255,0,0.14); }
-100% { background: rgba(0,255,0,0); }
 }
 "))
     ),
     
     tags$script(HTML("
 (function() {
-function ensureFlash(id, cls) {
-if (!document.getElementById(id)) {
+function ensureFlash() {
+if (!document.getElementById('red-flash-overlay')) {
 const d = document.createElement('div');
-d.id = id;
-d.className = cls;
+d.id = 'red-flash-overlay';
+d.className = 'red-flash';
 document.body.appendChild(d);
 }
 }
 
 if (window.Shiny && Shiny.addCustomMessageHandler) {
 Shiny.addCustomMessageHandler('redFlash', function(message) {
-ensureFlash('red-flash-overlay', 'red-flash');
+ensureFlash();
 const flash = document.getElementById('red-flash-overlay');
-flash.classList.remove('active');
-void flash.offsetWidth;
-flash.classList.add('active');
-});
-
-Shiny.addCustomMessageHandler('greenFlash', function(message) {
-ensureFlash('green-flash-overlay', 'green-flash');
-const flash = document.getElementById('green-flash-overlay');
 flash.classList.remove('active');
 void flash.offsetWidth;
 flash.classList.add('active');
@@ -146,17 +104,7 @@ flash.classList.add('active');
       div(
         class = "editor",
         
-        h3("🔧 Level 1.3: Package fixen"),
-        
-        p("Laad het juiste package zodat de code werkt."),
-        
-        div(
-          class = "code-box",
-          textInput("fix_input", "", placeholder = "type je code"),
-          HTML("boot_sequence()"),
-        ),
-        
-        actionButton("run_fix", "▶ RUN CODE")
+        uiOutput("editor_ui")
       ),
       
       div(
@@ -166,66 +114,83 @@ flash.classList.add('active');
         
         verbatimTextOutput("console_output"),
         
-        br(),
-        
-        uiOutput("answer_ui")
+        shinyjs::hidden(
+          actionButton(
+            "next_level1_4",
+            "Volgende",
+            class = "next-btn"
+          )
+        )
       )
     )
-  ) }
+  )
+}
 
 level1_3_server <- function(input, output, session, current_page) {
   
   output$console_output <- renderText({
-    ""
+    paste(
+      "✖ System error.",
+      "Module 'bootSequenceR' is missing.",
+      "",
+      "boot_sequence()",
+      "Error: could not find function 'boot_sequence'",
+      sep = "\n"
+    )
   })
   
-  output$answer_ui <- renderUI({
-    NULL
-  })
-  
-  observeEvent(input$run_fix, {
-    
-    req(input$fix_input)
-    
-    clean <- gsub('^"|"$', '', trimws(input$fix_input))
-    
-    if (clean == "library(bootSequenceR)") {
+  output$editor_ui <- renderUI({
+    tagList(
+      h3("level 1.3: Error analyseren"),
       
-      session$sendCustomMessage("greenFlash", TRUE)
+      p("Wat betekent deze foutmelding?"),
+      
+      radioButtons(
+        inputId = "q1",
+        label = NULL,
+        choices = c(
+          "De data bestaat niet" = "A",
+          "De functie komt uit een package dat niet geladen is" = "B",
+          "Er zit een typefout in de code" = "C"
+        )
+      ),
+      
+      actionButton("submit_q1", "Submit", class = "start-btn")
+    )
+  })
+  
+  observeEvent(input$submit_q1, {
+    req(input$q1)
+    
+    if (input$q1 == "B") {
       
       output$console_output <- renderText({
         paste(
-          "✔ Module loaded successfully.",
-          "System boot restored.",
+          "✔ Correct.",
+          "De functie 'boot_sequence()' komt uit een package die nog niet geladen is.",
           sep = "\n"
         )
       })
       
-      output$answer_ui <- renderUI({
-        tagList(
-          actionButton("next_level1_4", "Volgende", class = "next-btn")
-        )
-      })
+      shinyjs::show("next_level1_4")
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
       output$console_output <- renderText({
-        paste0(
-          "✖ Incorrect command.\n",
-          "You typed: ", clean, "\n\n",
-          "Hint: laad de missende module met:\n",
-          "library(bootSequenceR)"
+        paste(
+          "✖ Incorrect.",
+          "Probeer opnieuw.",
+          sep = "\n"
         )
       })
       
+      shinyjs::hide("next_level1_4")
     }
-    
   })
   
   observeEvent(input$next_level1_4, {
-    current_page("transition1_2")
+    current_page("level1_4")
   })
-  
 }

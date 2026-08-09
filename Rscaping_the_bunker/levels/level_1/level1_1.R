@@ -1,67 +1,57 @@
+bootsequence <- data.frame(
+  step = 1:5,
+  action = c("init", "load", "verify", "unlock", "boot"),
+  status = c("OK", "OK", "OK", "OK", "READY"),
+  stringsAsFactors = FALSE
+)
+
 level1_1_ui <- function() {
   fluidPage(
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
-body {
-background-color: #1c1c1c;
-color: #00FF00;
-font-family: 'Courier New', monospace;
-}
+        body {
+          background-color: #1c1c1c;
+          color: #00FF00;
+          font-family: 'Courier New', monospace;
+        }
 
-.game-container {
-display: flex;
-gap: 20px;
-margin-top: 20px;
-}
+        .game-container {
+          display: flex;
+          gap: 20px;
+          margin-top: 20px;
+        }
 
-.editor, .console {
-width: 50%;
-padding: 15px;
-font-family: 'Courier New', monospace;
-border: 2px solid #00FF00;
-text-align: left;
-}
+        .editor, .console {
+          width: 50%;
+          padding: 15px;
+          font-family: 'Courier New', monospace;
+          border: 2px solid #00FF00;
+          text-align: left;
+        }
 
-.editor {
-background-color: #1c1c1c;
-min-height: 200px;
-}
+        .editor {
+          background-color: #1c1c1c;
+          min-height: 200px;
+        }
 
-.console {
-background-color: #000000;
-min-height: 200px;
-white-space: pre-wrap;
-}
+        .console {
+          background-color: #000000;
+          min-height: 200px;
+          white-space: pre-wrap;
+        }
 
-.code-box {
-background-color: #000000;
-border: 2px solid #00FF00;
-padding: 10px;
-margin-top: 10px;
-}
-
-.inline-input {
-display: inline-block;
-width: 200px;
-background-color: #000000;
-color: #00FF00;
-border: 2px solid #00FF00;
-font-family: 'Courier New', monospace;
-margin-left: 5px;
-}
-
-.next-btn{
-margin-top:20px;
-background:#1c1c1c;
-color:#00FF00;
-border:2px solid #00FF00;
-padding:10px 20px;
-font-family:'Courier New';
-cursor:pointer;
-}
-"))
+        .next-btn{
+          margin-top:20px;
+          background:#1c1c1c;
+          color:#00FF00;
+          border:2px solid #00FF00;
+          padding:10px 20px;
+          font-family:'Courier New';
+          cursor:pointer;
+        }
+      "))
     ),
     
     div(
@@ -70,16 +60,22 @@ cursor:pointer;
       div(
         class = "editor",
         
-        h3("Level 1: System Boot"),
+        h3("📂 Level 1.1: laad het RDS-bestand"),
         
-        p("Run de code om het systeem op te starten."),
+        p("Gebruik de juiste functie om het bestand 'bootsequence.rds' te laden."),
         
-        div(
-          class = "code-box",
-          HTML("boot_sequence()")
+        selectInput(
+          inputId = "rds_choice",
+          label = NULL,
+          choices = c(
+            "read_excel('bootsequence.xlsx')" = "read_excel('bootsequence.rds')",
+            "readRDS('bootsequence.rds')" = "readRDS('bootsequence.rds')",
+            "read_csv('bootsequence.csv')" = "read_csv('bootsequence.rds')",
+            "read_rds('bootsequence.rds')" = "read_rds('bootsequence.rds')"
+          )
         ),
         
-        actionButton("run_code", "▶ RUN CODE")
+        actionButton("submit_rds", "▶ RUN CODE")
       ),
       
       div(
@@ -87,11 +83,9 @@ cursor:pointer;
         
         h3("Console"),
         
-        verbatimTextOutput("console_output_l1_1"),
+        verbatimTextOutput("rds_console"),
         
-        br(),
-        
-        uiOutput("sector_table_l1_1")
+        uiOutput("boot_table")
       )
     )
   )
@@ -99,29 +93,67 @@ cursor:pointer;
 
 level1_1_server <- function(input, output, session, current_page) {
   
-  output$console_output_l1_1 <- renderText({
+  output$rds_console <- renderText({
     ""
   })
   
-  output$sector_table_l1_1 <- renderUI({
+  output$boot_table <- renderUI({
     NULL
   })
   
-  observeEvent(input$run_code, {
+  observeEvent(input$submit_rds, {
+    req(input$rds_choice)
     
-    output$sector_table_l1_1 <- renderUI({
-      tagList(
-        actionButton("next_level1_2", "Volgende", class = "next-btn")
-      )
-    })
-    
-    output$console_output_l1_1 <- renderText({
-      paste0(
-        "✖ System error.\n",
-        "Module 'bootSequenceR' is missing.\n\n"
-      )
-    })
-    
+    # Correct antwoord: B = readRDS('bootsequence.rds')
+    if (identical(input$rds_choice, "readRDS('bootsequence.rds')")) {
+      
+      session$sendCustomMessage("greenFlash", TRUE)
+      
+      output$rds_console <- renderText({
+        paste(
+          "🟢 SECURITY PROTOCOL UPDATED",
+          "",
+          "Module 1/4 geactiveerd.",
+          "",
+          "Bootsequence Module",
+          "STATUS: ONLINE",
+          sep = "\n"
+        )
+      })
+      
+      output$boot_table <- renderUI({
+        tagList(
+          h3("📊 Geladen dataset: bootsequence"),
+          tableOutput("boot_table_data"),
+          br(),
+          actionButton("next_level1_2", "Volgende", class = "next-btn")
+        )
+      })
+      
+      output$boot_table_data <- renderTable({
+        bootsequence
+      })
+      
+    } else {
+      
+      session$sendCustomMessage("redFlash", TRUE)
+      
+      output$boot_table <- renderUI(NULL)
+      
+      output$rds_console <- renderText({
+        paste(
+          "🔴 SECURITY PROTOCOL FAILED",
+          "",
+          "Module activation unsuccessful.",
+          "",
+          paste0("Je koos: ", input$rds_choice),
+          "",
+          "HINT",
+          "Voor een .rds-bestand gebruik je readRDS().",
+          sep = "\n"
+        )
+      })
+    }
   })
   
   observeEvent(input$next_level1_2, {
