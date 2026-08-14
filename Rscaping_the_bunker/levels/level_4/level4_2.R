@@ -31,59 +31,59 @@ level4_2_ui <- function() {
     useShinyjs(),
     tags$head(
       tags$style(HTML("
-        body {
-          background-color: #1c1c1c;
-          color: #00FF00;
-          font-family: 'Courier New', monospace;
-        }
-        .game-container {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-        }
-        .editor, .console {
-          width: 50%;
-          padding: 10px;
-          border: 2px solid #00FF00;
-        }
-        .editor { background-color: #1c1c1c; }
-        .console { background-color: #000000; white-space: pre-wrap; }
-        .code-box {
-          background-color: #000000;
-          border: 3px solid #00FF00;
-          padding: 8px;
-          margin-bottom: 5px;
-          font-size: 1.05em;
-          line-height: 1.1em;
-        }
-        select {
-          background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          margin-left: 3px;
-          height: 30px;
-        }
-        button {
-          background-color: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          padding: 8px 16px;
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: #00FF00;
-          color: #1c1c1c;
-        }
-        .next-btn {
-          margin-top: 20px;
-          background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          padding: 10px 20px;
-          font-family: 'Courier New';
-          cursor: pointer;
-        }
-      "))
+body {
+background-color: #1c1c1c;
+color: #00FF00;
+font-family: 'Courier New', monospace;
+}
+.game-container {
+display: flex;
+gap: 10px;
+margin-top: 10px;
+}
+.editor, .console {
+width: 50%;
+padding: 10px;
+border: 2px solid #00FF00;
+}
+.editor { background-color: #1c1c1c; }
+.console { background-color: #000000; white-space: pre-wrap; }
+.code-box {
+background-color: #000000;
+border: 3px solid #00FF00;
+padding: 8px;
+margin-bottom: 5px;
+font-size: 1.05em;
+line-height: 1.1em;
+}
+select {
+background-color: #000000;
+color: #00FF00;
+border: 2px solid #00FF00;
+margin-left: 3px;
+height: 30px;
+}
+button {
+background-color: #1c1c1c;
+color: #00FF00;
+border: 2px solid #00FF00;
+padding: 8px 16px;
+cursor: pointer;
+}
+button:hover {
+background-color: #00FF00;
+color: #1c1c1c;
+}
+.next-btn {
+margin-top: 20px;
+background: #1c1c1c;
+color: #00FF00;
+border: 2px solid #00FF00;
+padding: 10px 20px;
+font-family: 'Courier New';
+cursor: pointer;
+}
+"))
     ),
     div(
       class = "game-container",
@@ -135,9 +135,9 @@ level4_2_server <- function(input, output, session, current_page) {
       session$sendCustomMessage("greenFlash", TRUE)
       output$console42 <- renderText(paste0(
         "## \n",
-        "##  Dixon test for outliers\n",
+        "## Dixon test for outliers\n",
         "## \n",
-        "## data:  dna_ct_outlier$ct_value\n",
+        "## data: dna_ct_outlier$ct_value\n",
         "## Q = 1, p-value < 2.2e-16\n",
         "## alternative hypothesis: lowest value 15.4 is an outlier\n"
       ))
@@ -150,8 +150,8 @@ level4_2_server <- function(input, output, session, current_page) {
         paste0(
           "✖ Fout.\nKies de juiste combinatie.\n\n",
           "Hints:\n",
-          "> upper_bound  → hoge outliers\n",
-          "< lower_bound  → lage outliers"
+          "> upper_bound → hoge outliers\n",
+          "< lower_bound → lage outliers"
         )
       )
       output$result42 <- renderUI({ NULL })
