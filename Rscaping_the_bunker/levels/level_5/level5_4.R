@@ -66,7 +66,15 @@ level5_4_server <- function(input, output, session, current_page) {
         antiviral_library |>
           ggplot(aes(x = antiviral_name, y = stock_concentration_mg)) +
           geom_bar(stat = "identity", fill = "#00FF00") +
-          geom_hline(yintercept = 150, color = "red", linewidth = 1.2)
+          geom_hline(yintercept = 150, color = "red", linewidth = 1.2) +
+          theme_minimal(base_family = "Courier New") +
+          theme(
+            plot.background = element_rect(fill = "black"),
+            panel.background = element_rect(fill = "black"),
+            text = element_text(color = "#00FF00"),
+            axis.text = element_text(color = "#00FF00"),
+            axis.title = element_text(color = "#00FF00")
+          )
       })
       output$next_ui54 <- renderUI({
         actionButton("next_level5_5", "Volgende", class = "next-btn")

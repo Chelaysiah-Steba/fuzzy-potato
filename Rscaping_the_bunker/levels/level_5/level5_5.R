@@ -23,13 +23,6 @@ level5_5_ui <- function() {
         .console { background-color: #000000; white-space: pre-wrap; }
         .code-box { background-color: #000000; border: 2px solid #00FF00; padding: 10px; margin-top: 10px; }
         .inline-input { display: inline-block; width: 260px; background-color: #000000; color: #00FF00; border: 2px solid #00FF00; font-family: 'Courier New', monospace; margin-left: 5px; }
-        #reorder_input {
-          width: 450px !important;
-          background-color: #000000 !important;
-          color: #00FF00 !important;
-          border: 2px solid #00FF00 !important;
-          font-family: 'Courier New', monospace !important;
-        }
         .next-btn { margin-top: 20px; background: #1c1c1c; color: #00FF00; border: 2px solid #00FF00; padding: 10px 20px; font-family: 'Courier New'; cursor: pointer; }
       "))
     ),
@@ -88,8 +81,16 @@ level5_5_server <- function(input, output, session, current_page) {
             x = reorder(antiviral_name, -stock_concentration_mg),
             y = stock_concentration_mg
           )) +
-          geom_bar(stat = "identity", fill = "#00FF00") +
-          geom_hline(yintercept = 150, color = "red", linewidth = 1.2)
+          geom_bar(stat = "identity", fill = "#24bb24") +
+          geom_hline(yintercept = 150, color = "#bb2424", linewidth = 1.2) +
+          theme_minimal(base_family = "Courier New") +
+          theme(
+            plot.background = element_rect(fill = "black"),
+            panel.background = element_rect(fill = "black"),
+            text = element_text(color = "#00FF00"),
+            axis.text = element_text(color = "#00FF00"),
+            axis.title = element_text(color = "#00FF00")
+          )
       })
       output$next_ui55 <- renderUI({
         actionButton("next_transition5_end", "Volgende", class = "next-btn")
