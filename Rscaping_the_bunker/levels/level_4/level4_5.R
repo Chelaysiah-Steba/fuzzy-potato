@@ -134,7 +134,10 @@ level4_5_server <- function(input, output, session, current_page) {
         ggplot(dna_ct_clean, aes(log10_concentration, ct_value)) +
           geom_point(color = "#00FF00", size = 3) +
           geom_smooth(method = "lm", color = "#00FF00") +
-          labs(subtitle = subtitle_text) +
+          labs(subtitle = subtitle_text,
+               title = "Regressielijn Log10 DNA-concentraties van virus",
+               x = "log10_concentration(ng/µl)",
+               y = "mean_ct_value") +
           theme_minimal(base_family = "Courier New") +
           theme(
             plot.background = element_rect(fill = "black"),

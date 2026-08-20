@@ -165,6 +165,10 @@ level4_4_server <- function(input, output, session, current_page) {
           geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), color = "#FF5CAD", width = 0.12, linewidth = 1.2) +
           geom_point(color = "#00FF00", size = 4) +
           theme_minimal(base_family = "Courier New") +
+          labs(
+            title = "Regressielijn Log10 DNA-concentraties van virus",
+            x = "log10_concentration(ng/µl)",
+            y = "mean_ct_value") +
           theme(
             plot.background = element_rect(fill = "black"),
             panel.background = element_rect(fill = "black"),
