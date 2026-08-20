@@ -6,8 +6,8 @@ virus_dataset <- data.frame(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
     "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
-  mean_onset_days = c(3.2, 1.8, 5.6, 2.4, 4.1, 6.3, 7.8, 3.9, 2.1, 5.0),
-  sd_onset_days = c(0.8, 0.5, 1.2, 0.6, 1.0, 1.4, 1.9, 0.8, 0.4, 1.1)
+  mean_onset_days = c(3.87, 1.8, 5.6, 2.4, 4.1, 6.3, 7.8, 3.9, 2.1, 5.0),
+  sd_onset_days = c(1.0, 0.5, 1.2, 0.6, 1.0, 1.4, 1.9, 0.8, 0.4, 1.1)
 )
 
 escaped_virus_dataset <- data.frame(
@@ -61,11 +61,11 @@ level3_5_ui <- function() {
         div(class = "editor",
             h3("🔍 Level 3.5: Virus lokalisatie"),
             p("Hiernaast zijn de gemiddelden en SD waarden van de virussen te zien."),
-            p("Kijkend naar deze informatie, welk virus is vrijgekomen in de bunker?"),
+            p("Kijkend naar deze informatie, welk van deze virussen zijn mogelijk vrijgekomen in de bunker? (meerdere antwoorden mogelijk)"),
             
-            radioButtons(
+            checkboxGroupInput(
               inputId = "virus_answer_3_5",
-              label = "Kies het juiste antwoord:",
+              label = "Kies de juiste antwoorden:",
               choices = list(
                 "a) Livo-01" = "a",
                 "b) CrimsonFlu" = "b",
@@ -117,13 +117,13 @@ level3_5_server <- function(input, output, session, current_page) {
   observeEvent(input$submit_excel_3_5, {
     req(input$virus_answer_3_5)
     
-    correct <- "h"
+    correct <- c("a", "h")
     
     if (identical(input$virus_answer_3_5, correct)) {
       session$sendCustomMessage("greenFlash", TRUE)
       
       output$excel_console_3_5 <- renderText({
-        "✔ Correct!\nDe mean_onset_days en SD komen het best overeen met die van Avron Pathogen."
+        "✔ Correct!\nDe mean_onset_days en SD komen het best overeen met die van Livo-01 en Avron Pathogen."
       })
       
       output$next_ui_3_5 <- renderUI({

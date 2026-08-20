@@ -8,7 +8,10 @@ antiviral_library <- data.frame(
     "Fusion Inhibitor", "RNA Polymerase Blocker",
     "Protease Inhibitor", "Capsid Destabilizer"
   ),
-  stock_concentration_mg = c(100, 150, 180, 120, 160, 130, 190)
+  stock_concentration_mg = c(
+    120, 100, 180, 120, 160,
+    155, 85
+  )
 )
 
 antiviral_effectiveness <- data.frame(
@@ -17,12 +20,14 @@ antiviral_effectiveness <- data.frame(
     "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
   antiviral_class = c(
-    "Protease Inhibitor", "RNA Polymerase Blocker", "Capsid Destabilizer",
-    "Fusion Inhibitor", "RNA Polymerase Blocker",
-    "Protease Inhibitor", "Capsid Destabilizer",
-    "Fusion Inhibitor", "RNA Polymerase Blocker", "Protease Inhibitor"
+    "Protease Inhibitor", "RNA Polymerase Blocker", "Fusion Inhibitor",
+    "Capsid Destabilizer", "RNA Polymerase Blocker",
+    "Protease Inhibitor","Fusion Inhibitor", "Capsid Destabilizer", "RNA Polymerase Blocker", "Protease Inhibitor"
   ),
-  concentration_required_mg = c(120, 90, 150, 80, 110, 140, 160, 100, 95, 130)
+  concentration_required_mg = c(
+    120, 90, 140, 80, 110,
+    125, 160, 150, 95, 130
+  )
 )
 
 level5_3_ui <- function() {

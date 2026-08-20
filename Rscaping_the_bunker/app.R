@@ -33,6 +33,8 @@ source("levels/level_4/level4_2.R")
 source("levels/level_4/level4_3.R")
 source("levels/level_4/level4_4.R")
 source("levels/level_4/level4_5.R")
+source("levels/level_4/level4_6.R")
+source("levels/level_4/level4_7.R")
 
 source("transitions/transition4_5.R")
 source("levels/level_5/level5_1.R")
@@ -40,6 +42,8 @@ source("levels/level_5/level5_2.R")
 source("levels/level_5/level5_3.R")
 source("levels/level_5/level5_4.R")
 source("levels/level_5/level5_5.R")
+source("levels/level_5/level5_6.R")
+
 
 source("transitions/transition5_end.R")
 
@@ -53,20 +57,21 @@ current_page <- reactiveVal("intro") # startpagina
 # INTRO TEKST (typing effect)
 # ---------------------------------------------------------
 lines <- c(
-  "Welkom bij Helix-9 Onderzoeksbunker.",
-  "Je bent ingepland voor een reguliere onderzoeksdienst.",
-  "Na het inloggen worden de werkzaamheden voor vandaag geladen.",
-  "Controleer de planning en voer de toegewezen onderzoekstaken in de aangegeven volgorde uit.",
-  "Voltooi alle taken volgens de geldende laboratoriumprotocollen.",
-  "Meld eventuele afwijkingen via het interne registratiesysteem.",
-  "Wij wensen je een prettige en productieve werkdag."
+  "Beste analist in wording, jij bent onze laatste hoop!",
+  "Een van de virologen in de Helix-9 bunker heeft zich niet aan de veiligheidsregels gehouden.",
+  "Tijdens zijn shift heeft hij ongelabeld gewerkt.",
+  "Een van deze ongelabelde virus bevattende flacons is kapot gevallen.",
+  "Na dit incident zijn vrijwel alle aanwezige onderzoekers ziek geworden.",
+  "Aan jou de taak om te achterhalen welk virus is vrijgekomen en welk antivirus ingezet moet worden.",
+  "De wereld rekent op je.",
+  ":)"
 )
 
 rv <- reactiveValues(
   current_line = 1,
   current_char = 0,
   is_pausing   = FALSE,
-  char_delay   = 20,
+  char_delay   = 90,
   line_pause   = 200
 )
 
@@ -126,7 +131,7 @@ start_page_ui <- function() {
     div(id = "typed_text", class = "intro-text", ""),
     actionButton("skip_intro", "Skip", class = "start-btn"),
     br(),
-    actionButton("start_game", "Login", class = "start-btn", style = "display:none;"),
+    actionButton("start_game", "Start missie", class = "start-btn", style = "display:none;"),
     br(),
     actionButton("level_selector_btn", "Level selector", class = "start-btn", style = "display:none;")
   )
@@ -349,18 +354,17 @@ start_page_server <- function(input, output, session, current_page) {
 }
 
 ending_text <- paste(
-  "> INITIALIZING FINAL REPORT...",
-  "> RESTORING SECURITY MODULES...",
-  "> VERIFYING CONTAINMENT...",
+  "> RELEASING ANTIVIRAL...",
+  "> VERIFYING VIRUS CONTAINMENT...",
+  "> ANALYSING AIR QUALITY INDEX...",
   "> OPENING BUNKER DOORS...",
-  "> CONNECTION STABLE",
   "",
   "MISSION SUCCESSFUL",
   "",
-  "SYSTEM STATUS        : STABLE",
-  "VIRUS CONTAINMENT    : SUCCESS",
-  "ALL SECURITY MODULES : ONLINE",
-  "BUNKER STATUS        : UNLOCKED",
+  "ANTIVIRAL RELEASE             : 100%",
+  "VIRUS CONTAINMENT             : SUCCESS",
+  "AIR QUALITY INDEX             : <50, GOOD",
+  "QUARANTINE STATUS             : LIFTED",
   "",
   "> READY FOR TERMINATION? █",
   sep = "\n"
@@ -401,6 +405,8 @@ server <- function(input, output, session) {
   level4_3_server(input, output, session, current_page)
   level4_4_server(input, output, session, current_page)
   level4_5_server(input, output, session, current_page)
+  level4_6_server(input, output, session, current_page)
+  level4_7_server(input, output, session, current_page)
   
   transition4_5_server(input, output, session, current_page)
   
@@ -409,6 +415,7 @@ server <- function(input, output, session) {
   level5_3_server(input, output, session, current_page)
   level5_4_server(input, output, session, current_page)
   level5_5_server(input, output, session, current_page)
+  level5_6_server(input, output, session, current_page)
   
   transition5_end_server(input, output, session, current_page)
   
@@ -459,6 +466,10 @@ server <- function(input, output, session) {
       level4_4_ui()
     } else if (current_page() == "level4_5") {
       level4_5_ui()
+    } else if (current_page() == "level4_6") {
+      level4_6_ui()
+    } else if (current_page() == "level4_7") {
+      level4_7_ui()
     } else if (current_page() == "transition4_5") {
       transition4_5_ui()
     } else if (current_page() == "level5_1") {
@@ -471,6 +482,8 @@ server <- function(input, output, session) {
       level5_4_ui()
     } else if (current_page() == "level5_5") {
       level5_5_ui()
+    } else if (current_page() == "level5_6") {
+      level5_6_ui()
     } else if (current_page() == "transition5_end") {
       transition5_end_ui()
     } else if (current_page() == "end") {

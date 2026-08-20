@@ -134,7 +134,10 @@ level4_5_server <- function(input, output, session, current_page) {
         ggplot(dna_ct_clean, aes(log10_concentration, ct_value)) +
           geom_point(color = "#00FF00", size = 3) +
           geom_smooth(method = "lm", color = "#00FF00") +
-          labs(subtitle = subtitle_text) +
+          labs(subtitle = subtitle_text,
+               title = "Regressielijn Log10 DNA-concentraties van virus",
+               x = "log10_concentration(ng/µl)",
+               y = "mean_ct_value") +
           theme_minimal(base_family = "Courier New") +
           theme(
             plot.background = element_rect(fill = "black"),
@@ -146,7 +149,7 @@ level4_5_server <- function(input, output, session, current_page) {
       })
       
       output$next_ui45 <- renderUI({
-        actionButton("next_transition4_5", "Volgende", class = "next-btn")
+        actionButton("next_level4_6", "Volgende", class = "next-btn")
       })
       
     } else {
@@ -159,7 +162,7 @@ level4_5_server <- function(input, output, session, current_page) {
     }
   })
   
-  observeEvent(input$next_transition4_5, {
-    current_page("transition4_5")
+  observeEvent(input$next_level4_6, {
+    current_page("level4_6")
   })
 }

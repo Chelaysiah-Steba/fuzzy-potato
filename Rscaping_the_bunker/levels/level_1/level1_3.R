@@ -4,99 +4,111 @@ level1_3_ui <- function() {
     
     tags$head(
       tags$style(HTML("
-body {
-background-color: #1c1c1c;
-color: #00FF00;
-font-family: 'Courier New', monospace;
-}
+        body {
+          background-color: #1c1c1c;
+          color: #00FF00;
+          font-family: 'Courier New', monospace;
+        }
 
-.game-container {
-display: flex;
-gap: 20px;
-margin-top: 20px;
-}
+        .game-container {
+          display: flex;
+          gap: 20px;
+          margin-top: 20px;
+        }
 
-.editor, .console {
-width: 50%;
-padding: 15px;
-font-family: 'Courier New', monospace;
-border: 2px solid #00FF00;
-text-align: left;
-}
+        .editor, .console {
+          width: 50%;
+          padding: 15px;
+          font-family: 'Courier New', monospace;
+          border: 2px solid #00FF00;
+          text-align: left;
+        }
 
-.editor {
-background-color: #1c1c1c;
-min-height: 200px;
-}
+        .editor {
+          background-color: #1c1c1c;
+          min-height: 200px;
+        }
 
-.console {
-background-color: #000000;
-min-height: 200px;
-white-space: pre-wrap;
-}
+        .console {
+          background-color: #000000;
+          min-height: 200px;
+          white-space: pre-wrap;
+        }
 
-.next-btn{
-margin-top:20px;
-background:#1c1c1c;
-color:#00FF00;
-border:2px solid #00FF00;
-padding:10px 20px;
-font-family:'Courier New';
-cursor:pointer;
-}
+        .next-btn {
+          margin-top: 20px;
+          background: #1c1c1c;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
 
-.start-btn{
-margin-top:20px;
-background:#1c1c1c;
-color:#00FF00;
-border:2px solid #00FF00;
-padding:10px 20px;
-font-family:'Courier New';
-cursor:pointer;
-}
+        .start-btn {
+          margin-top: 20px;
+          background: #1c1c1c;
+          color: #00FF00;
+          border: 2px solid #00FF00;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
 
-.red-flash {
-position: fixed;
-inset: 0;
-pointer-events: none;
-z-index: 9999;
-background: rgba(255, 0, 0, 0);
-}
+        .red-flash {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 9999;
+          background: rgba(255, 0, 0, 0);
+        }
 
-.red-flash.active {
-animation: redFlash 0.35s ease-out 1;
-}
+        .red-flash.active {
+          animation: redFlash 0.35s ease-out 1;
+        }
 
-@keyframes redFlash {
-0% { background: rgba(255,0,0,0); }
-20% { background: rgba(255,0,0,0.18); }
-100% { background: rgba(255,0,0,0); }
-}
-"))
+        @keyframes redFlash {
+          0% {
+            background: rgba(255, 0, 0, 0);
+          }
+
+          20% {
+            background: rgba(255, 0, 0, 0.18);
+          }
+
+          100% {
+            background: rgba(255, 0, 0, 0);
+          }
+        }
+      "))
     ),
     
     tags$script(HTML("
-(function() {
-function ensureFlash() {
-if (!document.getElementById('red-flash-overlay')) {
-const d = document.createElement('div');
-d.id = 'red-flash-overlay';
-d.className = 'red-flash';
-document.body.appendChild(d);
-}
-}
+      (function() {
+        function ensureFlash() {
+          if (!document.getElementById('red-flash-overlay')) {
+            const d = document.createElement('div');
+            d.id = 'red-flash-overlay';
+            d.className = 'red-flash';
+            document.body.appendChild(d);
+          }
+        }
 
-if (window.Shiny && Shiny.addCustomMessageHandler) {
-Shiny.addCustomMessageHandler('redFlash', function(message) {
-ensureFlash();
-const flash = document.getElementById('red-flash-overlay');
-flash.classList.remove('active');
-void flash.offsetWidth;
-flash.classList.add('active');
-});
-}
-})();
-")),
+        if (window.Shiny && Shiny.addCustomMessageHandler) {
+          Shiny.addCustomMessageHandler('redFlash', function(message) {
+            ensureFlash();
+
+            const flash = document.getElementById('red-flash-overlay');
+
+            flash.classList.remove('active');
+
+            void flash.offsetWidth;
+
+            flash.classList.add('active');
+          });
+        }
+      })();
+    ")),
     
     div(
       class = "game-container",
@@ -114,17 +126,12 @@ flash.classList.add('active');
         
         verbatimTextOutput("console_output"),
         
-        shinyjs::hidden(
-          actionButton(
-            "next_level1_4",
-            "Volgende",
-            class = "next-btn"
-          )
-        )
+        uiOutput("next_button_ui")
       )
     )
   )
 }
+
 
 level1_3_server <- function(input, output, session, current_page) {
   
@@ -139,9 +146,15 @@ level1_3_server <- function(input, output, session, current_page) {
     )
   })
   
+  
+  output$next_button_ui <- renderUI({
+    NULL
+  })
+  
+  
   output$editor_ui <- renderUI({
     tagList(
-      h3("level 1.3: Error analyseren"),
+      h3("Level 1.3: Error analyseren"),
       
       p("Wat betekent deze foutmelding?"),
       
@@ -149,30 +162,55 @@ level1_3_server <- function(input, output, session, current_page) {
         inputId = "q1",
         label = NULL,
         choices = c(
-          "De data bestaat niet" = "A",
-          "De functie komt uit een package dat niet geladen is" = "B",
-          "Er zit een typefout in de code" = "C"
+          "De data bestaat niet" =
+            "A",
+          
+          "De functie komt uit een package dat niet geladen is" =
+            "B",
+          
+          "Er zit een typefout in de code" =
+            "C"
         )
       ),
       
-      actionButton("submit_q1", "Submit", class = "start-btn")
+      actionButton(
+        inputId = "submit_q1",
+        label = "Submit",
+        class = "start-btn"
+      )
     )
   })
   
+  
   observeEvent(input$submit_q1, {
+    
     req(input$q1)
     
-    if (input$q1 == "B") {
+    if (identical(input$q1, "B")) {
+      
+      session$sendCustomMessage("greenFlash", TRUE)
       
       output$console_output <- renderText({
         paste(
           "✔ Correct.",
           "De functie 'boot_sequence()' komt uit een package die nog niet geladen is.",
+          "",
+          "Module 1.3 opgelost.",
           sep = "\n"
         )
       })
       
-      shinyjs::show("next_level1_4")
+      output$next_button_ui <- renderUI({
+        tagList(
+          br(),
+          
+          actionButton(
+            inputId = "next_level1_4",
+            label = "Volgende",
+            class = "next-btn"
+          )
+        )
+      })
       
     } else {
       
@@ -186,11 +224,14 @@ level1_3_server <- function(input, output, session, current_page) {
         )
       })
       
-      shinyjs::hide("next_level1_4")
+      output$next_button_ui <- renderUI({
+        NULL
+      })
     }
   })
   
+  
   observeEvent(input$next_level1_4, {
     current_page("level1_4")
-  })
+  }, ignoreInit = TRUE)
 }
