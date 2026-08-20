@@ -8,7 +8,10 @@ antiviral_library <- data.frame(
     "Fusion Inhibitor", "RNA Polymerase Blocker",
     "Protease Inhibitor", "Capsid Destabilizer"
   ),
-  stock_concentration_mg = c(100, 150, 180, 120, 160, 130, 190)
+  stock_concentration_mg = c(
+    120, 100, 180, 120, 160,
+    155, 85
+  )
 )
 
 level5_5_ui <- function() {
@@ -93,7 +96,7 @@ level5_5_server <- function(input, output, session, current_page) {
           )
       })
       output$next_ui55 <- renderUI({
-        actionButton("next_transition5_end", "Volgende", class = "next-btn")
+        actionButton("next_level5_6", "Volgende", class = "next-btn")
       })
     } else {
       session$sendCustomMessage("redFlash", TRUE)
@@ -112,7 +115,7 @@ level5_5_server <- function(input, output, session, current_page) {
     }
   })
   
-  observeEvent(input$next_transition5_end, {
-    current_page("transition5_end")
+  observeEvent(input$next_level5_6, {
+    current_page("level5_6")
   })
 }

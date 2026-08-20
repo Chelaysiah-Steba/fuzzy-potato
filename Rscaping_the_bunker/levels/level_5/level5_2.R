@@ -1,17 +1,16 @@
-antiviral_effectiveness_dataset <- data.frame(
+antiviral_effectiveness <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-05", "Siah-V Complex",
     "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
   antiviral_class = c(
-    "Protease Inhibitor", "RNA Polymerase Blocker", "Capsid Destabilizer",
-    "Fusion Inhibitor", "RNA Polymerase Blocker",
-    "Protease Inhibitor", "Capsid Destabilizer",
-    "Fusion Inhibitor", "RNA Polymerase Blocker", "Protease Inhibitor"
+    "Protease Inhibitor", "RNA Polymerase Blocker", "Fusion Inhibitor",
+    "Capsid Destabilizer", "RNA Polymerase Blocker",
+    "Protease Inhibitor","Fusion Inhibitor", "Capsid Destabilizer", "RNA Polymerase Blocker", "Protease Inhibitor"
   ),
   concentration_required_mg = c(
-    120, 90, 150, 80, 110,
-    140, 160, 100, 95, 130
+    120, 90, 140, 80, 110,
+    125, 160, 150, 95, 130
   )
 )
 

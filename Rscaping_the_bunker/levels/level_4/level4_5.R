@@ -149,7 +149,7 @@ level4_5_server <- function(input, output, session, current_page) {
       })
       
       output$next_ui45 <- renderUI({
-        actionButton("next_transition4_5", "Volgende", class = "next-btn")
+        actionButton("next_level4_6", "Volgende", class = "next-btn")
       })
       
     } else {
@@ -162,7 +162,7 @@ level4_5_server <- function(input, output, session, current_page) {
     }
   })
   
-  observeEvent(input$next_transition4_5, {
-    current_page("transition4_5")
+  observeEvent(input$next_level4_6, {
+    current_page("level4_6")
   })
 }
