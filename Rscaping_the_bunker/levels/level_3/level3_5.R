@@ -86,10 +86,10 @@ level3_5_ui <- function() {
         div(class = "console",
             h3("Console"),
             verbatimTextOutput("excel_console_3_5"),
-            h3("Virus Dataset:"),
-            tableOutput("virus_table_data_3_5"),
             h3("Escaped Virus Dataset:"),
             tableOutput("escaped_virus_table_data_3_5"),
+            h3("Virus Dataset:"),
+            tableOutput("virus_table_data_3_5"),
             uiOutput("next_ui_3_5")
         )
     )
@@ -98,13 +98,14 @@ level3_5_ui <- function() {
 
 level3_5_server <- function(input, output, session, current_page) {
   
+  output$escaped_virus_table_data_3_5 <- renderTable({
+    escaped_virus_dataset
+  }, rownames = FALSE)
+  
   output$virus_table_data_3_5 <- renderTable({
     virus_dataset
   }, rownames = FALSE)
   
-  output$escaped_virus_table_data_3_5 <- renderTable({
-    escaped_virus_dataset
-  }, rownames = FALSE)
   
   output$excel_console_3_5 <- renderText({
     ""

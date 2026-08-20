@@ -93,7 +93,6 @@ level3_4_ui <- function() {
           text = "Versleep de code-stukken:",
           labels = c(
             'geom_bar(stat = "identity") +',
-            'geom_errorbar(aes(ymin = symptom_onset_days - on_site, ymax = symptom_onset_days + on_site), width = 0.2) +',
             'theme_minimal()',
             'labs(title = "symptom onset days per scientist") +',
             'ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +'
@@ -141,10 +140,6 @@ level3_4_server <- function(input, output, session, current_page) {
       output$plot_l3_4 <- renderPlot({
         ggplot(tidy_scientists, aes(x = Scientist, y = symptom_onset_days)) +
           geom_bar(stat = "identity") +
-          geom_errorbar(aes(
-            ymin = symptom_onset_days - on_site,
-            ymax = symptom_onset_days + on_site
-          ), width = 0.2) +
           labs(title = "symptom onset days per scientist") +
           theme_minimal()
       })
