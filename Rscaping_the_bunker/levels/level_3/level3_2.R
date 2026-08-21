@@ -8,56 +8,122 @@ untidy_df <- data.frame(
   )
 )
 
+
 level3_2_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
+        
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+        
         .game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
-        .editor, .console {
+        
+        .editor,
+        .console {
           width: 50%;
           padding: 15px;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           text-align: left;
         }
+        
         .editor {
           background-color: #1c1c1c;
           min-height: 200px;
         }
+        
         .console {
           background-color: #000000;
           min-height: 200px;
           white-space: pre-wrap;
         }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
+        input[type='radio'] {
+          accent-color: #24bb24;
+        }
+        
+        button {
+          background-color: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 8px 16px;
+          cursor: pointer;
+        }
+        
+        button:hover {
+          background-color: #24bb24;
+          color: #1c1c1c;
+        }
+        
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
           font-family: 'Courier New';
           cursor: pointer;
         }
+        
       "))
     ),
+    
     
     div(
       class = "game-container",
       
+      
       div(
         class = "editor",
+        
         h3("🔍 Level 3.2: Tidy herkenning"),
+        
         p("Hieronder is een deel van de zojuist ingeladen tabel te zien."),
+        
         p("Is deze tabel tidy?"),
         
         tableOutput("untidy_table_l3_2"),
@@ -73,18 +139,26 @@ level3_2_ui <- function() {
           )
         ),
         
-        actionButton("submit_excel_l3_2", "▶ RUN CODE")
+        actionButton(
+          "submit_excel_l3_2",
+          "▶ RUN CODE"
+        )
       ),
+      
       
       div(
         class = "console",
+        
         h3("Console"),
-        verbatimTextOutput("excel_console_l3_2"),
+        
+        uiOutput("excel_console_ui_l3_2"),
+        
         uiOutput("game_next_l3_2")
       )
     )
   )
 }
+
 
 level3_2_server <- function(input, output, session, current_page) {
   
@@ -92,26 +166,46 @@ level3_2_server <- function(input, output, session, current_page) {
     untidy_df
   }, rownames = FALSE)
   
+  
+  output$excel_console_ui_l3_2 <- renderUI({
+    NULL
+  })
+  
+  
   output$game_next_l3_2 <- renderUI({
     NULL
   })
   
-  output$excel_console_l3_2 <- renderText({
-    ""
-  })
   
   observeEvent(input$submit_excel_l3_2, {
+    
     req(input$tidy_answer_l3_2)
     
     correct <- "b"
+    
     
     if (identical(input$tidy_answer_l3_2, correct)) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
+      
+      output$excel_console_ui_l3_2 <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "excel_console_l3_2",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
       output$excel_console_l3_2 <- renderText({
+        
         paste(
-          "🟢 CORRECT",
+          "✔ CORRECT",
           "",
           "De variabelen staan niet in aparte kolommen.",
           "",
@@ -120,17 +214,39 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
+      
       output$game_next_l3_2 <- renderUI({
-        actionButton("next_level3_3", "Volgende", class = "next-btn")
+        
+        actionButton(
+          "next_level3_3",
+          "Volgende",
+          class = "next-btn"
+        )
       })
+      
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
+      
+      output$excel_console_ui_l3_2 <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "excel_console_l3_2",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
       output$excel_console_l3_2 <- renderText({
+        
         paste(
-          "🔴 FOUT",
+          "✖ FOUT",
           "",
           paste0("Je koos antwoord: ", input$tidy_answer_l3_2),
           "",
@@ -140,13 +256,17 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
+      
       output$game_next_l3_2 <- renderUI({
         NULL
       })
     }
   })
   
+  
   observeEvent(input$next_level3_3, {
+    
     current_page("level3_3")
+    
   })
 }

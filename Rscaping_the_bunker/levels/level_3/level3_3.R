@@ -14,154 +14,254 @@ tidy_scientists <- data.frame(
   )
 )
 
+
 level3_3_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
+        
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+        
         .code-box {
           background-color: #000000;
-          border: 3px solid #00FF00;
+          border: 3px solid #24bb24;
           padding: 8px;
           margin-bottom: 5px;
           font-size: 1.05em;
-          line-height: 1.1em;
+          line-height: 1.6em;
         }
+        
         .inline-input {
           width: 140px;
-          background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
           margin: 0 3px;
           height: 26px;
+          font-family: 'Courier New', monospace !important;
         }
+        
+        select,
+        .form-control,
         .inline-dropdown {
-          background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
           margin-left: 3px;
-          height: 30px;
+          font-family: 'Courier New', monospace !important;
         }
+        
+        select option {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+        }
+        
+        select:focus,
+        .form-control:focus {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+        
+        .shiny-input-container select {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+        }
+        
+        .shiny-input-container select option {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+        }
+        
         .game-container {
           display: flex;
           gap: 10px;
           margin-top: 10px;
         }
-        .editor, .console {
+        
+        .editor,
+        .console {
           width: 50%;
           padding: 10px;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
         }
+        
         .console {
           background-color: #000000;
           white-space: pre-wrap;
           font-size: 1.05em;
         }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
         button {
           background-color: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 8px 16px;
           cursor: pointer;
         }
+        
         button:hover {
-          background-color: #00FF00;
+          background-color: #24bb24;
           color: #1c1c1c;
         }
+        
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
           font-family: 'Courier New';
           cursor: pointer;
         }
+        
       "))
     ),
     
-    div(class = "game-container",
-        div(class = "editor",
-            h3("Level 3.3: Analyse van tidy data (zonder group_by)"),
-            p("Opdracht: vul alle velden correct in."),
-            
-            div(class = "code-box",
-                HTML("tidy_scientists |> filter(on_site "),
-                
-                selectInput(
-                  "compare_op",
-                  NULL,
-                  choices = c("==", "!=", ">", "<"),
-                  width = "80px",
-                  selectize = FALSE
-                ),
-                
-                tags$input(
-                  id = "compare_value",
-                  type = "text",
-                  class = "inline-input",
-                  placeholder = "yes"
-                ),
-                
-                HTML(") |> summarise("),
-                
-                HTML("mean = mean("),
-                tags$input(
-                  id = "mean_value",
-                  type = "text",
-                  class = "inline-input",
-                  placeholder = "symptom_onset_days"
-                ),
-                HTML("),"),
-                
-                HTML("SD = sd("),
-                tags$input(
-                  id = "sd_value",
-                  type = "text",
-                  class = "inline-input",
-                  placeholder = "symptom_onset_days"
-                ),
-                HTML("),"),
-                
-                HTML("n = "),
-                selectInput(
-                  "count_func",
-                  NULL,
-                  choices = c("n()", "count()"),
-                  width = "120px",
-                  selectize = FALSE
-                ),
-                
-                HTML(")")
-            ),
-            
-            actionButton("run_code", "▶ RUN CODE")
+    
+    div(
+      class = "game-container",
+      
+      div(
+        class = "editor",
+        
+        h3("Level 3.3: Analyse van tidy data (zonder group_by)"),
+        
+        p(
+          "Opdracht: vul alle velden correct in."
         ),
         
-        div(class = "console",
-            h3("Console"),
-            verbatimTextOutput("console_output_l3_3"),
-            uiOutput("next_ui_l3_3")
+        div(
+          class = "code-box",
+          
+          HTML("tidy_scientists |> filter(on_site "),
+          
+          selectInput(
+            "compare_op",
+            NULL,
+            choices = c("==", "!=", ">", "<"),
+            width = "80px",
+            selectize = FALSE
+          ),
+          
+          tags$input(
+            id = "compare_value",
+            type = "text",
+            class = "inline-input",
+            placeholder = "yes"
+          ),
+          
+          HTML(") |> summarise("),
+          
+          HTML("mean = mean("),
+          
+          tags$input(
+            id = "mean_value",
+            type = "text",
+            class = "inline-input",
+            placeholder = "symptom_onset_days"
+          ),
+          
+          HTML("),"),
+          
+          HTML("SD = sd("),
+          
+          tags$input(
+            id = "sd_value",
+            type = "text",
+            class = "inline-input",
+            placeholder = "symptom_onset_days"
+          ),
+          
+          HTML("),"),
+          
+          HTML("n = "),
+          
+          selectInput(
+            "count_func",
+            NULL,
+            choices = c("n()", "count()"),
+            width = "120px",
+            selectize = FALSE
+          ),
+          
+          HTML(")")
+        ),
+        
+        actionButton(
+          "run_code",
+          "▶ RUN CODE"
         )
+      ),
+      
+      
+      div(
+        class = "console",
+        
+        h3("Console"),
+        
+        uiOutput("console_ui_l3_3"),
+        
+        uiOutput("next_ui_l3_3")
+      )
     )
   )
 }
 
+
 level3_3_server <- function(input, output, session, current_page) {
   
-  output$console_output_l3_3 <- renderText({
-    ""
+  output$console_ui_l3_3 <- renderUI({
+    NULL
   })
   
   output$next_ui_l3_3 <- renderUI({
     NULL
   })
+  
   
   observeEvent(input$run_code, {
     
@@ -177,7 +277,9 @@ level3_3_server <- function(input, output, session, current_page) {
         identical(input$count_func, "count()")
     )
     
+    
     if (!isTRUE(correct)) {
+      
       session$sendCustomMessage("redFlash", TRUE)
       
       hints <- c(
@@ -188,13 +290,39 @@ level3_3_server <- function(input, output, session, current_page) {
         if (!identical(input$count_func, "count()")) "- Gebruik count() voor n" else NULL
       )
       
-      output$console_output_l3_3 <- renderText({
-        paste(c("🔴 FOUT", "", "Hints:", hints), collapse = "\n")
+      
+      output$console_ui_l3_3 <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "console_output_l3_3",
+            placeholder = FALSE
+          )
+        )
       })
       
+      
+      output$console_output_l3_3 <- renderText({
+        
+        paste(
+          c(
+            "✖ FOUT",
+            "",
+            "Hints:",
+            hints
+          ),
+          collapse = "\n"
+        )
+      })
+      
+      
       output$next_ui_l3_3 <- renderUI(NULL)
+      
       return()
     }
+    
     
     session$sendCustomMessage("greenFlash", TRUE)
     
@@ -206,9 +334,24 @@ level3_3_server <- function(input, output, session, current_page) {
       "n = count())"
     )
     
+    
+    output$console_ui_l3_3 <- renderUI({
+      
+      div(
+        class = "console-message success",
+        
+        verbatimTextOutput(
+          "console_output_l3_3",
+          placeholder = FALSE
+        )
+      )
+    })
+    
+    
     output$console_output_l3_3 <- renderText({
+      
       paste(
-        "🟢 CORRECT",
+        "✔ CORRECT",
         "",
         "Volledige code:",
         code,
@@ -222,10 +365,17 @@ level3_3_server <- function(input, output, session, current_page) {
       )
     })
     
+    
     output$next_ui_l3_3 <- renderUI({
-      actionButton("next_level3_4", "Volgende", class = "next-btn")
+      
+      actionButton(
+        "next_level3_4",
+        "Volgende",
+        class = "next-btn"
+      )
     })
   })
+  
   
   observeEvent(input$next_level3_4, {
     current_page("level3_4")

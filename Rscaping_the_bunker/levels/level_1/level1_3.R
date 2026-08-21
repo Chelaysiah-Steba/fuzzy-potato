@@ -1,61 +1,137 @@
 level1_3_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
+
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
 
-        .game-container {
+        .level13-game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
 
-        .editor, .console {
+        .level13-editor,
+        .level13-console {
           width: 50%;
           padding: 15px;
           font-family: 'Courier New', monospace;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           text-align: left;
+          box-sizing: border-box;
         }
 
-        .editor {
-          background-color: #1c1c1c;
-          min-height: 200px;
+        .level13-editor {
+          background-color: #1c1c1c !important;
+          color: #24bb24 !important;
+          min-height: 260px;
         }
 
-        .console {
-          background-color: #000000;
-          min-height: 200px;
+        .level13-console {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          min-height: 260px;
           white-space: pre-wrap;
         }
 
-        .next-btn {
+        .level13-console h3 {
+          color: #24bb24 !important;
+        }
+
+        .level13-console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap;
+        }
+
+        .level13-console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+
+        .level13-console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+
+        .level13-console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+
+        .level13-warning-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 15px;
+          margin-bottom: 15px;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap;
+        }
+
+        .level13-warning-message pre {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+
+        .level13-radio label {
+          color: #24bb24 !important;
+          font-family: 'Courier New', monospace !important;
+        }
+
+        .level13-radio input[type='radio'] {
+          accent-color: #24bb24;
+        }
+
+        .level13-start-btn,
+        .level13-next-btn {
           margin-top: 20px;
-          background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          background: #1c1c1c !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
           padding: 10px 20px;
-          font-family: 'Courier New', monospace;
+          font-family: 'Courier New', monospace !important;
           cursor: pointer;
         }
 
-        .start-btn {
-          margin-top: 20px;
-          background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          padding: 10px 20px;
-          font-family: 'Courier New', monospace;
-          cursor: pointer;
+        .level13-start-btn:hover,
+        .level13-next-btn:hover {
+          background: #24bb24 !important;
+          color: #1c1c1c !important;
         }
 
-        .red-flash {
+        .level13-red-flash {
           position: fixed;
           inset: 0;
           pointer-events: none;
@@ -63,11 +139,11 @@ level1_3_ui <- function() {
           background: rgba(255, 0, 0, 0);
         }
 
-        .red-flash.active {
-          animation: redFlash 0.35s ease-out 1;
+        .level13-red-flash.active {
+          animation: level13RedFlash 0.35s ease-out 1;
         }
 
-        @keyframes redFlash {
+        @keyframes level13RedFlash {
           0% {
             background: rgba(255, 0, 0, 0);
           }
@@ -80,158 +156,208 @@ level1_3_ui <- function() {
             background: rgba(255, 0, 0, 0);
           }
         }
+
       "))
     ),
     
     tags$script(HTML("
       (function() {
-        function ensureFlash() {
-          if (!document.getElementById('red-flash-overlay')) {
-            const d = document.createElement('div');
-            d.id = 'red-flash-overlay';
-            d.className = 'red-flash';
-            document.body.appendChild(d);
+        function level13EnsureFlash() {
+          if (!document.getElementById('level13-red-flash-overlay')) {
+            const flashElement = document.createElement('div');
+
+            flashElement.id = 'level13-red-flash-overlay';
+            flashElement.className = 'level13-red-flash';
+
+            document.body.appendChild(flashElement);
           }
         }
 
         if (window.Shiny && Shiny.addCustomMessageHandler) {
-          Shiny.addCustomMessageHandler('redFlash', function(message) {
-            ensureFlash();
+          Shiny.addCustomMessageHandler(
+            'level13RedFlash',
+            function(message) {
+              level13EnsureFlash();
 
-            const flash = document.getElementById('red-flash-overlay');
+              const flashElement =
+                document.getElementById('level13-red-flash-overlay');
 
-            flash.classList.remove('active');
+              flashElement.classList.remove('active');
 
-            void flash.offsetWidth;
+              void flashElement.offsetWidth;
 
-            flash.classList.add('active');
-          });
+              flashElement.classList.add('active');
+            }
+          );
         }
       })();
     ")),
     
-    div(
-      class = "game-container",
-      
-      div(
-        class = "editor",
-        
-        uiOutput("editor_ui")
-      ),
-      
-      div(
-        class = "console",
-        
-        h3("Console"),
-        
-        verbatimTextOutput("console_output"),
-        
-        uiOutput("next_button_ui")
-      )
-    )
+    uiOutput("level13_level_ui")
   )
 }
 
 
 level1_3_server <- function(input, output, session, current_page) {
   
-  output$console_output <- renderText({
-    paste(
-      "✖ System error.",
-      "Module 'bootSequenceR' is missing.",
-      "",
-      "boot_sequence()",
-      "Error: could not find function 'boot_sequence'",
-      sep = "\n"
-    )
-  })
-  
-  
-  output$next_button_ui <- renderUI({
+  output$level13_console_ui <- renderUI({
     NULL
   })
   
+  output$level13_next_ui <- renderUI({
+    NULL
+  })
   
-  output$editor_ui <- renderUI({
-    tagList(
-      h3("Level 1.3: Error analyseren"),
+  output$level13_level_ui <- renderUI({
+    
+    div(
+      class = "level13-game-container",
       
-      p("Wat betekent deze foutmelding?"),
-      
-      radioButtons(
-        inputId = "q1",
-        label = NULL,
-        choices = c(
-          "De data bestaat niet" =
-            "A",
+      div(
+        class = "level13-editor",
+        
+        h3("Level 1.3: Error analyseren"),
+        
+        p("Wat betekent deze foutmelding?"),
+        
+        div(
+          class = "level13-warning-message",
           
-          "De functie komt uit een package dat niet geladen is" =
-            "B",
+          HTML(
+            paste(
+              "✖ System error.",
+              "Module 'bootSequenceR' is missing.",
+              "",
+              "boot_sequence()",
+              "Error: could not find function 'boot_sequence'",
+              sep = "<br>"
+            )
+          )
+        ),
+        
+        div(
+          class = "level13-radio",
           
-          "Er zit een typefout in de code" =
-            "C"
+          radioButtons(
+            inputId = "level13_q1",
+            label = NULL,
+            choices = c(
+              "De data bestaat niet" = "A",
+              "De functie komt uit een package dat niet geladen is" = "B",
+              "Er zit een typefout in de code" = "C"
+            )
+          )
+        ),
+        
+        actionButton(
+          inputId = "level13_submit_q1",
+          label = "Submit",
+          class = "level13-start-btn"
         )
       ),
       
-      actionButton(
-        inputId = "submit_q1",
-        label = "Submit",
-        class = "start-btn"
+      div(
+        class = "level13-console",
+        
+        h3("Console"),
+        
+        uiOutput("level13_console_ui"),
+        
+        uiOutput("level13_next_ui")
       )
     )
   })
   
   
-  observeEvent(input$submit_q1, {
+  observeEvent(input$level13_submit_q1, {
     
-    req(input$q1)
+    req(input$level13_q1)
     
-    if (identical(input$q1, "B")) {
+    if (identical(input$level13_q1, "B")) {
       
-      session$sendCustomMessage("greenFlash", TRUE)
+      session$sendCustomMessage(
+        "greenFlash",
+        TRUE
+      )
       
-      output$console_output <- renderText({
+      output$level13_console_ui <- renderUI({
+        
+        div(
+          class = "level13-console-message success",
+          
+          verbatimTextOutput(
+            "level13_console_output",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      output$level13_console_output <- renderText({
+        
         paste(
           "✔ Correct.",
           "De functie 'boot_sequence()' komt uit een package die nog niet geladen is.",
           "",
-          "Module 1.3 opgelost.",
           sep = "\n"
         )
       })
       
-      output$next_button_ui <- renderUI({
+      output$level13_next_ui <- renderUI({
+        
         tagList(
+          
           br(),
           
           actionButton(
-            inputId = "next_level1_4",
+            inputId = "level13_next_level1_4",
             label = "Volgende",
-            class = "next-btn"
+            class = "level13-next-btn"
           )
         )
       })
       
     } else {
       
-      session$sendCustomMessage("redFlash", TRUE)
+      session$sendCustomMessage(
+        "level13RedFlash",
+        TRUE
+      )
       
-      output$console_output <- renderText({
+      output$level13_console_ui <- renderUI({
+        
+        div(
+          class = "level13-console-message error",
+          
+          verbatimTextOutput(
+            "level13_console_output",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      output$level13_console_output <- renderText({
+        
         paste(
           "✖ Incorrect.",
-          "Probeer opnieuw.",
+          "",
+          "Hint: R kan de functie op dit moment niet vinden.",
+          "Denk na over wat er eerst moet gebeuren voordat je een functie uit een package kunt gebruiken.",
           sep = "\n"
         )
       })
       
-      output$next_button_ui <- renderUI({
+      output$level13_next_ui <- renderUI({
         NULL
       })
     }
   })
   
   
-  observeEvent(input$next_level1_4, {
-    current_page("level1_4")
-  }, ignoreInit = TRUE)
+  observeEvent(
+    input$level13_next_level1_4,
+    {
+      current_page("level1_4")
+    },
+    ignoreInit = TRUE
+  )
 }

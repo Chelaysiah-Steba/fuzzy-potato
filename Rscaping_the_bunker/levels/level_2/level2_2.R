@@ -38,19 +38,167 @@ level2_2_ui <- function(){
     useShinyjs(),
     
     tags$head(tags$style(HTML("
-body{background:#1c1c1c;color:#00FF00;font-family:'Courier New',monospace;}
-.game-container{display:flex;gap:20px;margin-top:20px;}
-.editor,.console{width:50%;padding:15px;border:2px solid #00FF00;}
-.editor{background:#1c1c1c;}
-.console{background:#000;white-space:pre-wrap;}
-.code-box{background:#000;border:1px solid #00FF00;padding:10px;}
-.next-btn{margin-top:20px;background:#1c1c1c;color:#00FF00;border:2px solid #00FF00;}
-"))),
+body{
+  background:#1c1c1c;
+  color:#24bb24;
+  font-family:'Courier New',monospace;
+}
+
+.game-container{
+  display:flex;
+  gap:20px;
+  margin-top:20px;
+}
+
+.editor,
+.console{
+  width:50%;
+  padding:15px;
+  border:2px solid #24bb24;
+}
+
+.editor{
+  background:#1c1c1c;
+}
+
+.console{
+  background:#000000;
+  white-space:pre-wrap;
+}
+
+.code-box{
+  background:#000000;
+  border:2px solid #24bb24;
+  padding:20px;
+  margin-bottom:20px;
+  white-space:pre-wrap;
+  font-size:1.1em;
+}
+
+.console-message{
+  background-color:#000000 !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  outline:none !important;
+  box-shadow:none !important;
+  padding:10px;
+  margin-top:10px;
+  min-height:80px;
+}
+
+.console-message.error{
+  color:#bb2424 !important;
+  border-color:#bb2424 !important;
+}
+
+.console-message.success{
+  color:#24bb24 !important;
+  border-color:#24bb24 !important;
+}
+
+.console-message pre{
+  background-color:#000000 !important;
+  color:inherit !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  font-family:'Courier New',monospace !important;
+  white-space:pre-wrap !important;
+}
+
+input[type='text'],
+.form-control{
+  background-color:#1c1c1c !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  font-family:'Courier New',monospace !important;
+}
+
+input[type='text']:focus,
+.form-control:focus{
+  background-color:#1c1c1c !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+
+select,
+.form-control,
+.selectize-input,
+.selectize-control.single .selectize-input,
+.selectize-dropdown,
+.selectize-dropdown .option,
+.selectize-input.full{
+  background-color:#1c1c1c !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  font-family:'Courier New',monospace !important;
+}
+
+.selectize-input input{
+  color:#24bb24 !important;
+}
+
+.selectize-dropdown-content{
+  background-color:#1c1c1c !important;
+}
+
+.selectize-dropdown .option{
+  background-color:#1c1c1c !important;
+  color:#24bb24 !important;
+}
+
+.selectize-dropdown .active{
+  background-color:#24bb24 !important;
+  color:#000000 !important;
+}
+
+.selectize-control.single .selectize-input:after{
+  border-top-color:#24bb24 !important;
+}
+
+button,
+.btn,
+#submit_scatter{
+  background-color:#1c1c1c;
+  color:#24bb24;
+  border:2px solid #24bb24;
+  padding:10px 20px;
+  cursor:pointer;
+  font-family:'Courier New',monospace;
+}
+
+button:hover,
+.btn:hover,
+#submit_scatter:hover{
+  background-color:#24bb24;
+  color:#000000;
+}
+
+.next-btn{
+  margin-top:20px;
+  background:#1c1c1c;
+  color:#24bb24;
+  border:2px solid #24bb24;
+  padding:10px 20px;
+  font-family:'Courier New',monospace;
+  cursor:pointer;
+}
+
+.next-btn:hover{
+  background-color:#24bb24;
+  color:#000000;
+}
+``"))),
+    
     
     div(class="game-container",
         
         div(class="editor",
-            h3("📊 Level 2.2: Visualiseer de virusgegevens"),
+            h3("Level 2.2: Visualiseer de virusgegevens"),
             p("Maak een scatterplot waarin je de virussen uitzet tegen hun mean onset day. Kies een geschikte geom om de punten te tonen. De foutbalken worden automatisch toegevoegd."),
             
             div(class="code-box",
@@ -92,7 +240,7 @@ level2_2_server <- function(input,output,session,current_page){
   
   output$console_content <- renderUI({
     tagList(
-      h3("📊 Geladen dataset"),
+      h3("Geladen dataset"),
       tableOutput("virus_table_data")
     )
   })
@@ -116,7 +264,16 @@ level2_2_server <- function(input,output,session,current_page){
       session$sendCustomMessage("greenFlash",TRUE)
       
       output$scatter_console <- renderText({
-        paste("🟢 SECURITY PROTOCOL UPDATED","","Module 2/4 geactiveerd.","","Virus Database Module","STATUS: ONLINE",sep="\n")
+        
+        paste(
+          "✔ Correct!",
+          "",
+          "De grafiek is succesvol opgebouwd.",
+          "",
+          "De juiste variabelen en geom zijn gekozen.",
+          sep = "\n"
+        )
+        
       })
       
       output$console_content <- renderUI({
@@ -128,21 +285,69 @@ level2_2_server <- function(input,output,session,current_page){
       })
       
       output$scatter_plot <- renderPlot({
-        ggplot(virus_dataset,
-               aes(x=virus,y=mean_onset_days))+
-          geom_point(size=3,color="#00FF00")+
-          geom_errorbar(aes(ymin=mean_onset_days-sd_onset_days,
-                            ymax=mean_onset_days+sd_onset_days),width=.2,color="#00FF00")+
+        
+        ggplot(
+          virus_dataset,
+          aes(
+            x = virus,
+            y = mean_onset_days
+          )
+        ) +
+          
+          geom_point(
+            size = 3,
+            color = "#24bb24"
+          ) +
+          
+          geom_errorbar(
+            aes(
+              ymin = mean_onset_days - sd_onset_days,
+              ymax = mean_onset_days + sd_onset_days
+            ),
+            width = .2,
+            color = "#24bb24"
+          ) +
+          
           theme_minimal() +
+          
+          theme(
+            plot.background = element_rect(
+              fill = "black",
+              color = "black"
+            ),
+            panel.background = element_rect(
+              fill = "black",
+              color = "black"
+            ),
+            panel.grid.major = element_line(
+              color = "#555555"
+            ),
+            panel.grid.minor = element_line(
+              color = "#333333"
+            ),
+            text = element_text(
+              color = "#24bb24"
+            ),
+            axis.text = element_text(
+              color = "#24bb24"
+            ),
+            axis.title = element_text(
+              color = "#24bb24"
+            ),
+            panel.border = element_blank(),
+            axis.text.x = element_text(
+              angle = 45,
+              hjust = 1
+            )
+          ) +
+          
           labs(
             title = NULL,
             subtitle = NULL,
             x = NULL,
             y = NULL
-          )+
-          theme(
-            axis.text.x = element_text(angle = 45, hjust = 1)
           )
+        
       })
       
     } else {
@@ -194,15 +399,14 @@ level2_2_server <- function(input,output,session,current_page){
       }
       
       output$scatter_console <- renderText({
+        
         paste(
-          "🔴 SECURITY PROTOCOL FAILED",
+          "✖ Fout.",
           "",
-          "Module activation unsuccessful.",
-          "",
-          "HINT",
           hint,
-          sep="\n"
+          sep = "\n"
         )
+        
       })
     }
   })

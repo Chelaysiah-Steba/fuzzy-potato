@@ -1,6 +1,6 @@
 bootsequence <- data.frame(
   step = 1:5,
-  action = c("init", "load", "verify", "unlock", "boot"),
+  action = c("initiate", "load", "authenticate", "unlock", "boot"),
   status = c("OK", "OK", "OK", "OK", "READY"),
   stringsAsFactors = FALSE
 )
@@ -13,7 +13,7 @@ level1_4_ui <- function() {
       tags$style(HTML("
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
 
@@ -27,7 +27,7 @@ level1_4_ui <- function() {
         .console {
           width: 50%;
           padding: 15px;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           font-family: 'Courier New', monospace;
           text-align: left;
         }
@@ -42,33 +42,101 @@ level1_4_ui <- function() {
           min-height: 260px;
           white-space: pre-wrap;
         }
+        
+        .console-message{
+  background-color:#000000 !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  outline:none !important;
+  box-shadow:none !important;
+  padding:10px;
+  margin-top:10px;
+  min-height:80px;
+}
+
+.console-message.error{
+  color:#bb2424 !important;
+  border-color:#bb2424 !important;
+}
+
+.console-message.success{
+  color:#24bb24 !important;
+  border-color:#24bb24 !important;
+}
+
+.console-message pre{
+  background-color:#000000 !important;
+  color:inherit !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  font-family:'Courier New',monospace !important;
+  white-space:pre-wrap !important;
+}
+
+select,
+.form-control,
+.selectize-input,
+.selectize-control.single .selectize-input,
+.selectize-dropdown,
+.selectize-dropdown .option,
+.selectize-input.full{
+  background-color:#000000 !important;
+  color:#24bb24 !important;
+  border:2px solid #24bb24 !important;
+  font-family:'Courier New',monospace !important;
+}
+
+.selectize-input input{
+  color:#24bb24 !important;
+}
+
+.selectize-dropdown-content{
+  background-color:#000000 !important;
+}
+
+.selectize-dropdown .option{
+  background-color:#000000 !important;
+  color:#24bb24 !important;
+}
+
+.selectize-dropdown .active{
+  background-color:#24bb24 !important;
+  color:#000000 !important;
+}
+
+.selectize-control.single .selectize-input:after{
+  border-top-color:#24bb24 !important;
+}
 
         select,
         input {
           background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
         }
 
         button {
           background-color: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 8px 16px;
           font-family: 'Courier New', monospace;
           cursor: pointer;
         }
 
         button:hover {
-          background-color: #00FF00;
+          background-color: #24bb24;
           color: #1c1c1c;
         }
 
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
           font-family: 'Courier New', monospace;
           cursor: pointer;
@@ -170,10 +238,12 @@ level1_4_ui <- function() {
 
 level1_4_server <- function(input, output, session, current_page) {
   
-  console <- reactiveVal("")
+  output$console_ui <- renderUI({
+    NULL
+  })
   
-  output$console_out <- renderText({
-    console()
+  output$next_ui_1_4 <- renderUI({
+    NULL
   })
   
   output$level_ui <- renderUI({
@@ -189,8 +259,8 @@ level1_4_server <- function(input, output, session, current_page) {
         p("Kies het juiste script om het tidyverse-pakket te laden."),
         
         selectInput(
-          inputId = "package_choice",
-          label = NULL,
+          "package_choice",
+          NULL,
           choices = c(
             "library(tidyverse)" = "library(tidyverse)",
             "load(tidyverse)" = "load(tidyverse)",
@@ -199,12 +269,23 @@ level1_4_server <- function(input, output, session, current_page) {
           )
         ),
         
-        HTML("tibble_bootsequence <- as_tibble(bootsequence)"),
+        br(),
+        
+        tags$div(
+          style="
+          background:#000000;
+          border:2px solid #24bb24;
+          padding:15px;
+          margin-bottom:15px;
+        ",
+          HTML("tibble_bootsequence &lt;- as_tibble(bootsequence)")
+        ),
         
         actionButton(
-          inputId = "run_pkg",
-          label = "▶ RUN CODE"
+          "run_pkg",
+          "▶ RUN CODE"
         )
+        
       ),
       
       div(
@@ -212,15 +293,14 @@ level1_4_server <- function(input, output, session, current_page) {
         
         h3("Console"),
         
-        verbatimTextOutput("console_out"),
+        uiOutput("console_ui"),
         
         uiOutput("next_ui_1_4")
+        
       )
+      
     )
-  })
-  
-  output$next_ui_1_4 <- renderUI({
-    NULL
+    
   })
   
   observeEvent(input$run_pkg, {
@@ -237,8 +317,23 @@ level1_4_server <- function(input, output, session, current_page) {
       
       tib <- as_tibble(bootsequence)
       
-      console(
+      output$console_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "console_out",
+            placeholder = FALSE
+          )
+        )
+        
+      })
+      
+      output$console_out <- renderText({
+        
         paste0(
+          "✔ Correct!\n\n",
           "> library(tidyverse)\n",
           "> as_tibble(bootsequence)\n\n",
           paste(
@@ -246,39 +341,67 @@ level1_4_server <- function(input, output, session, current_page) {
             collapse = "\n"
           )
         )
-      )
+        
+      })
       
       output$next_ui_1_4 <- renderUI({
+        
         tagList(
+          
           br(),
           
           actionButton(
-            inputId = "next_transition1_2",
-            label = "Volgende",
+            "next_transition1_2",
+            "Volgende",
             class = "next-btn"
           )
+          
         )
+        
       })
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      console(
-        paste0(
-          "> ", input$package_choice, "\n\n",
-          "✖ Incorrect.\n",
-          "Hint: gebruik de standaardfunctie om een package te laden."
+      output$console_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "console_out",
+            placeholder = FALSE
+          )
         )
-      )
+        
+      })
+      
+      output$console_out <- renderText({
+        
+        paste(
+          "✖ Fout.",
+          "",
+          "Hint: gebruik de standaardfunctie om een package te laden.",
+          "",
+          "Het juiste antwoord begint met library(...).",
+          sep = "\n"
+        )
+        
+      })
       
       output$next_ui_1_4 <- renderUI({
         NULL
       })
+      
     }
+    
   })
   
   observeEvent(input$next_transition1_2, {
+    
     current_page("transition1_2")
+    
   })
+  
 }

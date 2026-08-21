@@ -3,7 +3,7 @@ virus_dataset <- data.frame(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
     "Subel-X", "SilentMoth", "Avron Pathogen", "Solaris-7", "HollowFang"
   ),
-  mean_onset_days = c( 
+  mean_onset_days = c(
     3.2, 1.8, 5.6, 2.4, 4.1,
     6.3, 7.8, 3.9, 2.1, 5.0
   ),
@@ -36,46 +36,140 @@ level2_1_ui <- function() {
     
     tags$head(
       tags$style(HTML("
-        body {
-          background-color: #1c1c1c;
-          color: #00FF00;
-          font-family: 'Courier New', monospace;
+
+        body{
+          background-color:#1c1c1c;
+          color:#24bb24;
+          font-family:'Courier New', monospace;
         }
 
-        .game-container {
-          display: flex;
-          gap: 20px;
-          margin-top: 20px;
+        .game-container{
+          display:flex;
+          gap:20px;
+          margin-top:20px;
         }
 
-        .editor, .console {
-          width: 50%;
-          padding: 15px;
-          font-family: 'Courier New', monospace;
-          border: 2px solid #00FF00;
-          text-align: left;
+        .editor,
+        .console{
+          width:50%;
+          padding:15px;
+          font-family:'Courier New', monospace;
+          border:2px solid #24bb24;
+          text-align:left;
         }
 
-        .editor {
-          background-color: #1c1c1c;
-          min-height: 200px;
+        .editor{
+          background-color:#1c1c1c;
+          min-height:200px;
         }
 
-        .console {
-          background-color: #000000;
-          min-height: 200px;
-          white-space: pre-wrap;
+        .console{
+          background-color:#000000;
+          min-height:200px;
+          white-space:pre-wrap;
+        }
+
+        .console-message{
+          background-color:#000000 !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          outline:none !important;
+          box-shadow:none !important;
+          padding:10px;
+          margin-top:10px;
+          min-height:80px;
+        }
+
+        .console-message.error{
+          color:#bb2424 !important;
+          border-color:#bb2424 !important;
+        }
+
+        .console-message.success{
+          color:#24bb24 !important;
+          border-color:#24bb24 !important;
+        }
+
+        .console-message pre{
+          background-color:#000000 !important;
+          color:inherit !important;
+          border:none !important;
+          outline:none !important;
+          box-shadow:none !important;
+          padding:0 !important;
+          margin:0 !important;
+          font-family:'Courier New', monospace !important;
+          white-space:pre-wrap !important;
+        }
+
+        select,
+        .form-control,
+        .selectize-input,
+        .selectize-control.single .selectize-input,
+        .selectize-dropdown,
+        .selectize-dropdown .option,
+        .selectize-input.full{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          font-family:'Courier New', monospace !important;
+        }
+
+        .selectize-input input{
+          color:#24bb24 !important;
+        }
+
+        .selectize-dropdown-content{
+          background-color:#1c1c1c !important;
+        }
+
+        .selectize-dropdown .option{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+        }
+
+        .selectize-dropdown .active{
+          background-color:#24bb24 !important;
+          color:#000000 !important;
+        }
+
+        .selectize-control.single .selectize-input:after{
+          border-top-color:#24bb24 !important;
+        }
+
+        button,
+        .btn,
+        #submit_excel{
+          background-color:#1c1c1c;
+          color:#24bb24;
+          border:2px solid #24bb24;
+          padding:10px 20px;
+          cursor:pointer;
+          font-family:'Courier New', monospace;
+        }
+
+        button:hover,
+        .btn:hover,
+        #submit_excel:hover{
+          background-color:#24bb24;
+          color:#000000;
         }
 
         .next-btn{
           margin-top:20px;
           background:#1c1c1c;
-          color:#00FF00;
-          border:2px solid #00FF00;
+          color:#24bb24;
+          border:2px solid #24bb24;
           padding:10px 20px;
-          font-family:'Courier New';
+          font-family:'Courier New', monospace;
           cursor:pointer;
         }
+
+        .next-btn:hover{
+          background-color:#24bb24;
+          color:#000000;
+        }
+
       "))
     ),
     
@@ -85,7 +179,7 @@ level2_1_ui <- function() {
       div(
         class = "editor",
         
-        h3("📂 Level 2.1: Load the Virus Dataset"),
+        h3("Level 2.1: Load the Virus Dataset"),
         
         p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
         
@@ -93,7 +187,10 @@ level2_1_ui <- function() {
         
         question$ui,
         
-        actionButton("submit_excel", "▶ RUN CODE")
+        actionButton(
+          "submit_excel",
+          "▶ RUN CODE"
+        )
       ),
       
       div(
@@ -101,7 +198,7 @@ level2_1_ui <- function() {
         
         h3("Console"),
         
-        verbatimTextOutput("excel_console"),
+        uiOutput("excel_console_ui"),
         
         br(),
         
@@ -115,22 +212,38 @@ level2_1_server <- function(input, output, session, current_page){
   
   question <- render_question(excel_question)
   
+  output$excel_console_ui <- renderUI({
+    NULL
+  })
+  
   observeEvent(input$submit_excel,{
     
     if(question$check(input)){
       
       session$sendCustomMessage("greenFlash", TRUE)
       
+      output$excel_console_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "excel_console",
+            placeholder = FALSE
+          )
+        )
+        
+      })
+      
       output$excel_console <- renderText({
         
         paste(
-          "🟢 SECURITY PROTOCOL UPDATED",
+          "✔ Correct!",
           "",
-          "Module 1/4 geactiveerd.",
+          "Het bestand virus.xlsx is succesvol geladen.",
           "",
-          "Virus Database Module",
-          "STATUS: ONLINE",
-          sep="\n"
+          "De dataset is beschikbaar voor analyse.",
+          sep = "\n"
         )
         
       })
@@ -139,7 +252,7 @@ level2_1_server <- function(input, output, session, current_page){
         
         tagList(
           
-          h3("📊 Geladen dataset"),
+          h3("Geladen dataset"),
           
           tableOutput("virus_table_data"),
           
@@ -165,23 +278,26 @@ level2_1_server <- function(input, output, session, current_page){
       
       output$virus_table <- renderUI(NULL)
       
+      output$excel_console_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "excel_console",
+            placeholder = FALSE
+          )
+        )
+        
+      })
+      
       output$excel_console <- renderText({
         
         paste(
-          "🔴 SECURITY PROTOCOL FAILED",
+          "✖ Fout.",
           "",
-          "Module activation unsuccessful.",
-          "",
-          paste0(
-            "Je koos: read_excel(",
-            input$excel_choice,
-            ")"
-          ),
-          "",
-          "HINT",
           "Bestandsnamen zijn tekst.",
           "Gebruik daarom aanhalingstekens én de .xlsx-extensie.",
-          "",
           sep = "\n"
         )
         
@@ -192,7 +308,9 @@ level2_1_server <- function(input, output, session, current_page){
   })
   
   observeEvent(input$next_level2_2,{
+    
     current_page("level2_2")
+    
   })
   
 }

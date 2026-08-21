@@ -26,123 +26,341 @@ dna_ct_dataset_outlier <- data.frame(
   )
 )
 
+
 level4_1_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
+    
     tags$head(
       tags$style(HTML("
+        
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+        
         .game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
-        .editor, .console {
+        
+        .editor,
+        .console {
           width: 50%;
           padding: 15px;
           font-family: 'Courier New', monospace;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           text-align: left;
         }
+        
         .editor {
           background-color: #1c1c1c;
           min-height: 200px;
         }
+        
         .console {
           background-color: #000000;
           min-height: 200px;
           white-space: pre-wrap;
         }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
+        .table-title {
+          color: #24bb24;
+          font-family: 'Courier New', monospace;
+          margin-top: 10px;
+          margin-bottom: 5px;
+        }
+        
+        .table-scroll {
+          background-color: #000000 !important;
+          border: 2px solid #24bb24 !important;
+          padding: 10px;
+          margin-top: 10px;
+          max-height: 220px;
+          overflow-y: auto;
+          overflow-x: auto;
+        }
+        
+        .table-scroll table {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border-collapse: collapse !important;
+          font-family: 'Courier New', monospace !important;
+          width: max-content !important;
+          min-width: 100% !important;
+        }
+        
+        .table-scroll table th,
+        .table-scroll table td {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 1px solid #24bb24 !important;
+          padding: 6px 10px !important;
+          white-space: nowrap !important;
+        }
+        
         .code-box {
           background-color: #000000;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           padding: 10px;
           margin-top: 10px;
         }
+        
         .inline-input {
           display: inline-block;
-          width: 160px;
+          width: 260px;
           background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           font-family: 'Courier New', monospace;
           margin-left: 5px;
         }
+        
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
-          font-family: 'Courier New';
+          font-family: 'Courier New', monospace;
           cursor: pointer;
         }
+        
+        .next-btn:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+        #submit_excel {
+          margin-top: 20px;
+          background-color: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
+        
+        #submit_excel:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
       "))
     ),
+    
+    
     div(
       class = "game-container",
+      
+      
       div(
         class = "editor",
-        h3("📂 Level 4.1: DNA concentratie dataset inladen"),
-        p("Gebruik read_excel() om het bestand dna_concentrations.xlsx te laden."),
-        p("Typ de volledige functie die nodig is:"),
+        
+        h3("Level 4.1: DNA concentratie dataset inladen"),
+        
+        p(
+          "Gebruik read_excel() om het bestand dna_concentrations.xlsx te laden."
+        ),
+        
+        p(
+          "Typ de volledige functie die nodig is:"
+        ),
+        
         div(
           class = "code-box",
+          
           HTML("DNA_concentrations_dataset <- "),
-          tags$input(id = "excel_input", type = "text", class = "inline-input")
+          
+          tags$input(
+            id = "excel_input",
+            type = "text",
+            class = "inline-input"
+          )
         ),
-        actionButton("submit_excel", "▶ RUN CODE")
+        
+        actionButton(
+          "submit_excel",
+          "▶ RUN CODE"
+        )
       ),
+      
+      
       div(
         class = "console",
+        
         h3("Console"),
-        verbatimTextOutput("excel_console"),
+        
+        uiOutput("excel_console_ui"),
+        
         br(),
+        
         uiOutput("DNA_concentrations_table"),
+        
         uiOutput("next_ui41")
       )
     )
   )
 }
 
+
 level4_1_server <- function(input, output, session, current_page) {
+  
+  output$excel_console_ui <- renderUI({
+    NULL
+  })
+  
+  
   observeEvent(input$submit_excel, {
+    
     req(input$excel_input)
+    
     clean_input <- trimws(input$excel_input)
     
+    
     if (clean_input == "read_excel(\"dna_concentrations.xlsx\")") {
+      
       session$sendCustomMessage("greenFlash", TRUE)
-      output$excel_console <- renderText(
-        "✔ Correct!\nHet bestand is geladen als 'dna_concentrations_dataset'."
-      )
-      output$DNA_concentrations_table <- renderUI({
-        tagList(
-          h3("📊 Geladen dataset:"),
-          tableOutput("DNA_concentrations_table_data")
+      
+      
+      output$excel_console_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "excel_console",
+            placeholder = FALSE
+          )
         )
       })
+      
+      
+      output$excel_console <- renderText({
+        
+        "✔ Correct!\nHet bestand is geladen als 'dna_concentrations_dataset'."
+      })
+      
+      
+      output$DNA_concentrations_table <- renderUI({
+        
+        tagList(
+          
+          h4(
+            "Geladen dataset:",
+            class = "table-title"
+          ),
+          
+          div(
+            class = "table-scroll",
+            
+            tableOutput(
+              "DNA_concentrations_table_data"
+            )
+          )
+        )
+      })
+      
+      
       output$DNA_concentrations_table_data <- renderTable({
+        
         dna_ct_dataset_outlier
-      })
+        
+      }, striped = FALSE, bordered = TRUE, hover = FALSE)
+      
+      
       output$next_ui41 <- renderUI({
-        actionButton("next_level4_2", "Volgende", class = "next-btn")
+        
+        actionButton(
+          "next_level4_2",
+          "Volgende",
+          class = "next-btn"
+        )
       })
+      
+      
     } else {
+      
       session$sendCustomMessage("redFlash", TRUE)
-      output$DNA_concentrations_table <- renderUI({ NULL })
-      output$next_ui41 <- renderUI({ NULL })
-      output$excel_console <- renderText(paste0(
-        "✖ Fout.\nJe typte: ", input$excel_input, "\n\n",
-        "Hint: Gebruik de hele functie, en vergeet de aanhalingstekens én de .xlsx extensie niet."
-      ))
+      
+      
+      output$DNA_concentrations_table <- renderUI({
+        NULL
+      })
+      
+      
+      output$next_ui41 <- renderUI({
+        NULL
+      })
+      
+      
+      output$excel_console_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "excel_console",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
+      output$excel_console <- renderText({
+        
+        paste0(
+          "✖ Fout.\n",
+          "Je typte: ",
+          input$excel_input,
+          "\n\n",
+          "Hint: Gebruik de hele functie, en vergeet de aanhalingstekens én de .xlsx extensie niet."
+        )
+      })
     }
   })
   
+  
   observeEvent(input$next_level4_2, {
+    
     current_page("level4_2")
+    
   })
 }

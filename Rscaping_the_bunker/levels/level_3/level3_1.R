@@ -14,121 +14,270 @@ untidy_scientists <- data.frame(
   )
 )
 
+
 level3_1_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
+        
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+        
         .game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
-        .editor, .console {
+        
+        .editor,
+        .console {
           width: 50%;
           padding: 15px;
           font-family: 'Courier New', monospace;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           text-align: left;
         }
+        
         .editor {
           background-color: #1c1c1c;
           min-height: 200px;
         }
+        
         .console {
           background-color: #000000;
           min-height: 200px;
+          color: #24bb24;
           white-space: pre-wrap;
         }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
         .code-box {
           background-color: #000000;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           padding: 10px;
           margin-top: 10px;
         }
+        
         .inline-input {
           display: inline-block;
           width: 160px;
           background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           font-family: 'Courier New', monospace;
           margin-left: 5px;
         }
+        
+        .table-title {
+          color: #24bb24;
+          font-family: 'Courier New', monospace;
+          margin-top: 10px;
+          margin-bottom: 5px;
+        }
+        
+        .table-scroll {
+          background-color: #000000 !important;
+          border: 2px solid #24bb24 !important;
+          padding: 10px;
+          margin-top: 10px;
+          max-height: 300px;
+          overflow-y: auto;
+          overflow-x: auto;
+        }
+        
+        .table-scroll table {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border-collapse: collapse !important;
+          font-family: 'Courier New', monospace !important;
+          width: max-content !important;
+          min-width: 100% !important;
+        }
+        
+        .table-scroll table th,
+        .table-scroll table td {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 1px solid #24bb24 !important;
+          padding: 6px 10px !important;
+        }
+        
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
-          font-family: 'Courier New';
+          font-family: 'Courier New', monospace;
           cursor: pointer;
         }
+        
+        .next-btn:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+        #submit_excel_l3_1 {
+          margin-top: 20px;
+          background-color: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
+        
+        #submit_excel_l3_1:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
       "))
     ),
+    
     
     div(
       class = "game-container",
       
+      
       div(
         class = "editor",
-        h3("📂 Level 3.1: Scientists dataset inladen"),
-        p("Gebruik read_excel() om het bestand scientists.xlsx te laden."),
-        p("Typ wat er tussen de haakjes moet staan:"),
+        
+        h3("Level 3.1: Scientists dataset inladen"),
+        
+        p(
+          "Gebruik read_excel() om het bestand scientists.xlsx te laden."
+        ),
+        
+        p(
+          "Typ wat er tussen de haakjes moet staan:"
+        ),
         
         div(
           class = "code-box",
-          HTML("scientists_dataset <- read_excel("),
-          tags$input(id = "excel_input", type = "text", class = "inline-input"),
+          
+          HTML("scientists_dataset &lt;- read_excel("),
+          
+          tags$input(
+            id = "excel_input",
+            type = "text",
+            class = "inline-input"
+          ),
+          
           HTML(")")
         ),
         
-        actionButton("submit_excel_l3_1", "▶ RUN CODE")
+        actionButton(
+          "submit_excel_l3_1",
+          "▶ RUN CODE"
+        )
       ),
+      
       
       div(
         class = "console",
+        
         h3("Console"),
-        verbatimTextOutput("excel_console_l3_1"),
+        
+        uiOutput("excel_console_ui_l3_1"),
+        
         br(),
+        
         uiOutput("scientists_table_l3_1")
       )
     )
   )
 }
 
+
 level3_1_server <- function(input, output, session, current_page) {
   
-  output$excel_console_l3_1 <- renderText({
-    ""
+  output$excel_console_ui_l3_1 <- renderUI({
+    NULL
   })
+  
   
   output$scientists_table_l3_1 <- renderUI({
     NULL
   })
   
+  
   output$scientists_table_data_l3_1 <- renderTable({
+    
     untidy_scientists
+    
   }, rownames = FALSE)
   
+  
   observeEvent(input$submit_excel_l3_1, {
+    
     req(input$excel_input)
     
+    
     clean_input <- trimws(input$excel_input)
+    
     
     if (clean_input %in% c("\"scientists.xlsx\"", "scientists.xlsx")) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
+      
+      output$excel_console_ui_l3_1 <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "excel_console_l3_1",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
       output$excel_console_l3_1 <- renderText({
+        
         paste(
-          "🟢 CORRECT",
+          "✔ Correct!",
           "",
           "Het bestand is geladen als 'scientists_dataset'.",
           "",
@@ -137,34 +286,78 @@ level3_1_server <- function(input, output, session, current_page) {
         )
       })
       
+      
       output$scientists_table_l3_1 <- renderUI({
+        
         tagList(
-          h3("📊 Geladen dataset"),
-          tableOutput("scientists_table_data_l3_1"),
+          
+          h4(
+            "Geladen dataset:",
+            class = "table-title"
+          ),
+          
+          div(
+            class = "table-scroll",
+            tableOutput("scientists_table_data_l3_1")
+          ),
+          
           br(),
-          actionButton("next_level3_2", "Volgende", class = "next-btn")
+          
+          actionButton(
+            "next_level3_2",
+            "Volgende",
+            class = "next-btn"
+          )
         )
       })
+      
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$scientists_table_l3_1 <- renderUI(NULL)
+      
+      output$scientists_table_l3_1 <- renderUI({
+        NULL
+      })
+      
+      
+      output$excel_console_ui_l3_1 <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "excel_console_l3_1",
+            placeholder = FALSE
+          )
+        )
+      })
+      
       
       output$excel_console_l3_1 <- renderText({
+        
         msg <- if (grepl("\\.xlsx", clean_input)) {
+          
           "Gebruik aanhalingstekens rond de bestandsnaam."
+          
         } else {
+          
           "Bestandsnamen zijn tekst. Gebruik aanhalingstekens én de .xlsx-extensie."
+          
         }
         
+        
         paste(
-          "🔴 FOUT",
+          "✖ Fout",
           "",
-          paste0("Je typte: read_excel(", input$excel_input, ")"),
+          paste0(
+            "Je typte: read_excel(",
+            input$excel_input,
+            ")"
+          ),
           "",
-          "HINT",
+          "Hint:",
           msg,
           sep = "\n"
         )
@@ -172,7 +365,10 @@ level3_1_server <- function(input, output, session, current_page) {
     }
   })
   
+  
   observeEvent(input$next_level3_2, {
+    
     current_page("level3_2")
+    
   })
 }

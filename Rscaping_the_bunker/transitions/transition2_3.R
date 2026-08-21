@@ -13,7 +13,7 @@ transition2_3_server <- function(input, output, session, current_page) {
         tags$h1(class = "game-title", "LEVEL 3"),
         tags$div(
           class = "intro-text",
-          "De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd.\n\nAlleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."
+          "Van het vrijgekomen virus is voor iedere onderzoeker geregistreerd hoelang de onset-tijd was.\n\nDoor deze gegevens te vergelijken met de gegevens van de aanwezige virussen kan vastgesteld worden welk virus is vrijgekomen.\n\nHoudt rekening met alle beschikbare informatie."
         ),
         actionButton("hx3_continue_btn_3", "Doorgaan", class = "start-btn")
       )
@@ -25,10 +25,10 @@ transition2_3_server <- function(input, output, session, current_page) {
       modalDialog(
         title = "LEVEL 3 — Introductie",
         tagList(
-          p("De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd. Alleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."),
-          p("Aan jou de taak om de toegang tot de databases te herstellen."),
-          br(),
-          tags$b("Activeer alle drie beveiligingsmodules om toegang te krijgen tot de volgende onderzoeksruimte.")
+          p("In de cursus heb je geleerd hoe je .xlsx-bestanden opent met read_excel(). Deze skill zal je toegang geven tot nieuwe datasets in de bunker."),
+          p("Ook heb je geleerd hoe 'tidy' data eruitziet. Het is noodzakelijk dat je dit kunt herkennen en toepassen zodat de data betrouwbaar geanalyseerd kan worden."),
+          p("Daarnaast moet je weten hoe je data kunt filteren. Hiervoor gebruik je de functie filter()."),
+          p("Naast filteren heb je ook geleerd hoe je summarise() toe kunt passen om kernstatistieken te berekenen, zoals gemiddelden en standaarddeviatie.")
         ),
         footer = tagList(
           actionButton("continue_level3", "Doorgaan", class = "start-btn")

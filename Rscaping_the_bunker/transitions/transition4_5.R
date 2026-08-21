@@ -13,7 +13,7 @@ transition4_5_server <- function(input, output, session, current_page) {
         tags$h1(class = "game-title", "LEVEL 5"),
         tags$div(
           class = "intro-text",
-          "De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd.\n\nAlleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."
+          "Het vrijgekomen virus is volledig geïdentificeerd.\n\nNu moet het juiste antiviral geselecteerd worden, zodat verdere verspreiding gestopt kan worden.\n\nAnalyseer de twee datasets over de aanwezige virussen en antivirals, om te bepalen welk antiviral gebruikt kan worden.\n\nDeze beslissing is van levensbelang, met het verkeerde antiviral zal het virus zich verder verspreiden."
         ),
         actionButton("hx_continue_btn_5", "Doorgaan", class = "start-btn")
       )
@@ -25,10 +25,10 @@ transition4_5_server <- function(input, output, session, current_page) {
       modalDialog(
         title = "LEVEL 5 — Introductie",
         tagList(
-          p("De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd. Alleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."),
-          p("Aan jou de taak om de toegang tot de databases te herstellen."),
-          br(),
-          tags$b("Activeer alle drie beveiligingsmodules om toegang te krijgen tot de volgende onderzoeksruimte.")
+          p("In de cursus is behandeld hoe je de functie distinct() gebruikt om unieke waarden uit een dataset te halen."),
+          p("Daarnaast heb je geleerd hoe je met count() concrete aantallen kunt bepalen."),
+          p("Ook kun je nu tabellen samenvoegen op basis van gemeenschappelijke variabelen met left_join(). Dit is noodzakelijk in de bunker voor het verkrijgen van complete datasets."),
+          p("Verder weet je nu hoe je de x-as kunt sorteren met reorder(). Dit is belangrijk voor het overzichtelijk visualiseren van verkregen data.")
         ),
         footer = tagList(
           actionButton("continue_level5", "Doorgaan", class = "start-btn")
