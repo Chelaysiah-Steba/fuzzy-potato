@@ -27,7 +27,7 @@ transition3_4_server <- function(input, output, session, current_page) {
         title = "LEVEL 4 — Introductie",
         tagList(
           p("Tijdens de cursus heb je geleerd hoe je dixon.test() gebruikt om te bepalen of extreme waarden statistisch gezien een outlier zijn."),
-          p("Ook heb je geleerd dat een datapunt enkel verwijderd mag worden als de p-value groter is dan 0.05."),
+          p("Ook heb je geleerd dat een datapunt enkel verwijderd mag worden als de p-value kleiner is dan 0.05."),
           p("Daarnaast weet je nu dat je geom_smooth(method = \"lm\") gebruikt om een lineaire regressielijn toe te voegen aan een scatterplot. Dit is een belangrijke skill voor het interpoleren van onbekende datapunten.")
         ),
         footer = tagList(
