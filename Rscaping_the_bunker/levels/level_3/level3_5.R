@@ -1,6 +1,3 @@
-library(shiny)
-library(shinyjs)
-
 virus_dataset <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-5", "Siah-V Complex",
@@ -16,85 +13,160 @@ escaped_virus_dataset <- data.frame(
   sd_onset_days = 0.9
 )
 
+
 level3_5_ui <- function() {
+  
   fluidPage(
+    
     tags$head(
       tags$style(HTML("
+
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+
         .game-container {
           display: flex;
           gap: 20px;
           margin-top: 20px;
         }
-        .editor, .console {
+
+        .editor,
+        .console {
           width: 50%;
           padding: 15px;
-          border: 2px solid #00FF00;
+          border: 2px solid #24bb24;
           text-align: left;
         }
+
         .editor {
           background-color: #1c1c1c;
           min-height: 200px;
         }
+
         .console {
           background-color: #000000;
           min-height: 200px;
           white-space: pre-wrap;
         }
+
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+
+        input[type='checkbox'] {
+          accent-color: #24bb24;
+        }
+
+        .checkbox label {
+          color: #24bb24;
+        }
+
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
           font-family: 'Courier New';
           cursor: pointer;
         }
+
+        .next-btn:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+
       "))
     ),
     
-    div(class = "game-container",
-        div(class = "editor",
-            h3("🔍 Level 3.5: Virus lokalisatie"),
-            p("Hiernaast zijn de gemiddelden en SD waarden van de virussen te zien."),
-            p("Kijkend naar deze informatie, welk van deze virussen zijn mogelijk vrijgekomen in de bunker? (meerdere antwoorden mogelijk)"),
-            
-            checkboxGroupInput(
-              inputId = "virus_answer_3_5",
-              label = "Kies de juiste antwoorden:",
-              choices = list(
-                "a) Livo-01" = "a",
-                "b) CrimsonFlu" = "b",
-                "c) Sperion Spore" = "c",
-                "d) Remnox-5" = "d",
-                "e) Siah-V Complex" = "e",
-                "f) Subel-X" = "f",
-                "g) SilentMoth" = "g",
-                "h) Avron Pathogen" = "h",
-                "i) Solaris-7" = "i",
-                "j) HollowFang" = "j"
-              )
-            ),
-            
-            actionButton("submit_excel_3_5", "▶ RUN CODE")
+    div(
+      class = "game-container",
+      
+      div(
+        class = "editor",
+        
+        h3("Level 3.5: Virus lokalisatie"),
+        
+        p("Hiernaast zijn de gemiddelden en SD waarden van de virussen te zien."),
+        
+        p("Kijkend naar deze informatie, welk van deze virussen zijn mogelijk vrijgekomen in de bunker? (meerdere antwoorden mogelijk)"),
+        
+        checkboxGroupInput(
+          inputId = "virus_answer_3_5",
+          label = "Kies de juiste antwoorden:",
+          choices = list(
+            "a) Livo-01" = "a",
+            "b) CrimsonFlu" = "b",
+            "c) Sperion Spore" = "c",
+            "d) Remnox-5" = "d",
+            "e) Siah-V Complex" = "e",
+            "f) Subel-X" = "f",
+            "g) SilentMoth" = "g",
+            "h) Avron Pathogen" = "h",
+            "i) Solaris-7" = "i",
+            "j) HollowFang" = "j"
+          )
         ),
         
-        div(class = "console",
-            h3("Console"),
-            verbatimTextOutput("excel_console_3_5"),
-            h3("Escaped Virus Dataset:"),
-            tableOutput("escaped_virus_table_data_3_5"),
-            h3("Virus Dataset:"),
-            tableOutput("virus_table_data_3_5"),
-            uiOutput("next_ui_3_5")
+        actionButton(
+          "submit_excel_3_5",
+          "▶ RUN CODE"
         )
+      ),
+      
+      div(
+        class = "console",
+        
+        h3("Console"),
+        
+        uiOutput("excel_console_ui_3_5"),
+        
+        h3("Escaped Virus Dataset:"),
+        
+        tableOutput("escaped_virus_table_data_3_5"),
+        
+        h3("Virus Dataset:"),
+        
+        tableOutput("virus_table_data_3_5"),
+        
+        uiOutput("next_ui_3_5")
+      )
     )
   )
 }
+
 
 level3_5_server <- function(input, output, session, current_page) {
   
@@ -106,9 +178,8 @@ level3_5_server <- function(input, output, session, current_page) {
     virus_dataset
   }, rownames = FALSE)
   
-  
-  output$excel_console_3_5 <- renderText({
-    ""
+  output$excel_console_ui_3_5 <- renderUI({
+    NULL
   })
   
   output$next_ui_3_5 <- renderUI({
@@ -116,36 +187,84 @@ level3_5_server <- function(input, output, session, current_page) {
   })
   
   observeEvent(input$submit_excel_3_5, {
+    
     req(input$virus_answer_3_5)
     
     correct <- c("a", "h")
     
-    if (identical(input$virus_answer_3_5, correct)) {
+    if (
+      setequal(input$virus_answer_3_5, correct) &&
+      length(input$virus_answer_3_5) == length(correct)
+    ) {
+      
       session$sendCustomMessage("greenFlash", TRUE)
       
+      output$excel_console_ui_3_5 <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "excel_console_3_5",
+            placeholder = FALSE
+          )
+        )
+      })
+      
       output$excel_console_3_5 <- renderText({
-        "✔ Correct!\nDe mean_onset_days en SD komen het best overeen met die van Livo-01 en Avron Pathogen."
+        
+        paste0(
+          "✔ Correct!\n",
+          "De mean_onset_days en SD komen het best overeen met die van ",
+          "Livo-01 en Avron Pathogen."
+        )
       })
       
       output$next_ui_3_5 <- renderUI({
-        actionButton("next_transition3_4", "Volgende", class = "next-btn")
+        
+        actionButton(
+          "next_transition3_4",
+          "Volgende",
+          class = "next-btn"
+        )
       })
       
     } else {
+      
       session$sendCustomMessage("redFlash", TRUE)
       
+      output$excel_console_ui_3_5 <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "excel_console_3_5",
+            placeholder = FALSE
+          )
+        )
+      })
+      
       output$excel_console_3_5 <- renderText({
+        
         paste0(
-          "✖ Fout.\nJe koos antwoord: ", input$virus_answer_3_5, "\n\n",
+          "✖ Fout.\n",
+          "Je koos antwoord: ",
+          paste(input$virus_answer_3_5, collapse = ", "),
+          "\n\n",
           "Hint: Kijk nog eens goed naar de mean_onset_days en SD van het vrijgekomen virus."
         )
       })
       
-      output$next_ui_3_5 <- renderUI(NULL)
+      output$next_ui_3_5 <- renderUI({
+        NULL
+      })
     }
   })
   
   observeEvent(input$next_transition3_4, {
+    
     current_page("transition3_4")
+    
   })
 }

@@ -13,7 +13,8 @@ transition_opening_1_server <- function(input, output, session, current_page) {
         tags$h1(class = "game-title", "LEVEL 1"),
         tags$div(
           class = "intro-text",
-          "De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd.\n\nAlleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."
+          style = "max-width: 800px; margin: 0 auto; text-align: center;",
+          "Het lijkt erop dat je nog geen toegang hebt tot de database van de bunker.\n\nZonder deze toegang is het onmogelijk om vast te stellen welk virus is vrijgekomen.\n\nOm verder te kunnen zal je eerst geauthoriseerd moeten worden om de database van de bunker te openen.\n\nLaad de benodigde bestanden om toegang te krijgen."
         ),
         actionButton("hx_continue_btn_1", "Doorgaan", class = "start-btn")
       )
@@ -25,10 +26,9 @@ transition_opening_1_server <- function(input, output, session, current_page) {
       modalDialog(
         title = "LEVEL 1 — Introductie",
         tagList(
-          p("De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd. Alleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."),
-          p("Aan jou de taak om de toegang tot de databases te herstellen."),
-          br(),
-          tags$b("Activeer alle drie beveiligingsmodules om toegang te krijgen tot de volgende onderzoeksruimte.")
+          p("Tijdens de cursus heb je geleerd hoe je packages activeert met library(). Dit is een cruciale stap bij het programmeren in R."),
+          p("Ook heb je geleerd hoe je RDS-bestanden opent met readRDS(). Dit is noodzakelijk voor je missie in de bunker om toegang te krijgen tot benodigde datasets."),
+          p("Naast het uitvoeren van functies is het ook belangrijk om te begrijpen wat R probeert te vertellen zodat je fouten kunt corrigeren. Hiervoor moet je de errors die je krijgt goed lezen.")
         ),
         footer = tagList(
           actionButton("continue_level1", "Doorgaan", class = "start-btn")

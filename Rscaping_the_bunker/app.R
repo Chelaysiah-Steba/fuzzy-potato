@@ -45,9 +45,6 @@ source("levels/level_5/level5_5.R")
 source("levels/level_5/level5_6.R")
 
 
-source("transitions/transition5_end.R")
-
-
 # ---------------------------------------------------------
 # STATE MACHINE
 # ---------------------------------------------------------
@@ -64,7 +61,7 @@ lines <- c(
   "Na dit incident zijn vrijwel alle aanwezige onderzoekers ziek geworden.",
   "Aan jou de taak om te achterhalen welk virus is vrijgekomen en welk antivirus ingezet moet worden.",
   "De wereld rekent op je.",
-  ":)"
+  "(:"
 )
 
 rv <- reactiveValues(
@@ -149,7 +146,7 @@ end_page_ui <- function() {
         "",
         id = "ending_terminal",
         style = "
-          color:#00FF00;
+          color:#24bb24;
           background:none;
           border:none;
           font-family:'Courier New', monospace;
@@ -158,7 +155,7 @@ end_page_ui <- function() {
           white-space:pre-wrap;
           min-height:320px;
           margin:25px auto;
-          text-shadow:0 0 8px #00FF00;
+          text-shadow:0 0 8px #24bb24;
         "
       )
     ),
@@ -166,8 +163,8 @@ end_page_ui <- function() {
       style = "
         overflow:hidden;
         white-space:nowrap;
-        border-top:2px solid #00FF00;
-        border-bottom:2px solid #00FF00;
+        border-top:2px solid #24bb24;
+        border-bottom:2px solid #24bb24;
         padding:12px;
         margin-top:20px;
       ",
@@ -196,11 +193,11 @@ ui <- fluidPage(
     tags$style(HTML("
       body {
         background-color: #1c1c1c;
-        color: #00FF00;
+        color: #24bb24;
         font-family: 'Courier New', monospace;
       }
       .landing-container {
-        border: 3px solid #00FF00;
+        border: 3px solid #24bb24;
         padding: 30px;
         margin: 50px auto;
         max-width: 800px;
@@ -211,7 +208,7 @@ ui <- fluidPage(
         font-size: 3em;
         font-weight: bold;
         margin-bottom: 20px;
-        text-shadow: 0 0 5px #00FF00;
+        text-shadow: 0 0 5px #24bb24;
       }
       .intro-text {
         font-size: 1.2em;
@@ -224,26 +221,26 @@ ui <- fluidPage(
         font-size: 1.2em;
         padding: 10px 30px;
         background-color: #1c1c1c;
-        color: #00FF00;
-        border: 2px solid #00FF00;
+        color: #24bb24;
+        border: 2px solid #24bb24;
         cursor: pointer;
         transition: all 0.3s ease;
       }
       .start-btn:hover {
-        background-color: #00FF00;
+        background-color: #24bb24;
         color: #1c1c1c;
       }
       .modal-content {
         background-color: #1c1c1c !important;
-        color: #00FF00;
-        border: 2px solid #00FF00;
+        color: #24bb24;
+        border: 2px solid #24bb24;
       }
       .modal-header, .modal-footer {
         background-color: #1c1c1c !important;
-        border-color: #00FF00;
+        border-color: #24bb24;
       }
       .modal-title {
-        color: #00FF00;
+        color: #24bb24;
       }
       @keyframes ticker {
         from { transform: translateX(0%); }
@@ -276,7 +273,7 @@ ui <- fluidPage(
           p.style.fontFamily = 'Courier New, monospace';
           p.style.fontWeight = 'bold';
           p.style.fontSize = (Math.random()*12 + 10) + 'px';
-          p.style.textShadow = '0 0 10px #00ff00';
+          p.style.textShadow = '0 0 10px #24bb24';
           p.style.pointerEvents = 'none';
           p.style.zIndex = '99999';
           const drift = (Math.random()-0.5)*180;
@@ -417,7 +414,6 @@ server <- function(input, output, session) {
   level5_5_server(input, output, session, current_page)
   level5_6_server(input, output, session, current_page)
   
-  transition5_end_server(input, output, session, current_page)
   
   output$main_ui <- renderUI({
     if (current_page() == "intro") {
@@ -484,8 +480,6 @@ server <- function(input, output, session) {
       level5_5_ui()
     } else if (current_page() == "level5_6") {
       level5_6_ui()
-    } else if (current_page() == "transition5_end") {
-      transition5_end_ui()
     } else if (current_page() == "end") {
       end_page_ui()
     }

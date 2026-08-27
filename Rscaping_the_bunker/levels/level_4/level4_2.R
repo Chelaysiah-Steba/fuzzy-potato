@@ -26,140 +26,386 @@ dna_ct_dataset_outlier <- data.frame(
   )
 )
 
+
 level4_2_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
+    
     tags$head(
       tags$style(HTML("
+        
 body {
-background-color: #1c1c1c;
-color: #00FF00;
-font-family: 'Courier New', monospace;
+  background-color: #1c1c1c;
+  color: #24bb24;
+  font-family: 'Courier New', monospace;
 }
+
 .game-container {
-display: flex;
-gap: 10px;
-margin-top: 10px;
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
-.editor, .console {
-width: 50%;
-padding: 10px;
-border: 2px solid #00FF00;
+
+.editor,
+.console {
+  width: 50%;
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+  border: 2px solid #24bb24;
+  text-align: left;
 }
-.editor { background-color: #1c1c1c; }
-.console { background-color: #000000; white-space: pre-wrap; }
+
+.editor {
+  background-color: #1c1c1c;
+  min-height: 200px;
+}
+
+.console {
+  background-color: #000000;
+  min-height: 200px;
+  color: #24bb24;
+  white-space: pre-wrap;
+}
+
+.console-message {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+  border: 2px solid #24bb24 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px;
+  margin-top: 10px;
+  min-height: 80px;
+}
+
+.console-message.error {
+  color: #bb2424 !important;
+  border-color: #bb2424 !important;
+}
+
+.console-message.success {
+  color: #24bb24 !important;
+  border-color: #24bb24 !important;
+}
+
+.console-message pre {
+  background-color: #000000 !important;
+  color: inherit !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: 'Courier New', monospace !important;
+  white-space: pre-wrap !important;
+}
+
 .code-box {
-background-color: #000000;
-border: 3px solid #00FF00;
-padding: 8px;
-margin-bottom: 5px;
-font-size: 1.05em;
-line-height: 1.1em;
+  background-color: #000000;
+  border: 2px solid #24bb24;
+  padding: 10px;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
 }
-select {
-background-color: #000000;
-color: #00FF00;
-border: 2px solid #00FF00;
-margin-left: 3px;
-height: 30px;
+
+.inline-input {
+  display: inline-block;
+  width: 220px;
+  background-color: #000000;
+  color: #24bb24;
+  border: 2px solid #24bb24;
+  font-family: 'Courier New', monospace;
 }
-button {
-background-color: #1c1c1c;
-color: #00FF00;
-border: 2px solid #00FF00;
-padding: 8px 16px;
-cursor: pointer;
+
+input {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+  border: 2px solid #24bb24 !important;
+  font-family: 'Courier New', monospace !important;
 }
-button:hover {
-background-color: #00FF00;
-color: #1c1c1c;
+
+select,
+.form-control {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+  border: 2px solid #24bb24 !important;
+  font-family: 'Courier New', monospace !important;
 }
-.next-btn {
-margin-top: 20px;
-background: #1c1c1c;
-color: #00FF00;
-border: 2px solid #00FF00;
-padding: 10px 20px;
-font-family: 'Courier New';
-cursor: pointer;
+
+select option {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
 }
-"))
+
+select:focus,
+.form-control:focus {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+  border-color: #24bb24 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.shiny-input-container select {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+}
+
+.shiny-input-container select option {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+}
+
+.next-btn,
+.retry-btn {
+  margin-top: 20px;
+  background: #1c1c1c;
+  color: #24bb24;
+  border: 2px solid #24bb24;
+  padding: 10px 20px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+}
+
+.next-btn:hover,
+.retry-btn:hover {
+  background-color: #24bb24;
+  color: #000000;
+}
+
+#run42 {
+  margin-top: 20px;
+  background-color: #1c1c1c;
+  color: #24bb24;
+  border: 2px solid #24bb24;
+  padding: 10px 20px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+}
+
+#run42:hover {
+  background-color: #24bb24;
+  color: #000000;
+}
+
+      "))
     ),
+    
+    
     div(
       class = "game-container",
+      
+      
       div(
         class = "editor",
+        
         h3("Level 4.2: Detecteer outliers"),
-        p("Opdracht: kies de juiste combinatie."),
+        
+        p(
+          "Laad de juiste library en kies de juiste functie om te testen of de waarde 15.4 een outlier is."
+        ),
+        
+        
         div(
           class = "code-box",
-          HTML("library(\n"),
-          tags$input(id = "library_input", type = "text", class = "inline-input"),
-          HTML(")\n"),
-          br(), br(),
-          HTML("dna_ct_outlier <- dna_ct_dataset_outlier |> filter(log10_concentration == 1.50)\n"),
-          br(), br(),
-          tags$span(
-            style = "display: inline-flex; align-items: center; gap: 6px;",
-            div(
-              style = "display: inline-block;",
-              selectInput(
-                "operator",
-                NULL,
-                choices = c("dixon.test", "outlier.check", "dixon.q", "pwr.t.test"),
-                width = "150px",
-                selectize = FALSE
-              )
+          
+          tags$pre(
+            style = "
+              background-color:#000000;
+              color:#24bb24;
+              border:none;
+              margin:0;
+              padding:0;
+              font-family:'Courier New', monospace;
+              white-space:pre-wrap;
+            ",
+            "library("
+          ),
+          
+          tags$input(
+            id = "library_input",
+            type = "text",
+            class = "inline-input",
+            placeholder = "package"
+          ),
+          
+          tags$pre(
+            style = "
+              background-color:#000000;
+              color:#24bb24;
+              border:none;
+              margin:0;
+              padding:0;
+              font-family:'Courier New', monospace;
+              white-space:pre-wrap;
+            ",
+            ")
+
+dna_ct_outlier <- dna_ct_dataset_outlier |>
+  filter(log10_concentration == 1.50)"
+          ),
+          
+          
+          selectInput(
+            "operator",
+            NULL,
+            choices = c(
+              "dixon.test" = "dixon.test",
+              "outlier.check" = "outlier.check",
+              "dixon.q" = "dixon.q",
+              "pwr.t.test" = "pwr.t.test"
             ),
-            HTML("(dna_ct_outlier$ct_value)")
+            width = "220px",
+            selectize = FALSE
+          ),
+          
+          
+          tags$pre(
+            style = "
+              background-color:#000000;
+              color:#24bb24;
+              border:none;
+              margin:0;
+              padding:0;
+              font-family:'Courier New', monospace;
+              white-space:pre-wrap;
+            ",
+            "(dna_ct_outlier$ct_value)"
           )
         ),
-        actionButton("run42", "▶ RUN CODE")
+        
+        
+        actionButton(
+          "run42",
+          "▶ RUN CODE"
+        )
       ),
+      
+      
       div(
         class = "console",
+        
         h3("Console"),
-        verbatimTextOutput("console42"),
+        
+        uiOutput("console42_ui"),
+        
         uiOutput("result42"),
+        
         uiOutput("next_ui42")
       )
     )
   )
 }
 
+
 level4_2_server <- function(input, output, session, current_page) {
+  
+  output$console42_ui <- renderUI({
+    NULL
+  })
+  
+  
+  output$next_ui42 <- renderUI({
+    NULL
+  })
+  
+  
   observeEvent(input$run42, {
-    correct <- (input$library_input == "outliers" && input$operator == "dixon.test")
+    
+    correct <- (
+      trimws(input$library_input) == "outliers" &&
+        input$operator == "dixon.test"
+    )
+    
     
     if (correct) {
+      
       session$sendCustomMessage("greenFlash", TRUE)
-      output$console42 <- renderText(paste0(
-        "## \n",
-        "## Dixon test for outliers\n",
-        "## \n",
-        "## data: dna_ct_outlier$ct_value\n",
-        "## Q = 1, p-value < 2.2e-16\n",
-        "## alternative hypothesis: lowest value 15.4 is an outlier\n"
-      ))
-      output$next_ui42 <- renderUI({
-        actionButton("next_level4_3", "Volgende", class = "next-btn")
-      })
-    } else {
-      session$sendCustomMessage("redFlash", TRUE)
-      output$console42 <- renderText(
-        paste0(
-          "✖ Fout.\nKies de juiste combinatie.\n\n",
-          "Hints:\n",
-          "> upper_bound → hoge outliers\n",
-          "< lower_bound → lage outliers"
+      
+      
+      output$console42_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "console42",
+            placeholder = FALSE
+          )
         )
-      )
-      output$result42 <- renderUI({ NULL })
-      output$next_ui42 <- renderUI({ NULL })
+      })
+      
+      
+      output$console42 <- renderText({
+        
+        paste0(
+          "## \n",
+          "## Dixon test for outliers\n",
+          "## \n",
+          "## data: dna_ct_outlier$ct_value\n",
+          "## Q = 1, p-value < 2.2e-16\n",
+          "## alternative hypothesis: lowest value 15.4 is an outlier\n"
+        )
+      })
+      
+      
+      output$next_ui42 <- renderUI({
+        
+        actionButton(
+          "next_level4_3",
+          "Volgende",
+          class = "next-btn"
+        )
+      })
+      
+      
+    } else {
+      
+      session$sendCustomMessage("redFlash", TRUE)
+      
+      
+      output$console42_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "console42",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
+      output$console42 <- renderText({
+        
+        paste0(
+          "✖ Fout.\n",
+          "Kies de juiste combinatie.\n\n",
+          "Hint:\n",
+          "Welke library bevat de functie dixon.test()?\n",
+          "Gebruik vervolgens de functie waarmee je een Dixon outlier test uitvoert."
+        )
+      })
+      
+      
+      output$result42 <- renderUI({
+        NULL
+      })
+      
+      
+      output$next_ui42 <- renderUI({
+        NULL
+      })
     }
   })
   
+  
   observeEvent(input$next_level4_3, {
+    
     current_page("level4_3")
+    
   })
 }

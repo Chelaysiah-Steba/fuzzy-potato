@@ -53,81 +53,186 @@ plot_ylab_question <- list(
   answer = "Gemiddelde onsettijd (dagen)"
 )
 
+
 level2_4_ui <- function() {
+  
   title_q <- render_question(plot_title_question)
   subtitle_q <- render_question(plot_subtitle_question)
   x_q <- render_question(plot_xlab_question)
   y_q <- render_question(plot_ylab_question)
   
   fluidPage(
+    
     useShinyjs(),
     
     tags$head(
       tags$style(HTML("
-body {
-background-color: #1c1c1c;
-color: #00FF00;
-font-family: 'Courier New', monospace;
+        
+        body {
+          background-color: #1c1c1c;
+          color: #24bb24;
+          font-family: 'Courier New', monospace;
+        }
+        
+        .game-container {
+          display: flex;
+          gap: 20px;
+          margin-top: 20px;
+        }
+        
+        .editor,
+        .console {
+          width: 50%;
+          padding: 15px;
+          border: 2px solid #24bb24;
+          font-family: 'Courier New', monospace;
+        }
+        
+        .editor {
+          background-color: #1c1c1c;
+        }
+        
+        .console {
+          background-color: #000000;
+          white-space: pre-wrap;
+        }
+        
+        .code-box {
+          background-color: #000000;
+          border: 2px solid #24bb24;
+          padding: 20px;
+          margin-bottom: 20px;
+          white-space: pre-wrap;
+          font-size: 1.1em;
+        }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
+        select,
+.form-control,
+.selectize-input,
+.selectize-control.single .selectize-input,
+.selectize-dropdown,
+.selectize-dropdown .option,
+.selectize-input.full {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
+  border: 2px solid #24bb24 !important;
+  font-family: 'Courier New', monospace !important;
 }
 
-.code-box {
-background-color: #000000;
-border: 3px solid #00FF00;
-padding: 20px;
-margin-bottom: 20px;
-white-space: pre-wrap;
-font-size: 1.1em;
+.selectize-input input {
+  color: #24bb24 !important;
 }
 
-.game-container {
-display: flex;
-gap: 20px;
-margin-top: 20px;
+.selectize-dropdown-content {
+  background-color: #000000 !important;
 }
 
-.editor, .console {
-width: 50%;
-padding: 15px;
-border: 2px solid #00FF00;
-background-color: #1c1c1c;
+.selectize-dropdown .option {
+  background-color: #000000 !important;
+  color: #24bb24 !important;
 }
 
-.console {
-background-color: #000000;
-white-space: pre-wrap;
+.selectize-dropdown .active {
+  background-color: #24bb24 !important;
+  color: #000000 !important;
 }
 
-button, .btn {
-background-color: #1c1c1c;
-color: #00FF00;
-border: 2px solid #00FF00;
-padding: 10px 20px;
-cursor: pointer;
-font-size: 1.2em;
+.selectize-control.single .selectize-input:after {
+  border-top-color: #24bb24 !important;
 }
-
-button:hover, .btn:hover {
-background-color: #00FF00;
-color: #1c1c1c;
-}
-"))
+        
+        button,
+        .btn,
+        #run_label {
+          background-color: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 10px 20px;
+          cursor: pointer;
+          font-family: 'Courier New', monospace;
+        }
+        
+        button:hover,
+        .btn:hover,
+        #run_label:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+        .next-btn {
+          margin-top: 20px;
+          background: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
+        
+        .next-btn:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+      "))
     ),
+    
     
     div(
       class = "game-container",
+      
       
       div(
         class = "editor",
         
         h3("Level 2.4: Geef de grafiek de juiste labels"),
         
-        p("Vul de grafiektitel, subtitel, x-as label en y-as label in."),
+        p(
+          "Vul de grafiektitel, subtitel, x-as label en y-as label in."
+        ),
         
-        p("Kies steeds het juiste antwoord uit de dropdowns in de code."),
+        p(
+          "Kies steeds het juiste antwoord uit de dropdowns in de code."
+        ),
         
         div(
           class = "code-box",
-          HTML("ggplot(virus_dataset, aes(
+          
+          HTML(
+            "ggplot(virus_dataset, aes(
 x = virus,
 y = mean_onset_days,
 color = onset_group
@@ -142,42 +247,66 @@ width = 0.2
 ) +
 theme_minimal() +
 labs(
-title = "),
+title = "
+          ),
+          
           title_q$ui,
-          HTML(",
-subtitle = "),
+          
+          HTML(
+            ",
+subtitle = "
+          ),
+          
           subtitle_q$ui,
-          HTML(",
-x = "),
+          
+          HTML(
+            ",
+x = "
+          ),
+          
           x_q$ui,
-          HTML(",
-y = "),
+          
+          HTML(
+            ",
+y = "
+          ),
+          
           y_q$ui,
-          HTML("
+          
+          HTML(
+            "
 ) +
 theme(
 axis.text.x = element_text(angle = 45, hjust = 1)
-)")
+)"
+          )
         ),
         
-        actionButton("run_label", "▶ RUN CODE")
+        actionButton(
+          "run_label",
+          "▶ RUN CODE"
+        )
       ),
+      
       
       div(
         class = "console",
         
         h3("Console"),
         
-        verbatimTextOutput("label_console"),
+        uiOutput("label_console_ui"),
         
         uiOutput("label_content")
       )
     )
-  ) }
+  )
+}
+
 
 level2_4_server <- function(input, output, session, current_page) {
   
   if (!"onset_group" %in% names(virus_dataset)) {
+    
     virus_dataset$onset_group <- cut(
       virus_dataset$mean_onset_days,
       breaks = c(0, 2, 4, 6, 8),
@@ -185,7 +314,16 @@ level2_4_server <- function(input, output, session, current_page) {
     )
   }
   
-  output$label_content <- renderUI(NULL)
+  
+  output$label_console_ui <- renderUI({
+    NULL
+  })
+  
+  
+  output$label_content <- renderUI({
+    NULL
+  })
+  
   
   observeEvent(input$run_label, {
     
@@ -197,6 +335,7 @@ level2_4_server <- function(input, output, session, current_page) {
     x_answer <- trimws(as.character(input$plot_xlab))
     x_ok <- x_answer %in% c("Virus", "Virusnaam")
     
+    
     if (
       isTRUE(title_q$check(input)) &&
       isTRUE(subtitle_q$check(input)) &&
@@ -206,25 +345,48 @@ level2_4_server <- function(input, output, session, current_page) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
+      
+      output$label_console_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "label_console",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
       output$label_console <- renderText({
+        
         paste(
-          "🟢 SECURITY PROTOCOL UPDATED",
-          "",
-          "Module 4/4 geactiveerd.",
-          "",
-          "Graph Label Module",
-          "STATUS: ONLINE",
+          "✔ Correct!",
           "",
           "De grafiek is nu voorzien van de juiste titel, subtitel en assenlabels.",
           sep = "\n"
         )
       })
       
+      
       output$label_content <- renderUI({
-        plotOutput("label_plot")
+        
+        tagList(
+          
+          plotOutput("label_plot"),
+          
+          actionButton(
+            "next_transition2_3",
+            "Volgende",
+            class = "next-btn"
+          )
+        )
       })
       
+      
       output$label_plot <- renderPlot({
+        
         ggplot(
           virus_dataset,
           aes(
@@ -242,6 +404,45 @@ level2_4_server <- function(input, output, session, current_page) {
             width = 0.2
           ) +
           theme_minimal() +
+          theme(
+            plot.background = element_rect(
+              fill = "black",
+              color = "black"
+            ),
+            panel.background = element_rect(
+              fill = "black",
+              color = "black"
+            ),
+            panel.grid.major = element_line(
+              color = "#555555"
+            ),
+            panel.grid.minor = element_line(
+              color = "#333333"
+            ),
+            text = element_text(
+              color = "#24bb24"
+            ),
+            axis.text = element_text(
+              color = "#24bb24"
+            ),
+            plot.title = element_text(
+              color = "#24bb24"
+            ),
+            plot.subtitle = element_text(
+              color = "#24bb24"
+            ),
+            legend.text = element_text(
+              color = "#24bb24"
+            ),
+            legend.title = element_text(
+              color = "#24bb24"
+            ),
+            legend.background = element_rect(
+              fill = "black",
+              color = "black"
+            ),
+            panel.border = element_blank()
+          ) +
           labs(
             title = "Gemiddelde onsettijd per virus",
             subtitle = "Foutbalken tonen de standaarddeviatie",
@@ -250,30 +451,55 @@ level2_4_server <- function(input, output, session, current_page) {
             color = "Onset groep"
           ) +
           theme(
-            axis.text.x = element_text(angle = 45, hjust = 1)
+            axis.text.x = element_text(
+              angle = 45,
+              hjust = 1
+            )
           )
       })
       
-      later::later(function() {
-        current_page("transition2_3")
-      }, delay = 2)
       
-      return()
+    } else {
+      
+      session$sendCustomMessage("redFlash", TRUE)
+      
+      
+      output$label_console_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "label_console",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      
+      output$label_console <- renderText({
+        
+        paste(
+          "✖ Fout.",
+          "",
+          "Een of meerdere labels zijn nog niet correct.",
+          "",
+          "Controleer de titel, subtitel en assenlabels opnieuw.",
+          sep = "\n"
+        )
+      })
+      
+      
+      output$label_content <- renderUI({
+        NULL
+      })
     }
+  })
+  
+  
+  observeEvent(input$next_transition2_3, {
     
-    session$sendCustomMessage("redFlash", TRUE)
+    current_page("transition2_3")
     
-    output$label_console <- renderText({
-      paste(
-        "🔴 SECURITY PROTOCOL FAILED",
-        "",
-        "Eén of meerdere labels zijn nog fout.",
-        "",
-        "Controleer of je de juiste titel, subtitel en assenlabels hebt gekozen.",
-        sep = "\n"
-      )
-    })
-    
-    output$label_content <- renderUI(NULL)
   })
 }

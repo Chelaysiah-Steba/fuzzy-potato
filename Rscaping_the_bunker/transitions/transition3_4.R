@@ -13,7 +13,8 @@ transition3_4_server <- function(input, output, session, current_page) {
         tags$h1(class = "game-title", "LEVEL 4"),
         tags$div(
           class = "intro-text",
-          "De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd.\n\nAlleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."
+          style = "max-width: 800px; margin: 0 auto; text-align: center;",
+          "Er zijn meerdere virussen die overeenkomen.\n\nHet is noodzakelijk dat het vrijgekomen virus 100% geïdentificeerd wordt voordat er een antiviral ingezet kan worden.\n\nHet virus kan geïdentificeerd worden aan de hand van de DNA-concentratie.\n\nIn de database staat een dataset met de CT-waarde van het vrijgekomen virus.\n\nGebruik deze om de concentratie te bepalen en zo vast te stellen welk virus is vrijgekomen."
         ),
         actionButton("hx_continue_btn_4", "Doorgaan", class = "start-btn")
       )
@@ -25,10 +26,9 @@ transition3_4_server <- function(input, output, session, current_page) {
       modalDialog(
         title = "LEVEL 4 — Introductie",
         tagList(
-          p("De centrale databanken blijven vergrendeld totdat de juiste systeemmodules zijn geactiveerd. Alleen operators die de interface kunnen initialiseren en de structuur van binnenkomende data kunnen verifiëren, krijgen toegang tot de beveiligde archieven."),
-          p("Aan jou de taak om de toegang tot de databases te herstellen."),
-          br(),
-          tags$b("Activeer alle drie beveiligingsmodules om toegang te krijgen tot de volgende onderzoeksruimte.")
+          p("Tijdens de cursus heb je geleerd hoe je dixon.test() gebruikt om te bepalen of extreme waarden statistisch gezien een outlier zijn."),
+          p("Ook heb je geleerd dat een datapunt enkel verwijderd mag worden als de p-value kleiner is dan 0.05."),
+          p("Daarnaast weet je nu dat je geom_smooth(method = \"lm\") gebruikt om een lineaire regressielijn toe te voegen aan een scatterplot. Dit is een belangrijke skill voor het interpoleren van onbekende datapunten.")
         ),
         footer = tagList(
           actionButton("continue_level4", "Doorgaan", class = "start-btn")

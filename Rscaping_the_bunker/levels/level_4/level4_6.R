@@ -3,63 +3,128 @@ dna_ct_clean <- data.frame(
   ct_value = c(33.1, 31.8, 30.2, 29.0, 27.5, 26.1, 24.8, 23.9, 22.4, 21.0)
 )
 
+
 level4_6_ui <- function() {
+  
   fluidPage(
+    
     useShinyjs(),
+    
     tags$head(
       tags$style(HTML("
+        
         body {
           background-color: #1c1c1c;
-          color: #00FF00;
+          color: #24bb24;
           font-family: 'Courier New', monospace;
         }
+        
         .game-container {
           display: flex;
-          gap: 10px;
-          margin-top: 10px;
+          gap: 20px;
+          margin-top: 20px;
         }
-        .editor, .console {
+        
+        .editor,
+        .console {
           width: 50%;
-          padding: 10px;
-          border: 2px solid #00FF00;
+          padding: 15px;
+          font-family: 'Courier New', monospace;
+          border: 2px solid #24bb24;
+          text-align: left;
         }
-        .editor { background-color: #1c1c1c; }
-        .console { background-color: #000000; white-space: pre-wrap; }
+        
+        .editor {
+          background-color: #1c1c1c;
+          min-height: 200px;
+        }
+        
+        .console {
+          background-color: #000000;
+          min-height: 200px;
+          color: #24bb24;
+          white-space: pre-wrap;
+        }
+        
+        .console-message {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 10px;
+          margin-top: 10px;
+          min-height: 80px;
+        }
+        
+        .console-message.error {
+          color: #bb2424 !important;
+          border-color: #bb2424 !important;
+        }
+        
+        .console-message.success {
+          color: #24bb24 !important;
+          border-color: #24bb24 !important;
+        }
+        
+        .console-message pre {
+          background-color: #000000 !important;
+          color: inherit !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          font-family: 'Courier New', monospace !important;
+          white-space: pre-wrap !important;
+        }
+        
         .code-box {
           background-color: #000000;
-          border: 3px solid #00FF00;
-          padding: 8px;
-          margin-bottom: 5px;
-          font-size: 1.05em;
-          line-height: 1.1em;
+          border: 2px solid #24bb24;
+          padding: 10px;
+          margin-top: 10px;
         }
-        input {
-          background-color: #000000;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          width: 200px;
-          margin-left: 5px;
-        }
-        button {
-          background-color: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
-          padding: 8px 16px;
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: #00FF00;
-          color: #1c1c1c;
-        }
-        .next-btn {
+        
+        .next-btn,
+        .retry-btn {
           margin-top: 20px;
           background: #1c1c1c;
-          color: #00FF00;
-          border: 2px solid #00FF00;
+          color: #24bb24;
+          border: 2px solid #24bb24;
           padding: 10px 20px;
-          font-family: 'Courier New';
+          font-family: 'Courier New', monospace;
           cursor: pointer;
         }
+        
+        .next-btn:hover,
+        .retry-btn:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+        #run46 {
+          margin-top: 20px;
+          background-color: #1c1c1c;
+          color: #24bb24;
+          border: 2px solid #24bb24;
+          padding: 10px 20px;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+        }
+        
+        #run46:hover {
+          background-color: #24bb24;
+          color: #000000;
+        }
+        
+        input {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          font-family: 'Courier New', monospace !important;
+        }
+        
       "))
     ),
     
@@ -68,38 +133,71 @@ level4_6_ui <- function() {
       
       div(
         class = "editor",
-        h3("Level 4.6: Bereken de log10‑concentratie"),
-        p("Het vrijgekomen virus heeft een CT‑waarde van:"),
+        
+        h3("Level 4.6: Bereken de log10-concentratie"),
+        
+        p(
+          "Het vrijgekomen virus heeft een CT-waarde van:"
+        ),
+        
         h3("CT = 30.6"),
-        p("Gebruik de formule om de log10‑concentratie te berekenen:"),
+        
+        p(
+          "Gebruik de formule om de log10-concentratie te berekenen \n(gebruik hiervoor R of een rekenmachine):"
+        ),
         
         div(
           class = "code-box",
           HTML("CT-value = 38.886 - 4.859 × log10_concentration")
         ),
         
-        p("Vul hieronder de berekende log10‑concentratie in:"),
+        p(
+          "Vul hieronder de berekende log10-concentratie in:"
+        ),
         
-        textInput("log_input", label = NULL, placeholder = "1.00"),
+        textInput(
+          "log_input",
+          label = NULL,
+          placeholder = "1.00"
+        ),
         
-        actionButton("run46", "▶ RUN CODE")
+        actionButton(
+          "run46",
+          "▶ RUN CODE"
+        )
       ),
+      
       
       div(
         class = "console",
+        
         h3("Console"),
-        verbatimTextOutput("console46"),
-        plotOutput("plot46", height = "300px"),
+        
+        uiOutput("console46_ui"),
+        
         uiOutput("next_ui46")
       )
     )
   )
 }
 
+
 level4_6_server <- function(input, output, session, current_page) {
   
+  output$console46_ui <- renderUI({
+    NULL
+  })
+  
+  
+  output$next_ui46 <- renderUI({
+    NULL
+  })
+  
+  
   observeEvent(input$run46, {
+    
     req(input$log_input)
+    
     
     ct_value <- 30.6
     intercept <- 38.886
@@ -109,56 +207,86 @@ level4_6_server <- function(input, output, session, current_page) {
     
     student <- suppressWarnings(as.numeric(input$log_input))
     
-    # Correct
+    
     if (!is.na(student) && abs(student - correct_log10) < 0.05) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      output$console46 <- renderText({
-        paste0(
-          "✔ Correct!\n",
-          "De berekende log10‑concentratie is: ", round(correct_log10, 3)
+      
+      output$console46_ui <- renderUI({
+        
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "console46",
+            placeholder = FALSE
+          )
         )
       })
       
-      output$plot46 <- renderPlot({
-        ggplot(dna_ct_clean, aes(log10_concentration, ct_value)) +
-          geom_point(color = "#00FF00", size = 3) +
-          geom_smooth(method = "lm", color = "#00FF00") +
-          geom_point(aes(x = correct_log10, y = ct_value), color = "red", size = 4) +
-          labs(subtitle = paste0("CT = ", ct_value, " → log10(conc) = ", round(correct_log10, 3))) +
-          theme_minimal(base_family = "Courier New") +
-          theme(
-            plot.background = element_rect(fill = "black"),
-            panel.background = element_rect(fill = "black"),
-            text = element_text(color = "#00FF00"),
-            axis.text = element_text(color = "#00FF00"),
-            plot.subtitle = element_text(color = "#00FF00", size = 18, face = "bold")
-          )
+      
+      output$console46 <- renderText({
+        
+        paste0(
+          "✔ Correct!\n",
+          "De berekende log10-concentratie is: ",
+          round(correct_log10, 3)
+        )
       })
       
+      
       output$next_ui46 <- renderUI({
-        actionButton("next_level4_7", "Volgende", class = "next-btn")
+        
+        actionButton(
+          "next_level4_7",
+          "Volgende",
+          class = "next-btn"
+        )
       })
+      
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      output$console46 <- renderText({
-        paste0(
-          "✘ Fout.\nJe invoer: ", input$log_input, "\n\n",
-          "Hint: los op:\n",
-          "log10_concentration = (CT - 38.886) / -4.859\n"
+      
+      output$next_ui46 <- renderUI({
+        NULL
+      })
+      
+      
+      output$console46_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "console46",
+            placeholder = FALSE
+          )
         )
       })
       
-      output$plot46 <- renderPlot(NULL)
-      output$next_ui46 <- renderUI(NULL)
+      
+      output$console46 <- renderText({
+        
+        paste0(
+          "✖ Fout.\n",
+          "Je invoer: ",
+          input$log_input,
+          "\n\n",
+          "Hint: los op:\n",
+          "log10_concentration = (CT - 38.886) / -4.859"
+        )
+      })
     }
   })
   
+  
   observeEvent(input$next_level4_7, {
+    
     current_page("level4_7")
+    
   })
 }
