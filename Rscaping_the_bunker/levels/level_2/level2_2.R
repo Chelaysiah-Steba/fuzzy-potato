@@ -1,33 +1,33 @@
 virus_dataset <- virus_dataset[order(virus_dataset$mean_onset_days), ]
 
 x_question <- list(
-  id="x_input",
-  type="open",
-  prompt="X-as",
-  answers=c("virus")
+  id = "x_input",
+  type = "open",
+  prompt = "X-as",
+  answers = c("virus")
 )
 
 y_question <- list(
-  id="y_input",
-  type="open",
-  prompt="Y-as",
-  answers=c("mean_onset_days")
+  id = "y_input",
+  type = "open",
+  prompt = "Y-as",
+  answers = c("mean_onset_days")
 )
 
 geom_question <- list(
-  id="geom_choice",
-  type="dropdown",
-  prompt="Geom",
-  options=c(
-    "geom_point()"="geom_point()",
-    "geom_line()"="geom_line()",
-    "geom_bar()"="geom_bar()",
-    "geom_histogram()"="geom_histogram()"
+  id = "geom_choice",
+  type = "dropdown",
+  prompt = "Geom",
+  options = c(
+    "geom_point()" = "geom_point()",
+    "geom_line()" = "geom_line()",
+    "geom_bar()" = "geom_bar()",
+    "geom_histogram()" = "geom_histogram()"
   ),
-  answer="geom_point()"
+  answer = "geom_point()"
 )
 
-level2_2_ui <- function(){
+level2_2_ui <- function() {
   
   x_q <- render_question(x_question)
   y_q <- render_question(y_question)
@@ -37,178 +37,186 @@ level2_2_ui <- function(){
     
     useShinyjs(),
     
-    tags$head(tags$style(HTML("
-body{
-  background:#1c1c1c;
-  color:#24bb24;
-  font-family:'Courier New',monospace;
-}
-
-.game-container{
-  display:flex;
-  gap:20px;
-  margin-top:20px;
-}
-
-.editor,
-.console{
-  width:50%;
-  padding:15px;
-  border:2px solid #24bb24;
-}
-
-.editor{
-  background:#1c1c1c;
-}
-
-.console{
-  background:#000000;
-  white-space:pre-wrap;
-}
-
-.code-box{
-  background:#000000;
-  border:2px solid #24bb24;
-  padding:20px;
-  margin-bottom:20px;
-  white-space:pre-wrap;
-  font-size:1.1em;
-}
-
-.console-message{
-  background-color:#000000 !important;
-  color:#24bb24 !important;
-  border:2px solid #24bb24 !important;
-  outline:none !important;
-  box-shadow:none !important;
-  padding:10px;
-  margin-top:10px;
-  min-height:80px;
-}
-
-.console-message.error{
-  color:#bb2424 !important;
-  border-color:#bb2424 !important;
-}
-
-.console-message.success{
-  color:#24bb24 !important;
-  border-color:#24bb24 !important;
-}
-
-.console-message pre{
-  background-color:#000000 !important;
-  color:inherit !important;
-  border:none !important;
-  outline:none !important;
-  box-shadow:none !important;
-  padding:0 !important;
-  margin:0 !important;
-  font-family:'Courier New',monospace !important;
-  white-space:pre-wrap !important;
-}
-
-input[type='text'],
-.form-control{
-  background-color:#1c1c1c !important;
-  color:#24bb24 !important;
-  border:2px solid #24bb24 !important;
-  font-family:'Courier New',monospace !important;
-}
-
-input[type='text']:focus,
-.form-control:focus{
-  background-color:#1c1c1c !important;
-  color:#24bb24 !important;
-  border:2px solid #24bb24 !important;
-  outline:none !important;
-  box-shadow:none !important;
-}
-
-select,
-.form-control,
-.selectize-input,
-.selectize-control.single .selectize-input,
-.selectize-dropdown,
-.selectize-dropdown .option,
-.selectize-input.full{
-  background-color:#1c1c1c !important;
-  color:#24bb24 !important;
-  border:2px solid #24bb24 !important;
-  font-family:'Courier New',monospace !important;
-}
-
-.selectize-input input{
-  color:#24bb24 !important;
-}
-
-.selectize-dropdown-content{
-  background-color:#1c1c1c !important;
-}
-
-.selectize-dropdown .option{
-  background-color:#1c1c1c !important;
-  color:#24bb24 !important;
-}
-
-.selectize-dropdown .active{
-  background-color:#24bb24 !important;
-  color:#000000 !important;
-}
-
-.selectize-control.single .selectize-input:after{
-  border-top-color:#24bb24 !important;
-}
-
-button,
-.btn,
-#submit_scatter{
-  background-color:#1c1c1c;
-  color:#24bb24;
-  border:2px solid #24bb24;
-  padding:10px 20px;
-  cursor:pointer;
-  font-family:'Courier New',monospace;
-}
-
-button:hover,
-.btn:hover,
-#submit_scatter:hover{
-  background-color:#24bb24;
-  color:#000000;
-}
-
-.next-btn{
-  margin-top:20px;
-  background:#1c1c1c;
-  color:#24bb24;
-  border:2px solid #24bb24;
-  padding:10px 20px;
-  font-family:'Courier New',monospace;
-  cursor:pointer;
-}
-
-.next-btn:hover{
-  background-color:#24bb24;
-  color:#000000;
-}
-``"))),
-    
-    
-    div(class="game-container",
+    tags$head(
+      tags$style(HTML("
         
-        div(class="editor",
-            h3("Level 2.2: Visualiseer de virusgegevens"),
-            p("Maak een scatterplot waarin je de virussen uitzet tegen hun mean onset day. Kies een geschikte geom om de punten te tonen. De foutbalken worden automatisch toegevoegd."),
-            
-            div(class="code-box",
-                HTML("ggplot(virus_dataset, aes(x = "),
-                x_q$ui,
-                HTML(", y = "),
-                y_q$ui,
-                HTML(")) +"),
-                geom_q$ui,
-                HTML("
+        body{
+          background:#1c1c1c;
+          color:#24bb24;
+          font-family:'Courier New', monospace;
+        }
+        
+        .game-container{
+          display:flex;
+          gap:20px;
+          margin-top:20px;
+        }
+        
+        .editor,
+        .console{
+          width:50%;
+          padding:15px;
+          border:2px solid #24bb24;
+        }
+        
+        .editor{
+          background:#1c1c1c;
+        }
+        
+        .console{
+          background:#000000;
+          white-space:pre-wrap;
+        }
+        
+        .code-box{
+          background:#000000;
+          border:2px solid #24bb24;
+          padding:20px;
+          margin-bottom:20px;
+          white-space:pre-wrap;
+          font-size:1.1em;
+        }
+        
+        .console-message{
+          background-color:#000000 !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          outline:none !important;
+          box-shadow:none !important;
+          padding:10px;
+          margin-top:10px;
+          min-height:80px;
+        }
+        
+        .console-message.error{
+          color:#bb2424 !important;
+          border-color:#bb2424 !important;
+        }
+        
+        .console-message.success{
+          color:#24bb24 !important;
+          border-color:#24bb24 !important;
+        }
+        
+        .console-message pre{
+          background-color:#000000 !important;
+          color:inherit !important;
+          border:none !important;
+          outline:none !important;
+          box-shadow:none !important;
+          padding:0 !important;
+          margin:0 !important;
+          font-family:'Courier New', monospace !important;
+          white-space:pre-wrap !important;
+        }
+        
+        input[type='text'],
+        .form-control{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          font-family:'Courier New', monospace !important;
+        }
+        
+        input[type='text']:focus,
+        .form-control:focus{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          outline:none !important;
+          box-shadow:none !important;
+        }
+        
+        select,
+        .form-control,
+        .selectize-input,
+        .selectize-control.single .selectize-input,
+        .selectize-dropdown,
+        .selectize-dropdown .option,
+        .selectize-input.full{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+          border:2px solid #24bb24 !important;
+          font-family:'Courier New', monospace !important;
+        }
+        
+        .selectize-input input{
+          color:#24bb24 !important;
+        }
+        
+        .selectize-dropdown-content{
+          background-color:#1c1c1c !important;
+        }
+        
+        .selectize-dropdown .option{
+          background-color:#1c1c1c !important;
+          color:#24bb24 !important;
+        }
+        
+        .selectize-dropdown .active{
+          background-color:#24bb24 !important;
+          color:#000000 !important;
+        }
+        
+        .selectize-control.single .selectize-input:after{
+          border-top-color:#24bb24 !important;
+        }
+        
+        button,
+        .btn,
+        #submit_scatter{
+          background-color:#1c1c1c;
+          color:#24bb24;
+          border:2px solid #24bb24;
+          padding:10px 20px;
+          cursor:pointer;
+          font-family:'Courier New', monospace;
+        }
+        
+        button:hover,
+        .btn:hover,
+        #submit_scatter:hover{
+          background-color:#24bb24;
+          color:#000000;
+        }
+        
+        .next-btn{
+          margin-top:20px;
+          background:#1c1c1c;
+          color:#24bb24;
+          border:2px solid #24bb24;
+          padding:10px 20px;
+          font-family:'Courier New', monospace;
+          cursor:pointer;
+        }
+        
+        .next-btn:hover{
+          background-color:#24bb24;
+          color:#000000;
+        }
+      "))
+    ),
+    
+    div(
+      class = "game-container",
+      
+      div(
+        class = "editor",
+        
+        h3("Level 2.2: Visualiseer de virusgegevens"),
+        
+        p("Maak een scatterplot waarin je de virussen uitzet tegen hun mean onset day. Kies een geschikte geom om de punten te tonen. De foutbalken worden automatisch toegevoegd."),
+        
+        div(
+          class = "code-box",
+          
+          HTML("ggplot(virus_dataset, aes(x = "),
+          x_q$ui,
+          HTML(", y = "),
+          y_q$ui,
+          HTML(")) +"),
+          geom_q$ui,
+          HTML("
 + geom_errorbar(
     aes(
       ymin = mean_onset_days - sd_onset_days,
@@ -216,28 +224,43 @@ button:hover,
     ),
     width = 0.2
   ) +
-  theme_minimal()+
+  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)
   )")
-            ),
-            actionButton("submit_scatter","▶ RUN CODE")
         ),
         
-        div(class="console",
-            h3("Console"),
-            verbatimTextOutput("scatter_console"),
-            uiOutput("console_content")
-        )
+        actionButton("submit_scatter", "▶ RUN CODE")
+      ),
+      
+      div(
+        class = "console",
+        
+        h3("Console"),
+        
+        # Wordt gevuld na het klikken op RUN CODE
+        uiOutput("scatter_console_ui"),
+        
+        br(),
+        
+        # Hier verschijnt eerst de dataset en daarna de plot
+        uiOutput("console_content")
+      )
     )
   )
 }
 
-level2_2_server <- function(input,output,session,current_page){
+level2_2_server <- function(input, output, session, current_page) {
   
   x_q <- render_question(x_question)
   y_q <- render_question(y_question)
   geom_q <- render_question(geom_question)
   
+  # Consolemelding is leeg totdat de gebruiker op RUN CODE klikt.
+  output$scatter_console_ui <- renderUI({
+    NULL
+  })
+  
+  # Toon bij de start de dataset.
   output$console_content <- renderUI({
     tagList(
       h3("Geladen dataset"),
@@ -249,7 +272,7 @@ level2_2_server <- function(input,output,session,current_page){
     virus_dataset
   })
   
-  observeEvent(input$submit_scatter,{
+  observeEvent(input$submit_scatter, {
     
     x_answer <- trimws(input$x_input)
     y_answer <- trimws(input$y_input)
@@ -259,12 +282,23 @@ level2_2_server <- function(input,output,session,current_page){
     correct_y <- tolower(y_answer) == "mean_onset_days"
     correct_geom <- geom_answer == "geom_point()"
     
-    if(correct_x && correct_y && correct_geom){
+    if (correct_x && correct_y && correct_geom) {
       
-      session$sendCustomMessage("greenFlash",TRUE)
+      session$sendCustomMessage("greenFlash", TRUE)
+      
+      # Groene consolemelding.
+      output$scatter_console_ui <- renderUI({
+        div(
+          class = "console-message success",
+          
+          verbatimTextOutput(
+            "scatter_console",
+            placeholder = FALSE
+          )
+        )
+      })
       
       output$scatter_console <- renderText({
-        
         paste(
           "✔ Correct!",
           "",
@@ -273,14 +307,17 @@ level2_2_server <- function(input,output,session,current_page){
           "De juiste variabelen en geom zijn gekozen.",
           sep = "\n"
         )
-        
       })
       
       output$console_content <- renderUI({
         tagList(
-          plotOutput("scatter_plot",height="400px"),
+          plotOutput("scatter_plot", height = "400px"),
           br(),
-          actionButton("next_level2_3","Volgende",class="next-btn")
+          actionButton(
+            "next_level2_3",
+            "Volgende",
+            class = "next-btn"
+          )
         )
       })
       
@@ -304,7 +341,7 @@ level2_2_server <- function(input,output,session,current_page){
               ymin = mean_onset_days - sd_onset_days,
               ymax = mean_onset_days + sd_onset_days
             ),
-            width = .2,
+            width = 0.2,
             color = "#24bb24"
           ) +
           
@@ -347,43 +384,36 @@ level2_2_server <- function(input,output,session,current_page){
             x = NULL,
             y = NULL
           )
-        
       })
       
     } else {
       
-      session$sendCustomMessage("redFlash",TRUE)
+      session$sendCustomMessage("redFlash", TRUE)
       
       output$console_content <- renderUI(NULL)
       
       hint <- ""
       
-      if(!correct_geom){
+      if (!correct_geom) {
         
         hint <- "Een scatterplot gebruikt punten. Kies de juiste geom()."
         
-      } else if(
-        x_answer %in% c('"virus"', "'virus'")
-      ){
+      } else if (x_answer %in% c("\"virus\"", "'virus'")) {
         
         hint <- "Kolomnamen gebruik je zonder aanhalingstekens."
         
-      } else if(
+      } else if (
         tolower(x_answer) == "mean_onset_days" &&
         tolower(y_answer) == "virus"
-      ){
+      ) {
         
         hint <- "Een bekende categorie hoort op de x-as. De gemeten variabele hoort op de y-as."
         
-      } else if(
-        tolower(y_answer) == "sd_onset_days"
-      ){
+      } else if (tolower(y_answer) == "sd_onset_days") {
         
         hint <- "Lees de opdracht nog eens goed. Welke variabele moet op de y-as?"
         
-      } else if(
-        tolower(x_answer) == "sd_onset_days"
-      ){
+      } else if (tolower(x_answer) == "sd_onset_days") {
         
         hint <- "Lees de opdracht nog eens goed. Welke variabele moet op de x-as?"
         
@@ -393,25 +423,34 @@ level2_2_server <- function(input,output,session,current_page){
           "X-as: virus",
           "Y-as: mean_onset_days",
           "Gebruik een scatterplot met geom_point().",
-          sep="\n"
+          sep = "\n"
         )
-        
       }
       
+      # Rode consolemelding.
+      output$scatter_console_ui <- renderUI({
+        div(
+          class = "console-message error",
+          
+          verbatimTextOutput(
+            "scatter_console",
+            placeholder = FALSE
+          )
+        )
+      })
+      
       output$scatter_console <- renderText({
-        
         paste(
           "✖ Fout.",
           "",
           hint,
           sep = "\n"
         )
-        
       })
     }
   })
   
-  observeEvent(input$next_level2_3,{
+  observeEvent(input$next_level2_3, {
     current_page("level2_3")
   })
 }

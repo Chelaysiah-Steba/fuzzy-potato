@@ -1,13 +1,17 @@
 untidy_df <- data.frame(
   Scientist = c(
-    "sci01","sci01","sci02","sci02","sci03","sci03","sci04","sci04","sci05","sci05"
+    "sci01", "sci01", "sci02", "sci02", "sci03",
+    "sci03", "sci04", "sci04", "sci05", "sci05"
   ),
-  MeasurementType = rep(c("on_site", "symptom_onset_days"), times = 5),
+  MeasurementType = rep(
+    c("on_site", "symptom_onset_days"),
+    times = 5
+  ),
   MeasurementValue = c(
-    "yes", 5, "no", 7, "yes", 3, "yes", 4, "yes", 4
+    "yes", 5, "no", 7, "yes",
+    3, "yes", 4, "yes", 4
   )
 )
-
 
 level3_2_ui <- function() {
   
@@ -82,6 +86,36 @@ level3_2_ui <- function() {
           white-space: pre-wrap !important;
         }
         
+        /* Tabel: zwarte achtergrond, groene tekst en groene lijnen */
+        #untidy_table_l3_2 table {
+          width: 100%;
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border-collapse: collapse !important;
+          border: 2px solid #24bb24 !important;
+          font-family: 'Courier New', monospace !important;
+        }
+        
+        #untidy_table_l3_2 table thead,
+        #untidy_table_l3_2 table tbody,
+        #untidy_table_l3_2 table tr {
+          background-color: #000000 !important;
+        }
+        
+        #untidy_table_l3_2 table th,
+        #untidy_table_l3_2 table td {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 1px solid #24bb24 !important;
+          padding: 6px 10px !important;
+          font-family: 'Courier New', monospace !important;
+        }
+        
+        #untidy_table_l3_2 table th {
+          font-weight: bold !important;
+          border-bottom: 2px solid #24bb24 !important;
+        }
+        
         input[type='radio'] {
           accent-color: #24bb24;
         }
@@ -92,6 +126,7 @@ level3_2_ui <- function() {
           border: 2px solid #24bb24;
           padding: 8px 16px;
           cursor: pointer;
+          font-family: 'Courier New', monospace;
         }
         
         button:hover {
@@ -105,17 +140,19 @@ level3_2_ui <- function() {
           color: #24bb24;
           border: 2px solid #24bb24;
           padding: 10px 20px;
-          font-family: 'Courier New';
+          font-family: 'Courier New', monospace;
           cursor: pointer;
         }
         
+        .next-btn:hover {
+          background-color: #24bb24;
+          color: #1c1c1c;
+        }
       "))
     ),
     
-    
     div(
       class = "game-container",
-      
       
       div(
         class = "editor",
@@ -145,7 +182,6 @@ level3_2_ui <- function() {
         )
       ),
       
-      
       div(
         class = "console",
         
@@ -159,23 +195,24 @@ level3_2_ui <- function() {
   )
 }
 
-
 level3_2_server <- function(input, output, session, current_page) {
   
   output$untidy_table_l3_2 <- renderTable({
     untidy_df
-  }, rownames = FALSE)
-  
+  },
+  rownames = FALSE,
+  striped = FALSE,
+  bordered = TRUE,
+  hover = FALSE
+  )
   
   output$excel_console_ui_l3_2 <- renderUI({
     NULL
   })
   
-  
   output$game_next_l3_2 <- renderUI({
     NULL
   })
-  
   
   observeEvent(input$submit_excel_l3_2, {
     
@@ -183,11 +220,9 @@ level3_2_server <- function(input, output, session, current_page) {
     
     correct <- "b"
     
-    
     if (identical(input$tidy_answer_l3_2, correct)) {
       
       session$sendCustomMessage("greenFlash", TRUE)
-      
       
       output$excel_console_ui_l3_2 <- renderUI({
         
@@ -201,7 +236,6 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      
       output$excel_console_l3_2 <- renderText({
         
         paste(
@@ -214,7 +248,6 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      
       output$game_next_l3_2 <- renderUI({
         
         actionButton(
@@ -224,11 +257,9 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
-      
       
       output$excel_console_ui_l3_2 <- renderUI({
         
@@ -242,7 +273,6 @@ level3_2_server <- function(input, output, session, current_page) {
         )
       })
       
-      
       output$excel_console_l3_2 <- renderText({
         
         paste(
@@ -251,11 +281,10 @@ level3_2_server <- function(input, output, session, current_page) {
           paste0("Je koos antwoord: ", input$tidy_answer_l3_2),
           "",
           "HINT",
-          "Alle variabelen horen aparte kolommen te zijn.",
+          "Alle variabelen horen in aparte kolommen te staan.",
           sep = "\n"
         )
       })
-      
       
       output$game_next_l3_2 <- renderUI({
         NULL
@@ -263,10 +292,7 @@ level3_2_server <- function(input, output, session, current_page) {
     }
   })
   
-  
   observeEvent(input$next_level3_3, {
-    
     current_page("level3_3")
-    
   })
 }

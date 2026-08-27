@@ -13,7 +13,6 @@ antiviral_library <- data.frame(
   )
 )
 
-
 antiviral_effectiveness <- data.frame(
   virus = c(
     "Livo-01", "CrimsonFlu", "Sperion Spore", "Remnox-05", "Siah-V Complex",
@@ -30,7 +29,6 @@ antiviral_effectiveness <- data.frame(
     125, 160, 150, 95, 130
   )
 )
-
 
 level5_5_ui <- function() {
   
@@ -71,10 +69,6 @@ level5_5_ui <- function() {
           white-space: pre-wrap;
         }
         
-        /* =========================
-           CONSOLE MESSAGE
-           ========================= */
-        
         .console-message {
           background-color: #000000 !important;
           color: #24bb24 !important;
@@ -105,10 +99,6 @@ level5_5_ui <- function() {
           white-space: pre-wrap !important;
         }
         
-        /* =========================
-           CODE BOX
-           ========================= */
-        
         .code-box {
           background-color: #000000;
           border: 2px solid #24bb24;
@@ -125,10 +115,6 @@ level5_5_ui <- function() {
           font-family: 'Courier New', monospace;
           margin-left: 5px;
         }
-        
-        /* =========================
-           TABEL
-           ========================= */
         
         .table-container {
           background-color: #000000 !important;
@@ -163,14 +149,8 @@ level5_5_ui <- function() {
           padding: 8px;
         }
         
-        .table-container .table tbody {
-          background-color: #000000 !important;
-        }
-        
-        .table-container .table tbody tr {
-          background-color: #000000 !important;
-        }
-        
+        .table-container .table tbody,
+        .table-container .table tbody tr,
         .table-container .table tbody tr:nth-child(even) {
           background-color: #000000 !important;
         }
@@ -189,10 +169,6 @@ level5_5_ui <- function() {
           color: #24bb24 !important;
         }
         
-        /* =========================
-           VOLGENDE KNOP
-           ========================= */
-        
         .next-btn {
           margin-top: 20px;
           background: #1c1c1c;
@@ -208,10 +184,6 @@ level5_5_ui <- function() {
           color: #000000;
         }
         
-        /* =========================
-           RUN KNOP
-           ========================= */
-        
         #run_level55 {
           margin-top: 20px;
           background-color: #1c1c1c;
@@ -226,10 +198,8 @@ level5_5_ui <- function() {
           background-color: #24bb24;
           color: #000000;
         }
-        
       "))
     ),
-    
     
     div(
       class = "game-container",
@@ -240,7 +210,7 @@ level5_5_ui <- function() {
         h3("Level 5.5: Twee datasets samenvoegen met left_join()"),
         
         p(
-          "Gebruik left_join() om de antiviral datasets samen te voegen adhv antiviral_class."
+          "Gebruik left_join() om de antiviral datasets samen te voegen aan de hand van antiviral_class."
         ),
         
         p("Vul de ontbrekende functies in:"),
@@ -254,7 +224,7 @@ level5_5_ui <- function() {
             id = "join_func",
             type = "text",
             class = "inline-input",
-            placeholder = "functie om te joinen"
+            placeholder = F
           ),
           
           HTML("(antiviral_effectiveness, "),
@@ -263,7 +233,7 @@ level5_5_ui <- function() {
             id = "join_by",
             type = "text",
             class = "inline-input",
-            placeholder = "by = \"...\""
+            placeholder = F
           ),
           
           HTML(")")
@@ -274,7 +244,6 @@ level5_5_ui <- function() {
           "▶ RUN CODE"
         )
       ),
-      
       
       div(
         class = "console",
@@ -293,7 +262,6 @@ level5_5_ui <- function() {
   )
 }
 
-
 level5_5_server <- function(input, output, session, current_page) {
   
   output$console55_ui <- renderUI({
@@ -304,25 +272,21 @@ level5_5_server <- function(input, output, session, current_page) {
     NULL
   })
   
+  output$next_ui55 <- renderUI({
+    NULL
+  })
   
   observeEvent(input$run_level55, {
     
-    req(
-      input$join_func,
-      input$join_by
-    )
+    join_func_answer <- trimws(input$join_func)
+    join_by_answer <- trimws(input$join_by)
     
+    correct_join_function <- join_func_answer == "left_join"
+    correct_join_column <- join_by_answer == "by = \"antiviral_class\""
     
-    correct_answer <- (
-      trimws(input$join_func) == "left_join" &&
-        trimws(input$join_by) == "by = \"antiviral_class\""
-    )
-    
-    
-    if (correct_answer) {
+    if (correct_join_function && correct_join_column) {
       
       session$sendCustomMessage("greenFlash", TRUE)
-      
       
       result <- antiviral_library |>
         left_join(
@@ -330,96 +294,108 @@ level5_5_server <- function(input, output, session, current_page) {
           by = "antiviral_class"
         )
       
-      
+      output$console55_ui <- renderUI({
         
-        output$console55_ui <- renderUI({
+        div(
+          class = "console-message success",
           
-          div(
-            class = "console-message success",
-            
-            verbatimTextOutput(
-              "console55",
-              placeholder = FALSE
-            )
+          verbatimTextOutput(
+            "console55",
+            placeholder = FALSE
           )
-        })
-      
-      
-      output$console55 <- renderText({
-        
-        paste0(
-          "✔ Correct!\n",
-          "Je hebt de datasets succesvol samengevoegd met left_join()."
         )
       })
       
+      output$console55 <- renderText({
         
-        output$table55_ui <- renderUI({
-          
-          div(
-            class = "table-container",
-            
-            tableOutput("table55")
-          )
-        })
+        paste(
+          "✔ Correct!",
+          "",
+          "Je hebt de datasets succesvol samengevoegd.",
+          "",
+          "Alle rijen uit de eerste dataset blijven behouden.",
+          sep = "\n"
+        )
+      })
       
+      output$table55_ui <- renderUI({
+        
+        div(
+          class = "table-container",
+          tableOutput("table55")
+        )
+      })
       
       output$table55 <- renderTable({
         result
       })
       
+      output$next_ui55 <- renderUI({
         
-        output$next_ui55 <- renderUI({
-          
-          actionButton(
-            "next_level5_6",
-            "Volgende",
-            class = "next-btn"
-          )
-        })
-      
+        actionButton(
+          "next_level5_6",
+          "Volgende",
+          class = "next-btn"
+        )
+      })
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
+      output$table55_ui <- renderUI(NULL)
+      output$next_ui55 <- renderUI(NULL)
+      
+      hint_join_function <- ""
+      hint_join_column <- ""
+      
+      if (!correct_join_function) {
         
-        output$table55_ui <- renderUI({
-          NULL
-        })
+        hint_join_function <- paste(
+          "Functie-hint:",
+          "Je begint met de library-dataset. Kies daarom een join waarbij alle rijen van de dataset links van de join behouden blijven.",
+          sep = "\n"
+        )
+      }
+      
+      if (!correct_join_column) {
         
+        hint_join_column <- paste(
+          "Koppelkolom-hint:",
+          "Zoek de kolomnaam die in beide datasets voorkomt en aangeeft tot welke antivirale klasse een record behoort.",
+          "Gebruik die kolom als tekstwaarde in het koppelargument.",
+          sep = "\n"
+        )
+      }
+      
+      hint <- paste(
+        c(hint_join_function, hint_join_column),
+        collapse = "\n\n"
+      )
+      
+      output$console55_ui <- renderUI({
+        
+        div(
+          class = "console-message error",
           
-          output$console55_ui <- renderUI({
-            
-            div(
-              class = "console-message error",
-              
-              verbatimTextOutput(
-                "console55",
-                placeholder = FALSE
-              )
-            )
-          })
-          
-          
-          output$console55 <- renderText({
-            
-            paste0(
-              "✖ Fout.\n",
-              "Je typte:\n",
-              "left_join(): ", input$join_func, "\n",
-              "by = : ", input$join_by, "\n\n",
-              "Hint: de functie heet left_join en het join-argument is by = \"antiviral_class\"."
-            )
-          })
-          
-          
-          output$next_ui55 <- renderUI({
-            NULL
-          })
+          verbatimTextOutput(
+            "console55",
+            placeholder = FALSE
+          )
+        )
+      })
+      
+      output$console55 <- renderText({
+        
+        paste(
+          "✖ Fout.",
+          "",
+          hint,
+          sep = "\n"
+        )
+      })
     }
   })
-  
   
   observeEvent(input$next_level5_6, {
     current_page("level5_6")

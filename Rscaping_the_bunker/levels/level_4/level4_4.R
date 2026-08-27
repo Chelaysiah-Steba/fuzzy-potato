@@ -207,7 +207,7 @@ ggplot(<br>
             id = "x_input44",
             type = "text",
             class = "inline-input",
-            placeholder = "log10_concentration"
+            placeholder = F
           ),
           
           HTML(
@@ -219,7 +219,7 @@ ggplot(<br>
             id = "y_input44",
             type = "text",
             class = "inline-input",
-            placeholder = "ct_value"
+            placeholder = F
           ),
           
           HTML(

@@ -1,5 +1,5 @@
 dna_ct_dataset_outlier <- data.frame(
-  log10_concentratie = c(
+  log10_concentration = c(
     rep(1.2, 3),
     rep(1.5, 3),
     rep(1.8, 3),
@@ -25,7 +25,6 @@ dna_ct_dataset_outlier <- data.frame(
     21.0, 20.8, 21.9
   )
 )
-
 
 level4_1_ui <- function() {
   
@@ -168,7 +167,7 @@ level4_1_ui <- function() {
           color: #000000;
         }
         
-        #submit_excel {
+        #level4_1_submit_load {
           margin-top: 20px;
           background-color: #1c1c1c;
           color: #24bb24;
@@ -178,18 +177,15 @@ level4_1_ui <- function() {
           cursor: pointer;
         }
         
-        #submit_excel:hover {
+        #level4_1_submit_load:hover {
           background-color: #24bb24;
           color: #000000;
         }
-        
       "))
     ),
     
-    
     div(
       class = "game-container",
-      
       
       div(
         class = "editor",
@@ -210,76 +206,76 @@ level4_1_ui <- function() {
           HTML("DNA_concentrations_dataset <- "),
           
           tags$input(
-            id = "excel_input",
+            id = "level4_1_excel_input",
             type = "text",
             class = "inline-input"
           )
         ),
         
         actionButton(
-          "submit_excel",
+          "level4_1_submit_load",
           "▶ RUN CODE"
         )
       ),
-      
       
       div(
         class = "console",
         
         h3("Console"),
         
-        uiOutput("excel_console_ui"),
+        uiOutput("level4_1_console_ui"),
         
         br(),
         
-        uiOutput("DNA_concentrations_table"),
+        uiOutput("level4_1_dataset_table_ui"),
         
-        uiOutput("next_ui41")
+        uiOutput("level4_1_next_ui")
       )
     )
   )
 }
 
-
 level4_1_server <- function(input, output, session, current_page) {
   
-  output$excel_console_ui <- renderUI({
+  output$level4_1_console_ui <- renderUI({
     NULL
   })
   
+  output$level4_1_dataset_table_ui <- renderUI({
+    NULL
+  })
   
-  observeEvent(input$submit_excel, {
+  output$level4_1_next_ui <- renderUI({
+    NULL
+  })
+  
+  observeEvent(input$level4_1_submit_load, {
     
-    req(input$excel_input)
+    req(input$level4_1_excel_input)
     
-    clean_input <- trimws(input$excel_input)
-    
+    clean_input <- trimws(input$level4_1_excel_input)
     
     if (clean_input == "read_excel(\"dna_concentrations.xlsx\")") {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      
-      output$excel_console_ui <- renderUI({
+      output$level4_1_console_ui <- renderUI({
         
         div(
           class = "console-message success",
           
           verbatimTextOutput(
-            "excel_console",
+            "level4_1_console_text",
             placeholder = FALSE
           )
         )
       })
       
-      
-      output$excel_console <- renderText({
-        
-        "✔ Correct!\nHet bestand is geladen als 'dna_concentrations_dataset'."
+      output$level4_1_console_text <- renderText({
+        "✔ Correct!\nHet bestand is geladen als 'DNA_concentrations_dataset'."
       })
       
-      
-      output$DNA_concentrations_table <- renderUI({
+      output$level4_1_dataset_table_ui <- renderUI({
         
         tagList(
           
@@ -292,75 +288,63 @@ level4_1_server <- function(input, output, session, current_page) {
             class = "table-scroll",
             
             tableOutput(
-              "DNA_concentrations_table_data"
+              "level4_1_dataset_table"
             )
           )
         )
       })
       
-      
-      output$DNA_concentrations_table_data <- renderTable({
-        
+      output$level4_1_dataset_table <- renderTable({
         dna_ct_dataset_outlier
-        
       }, striped = FALSE, bordered = TRUE, hover = FALSE)
       
-      
-      output$next_ui41 <- renderUI({
+      output$level4_1_next_ui <- renderUI({
         
         actionButton(
-          "next_level4_2",
+          "level4_1_next_level4_2",
           "Volgende",
           class = "next-btn"
         )
       })
       
-      
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
-      
-      output$DNA_concentrations_table <- renderUI({
+      output$level4_1_dataset_table_ui <- renderUI({
         NULL
       })
       
-      
-      output$next_ui41 <- renderUI({
+      output$level4_1_next_ui <- renderUI({
         NULL
       })
       
-      
-      output$excel_console_ui <- renderUI({
+      output$level4_1_console_ui <- renderUI({
         
         div(
           class = "console-message error",
           
           verbatimTextOutput(
-            "excel_console",
+            "level4_1_console_text",
             placeholder = FALSE
           )
         )
       })
       
-      
-      output$excel_console <- renderText({
+      output$level4_1_console_text <- renderText({
         
         paste0(
           "✖ Fout.\n",
           "Je typte: ",
-          input$excel_input,
+          input$level4_1_excel_input,
           "\n\n",
-          "Hint: Gebruik de hele functie, en vergeet de aanhalingstekens én de .xlsx extensie niet."
+          "Hint: Gebruik de hele functie, en vergeet de aanhalingstekens én de extensie niet."
         )
       })
     }
   })
   
-  
-  observeEvent(input$next_level4_2, {
-    
+  observeEvent(input$level4_1_next_level4_2, {
     current_page("level4_2")
-    
   })
 }

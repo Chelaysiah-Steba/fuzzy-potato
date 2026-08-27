@@ -152,13 +152,13 @@ level4_6_ui <- function() {
         ),
         
         p(
-          "Vul hieronder de berekende log10-concentratie in:"
+          "Vul hieronder de berekende log10-concentratie in \n(gebruik . als decimaalscheider:"
         ),
         
         textInput(
           "log_input",
           label = NULL,
-          placeholder = "1.00"
+          placeholder = F
         ),
         
         actionButton(

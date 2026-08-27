@@ -191,7 +191,7 @@ level3_3_ui <- function() {
             id = "compare_value",
             type = "text",
             class = "inline-input",
-            placeholder = "yes"
+            placeholder = F
           ),
           
           HTML(") |> summarise("),
@@ -202,7 +202,7 @@ level3_3_ui <- function() {
             id = "mean_value",
             type = "text",
             class = "inline-input",
-            placeholder = "symptom_onset_days"
+            placeholder = F
           ),
           
           HTML("),"),
@@ -213,7 +213,7 @@ level3_3_ui <- function() {
             id = "sd_value",
             type = "text",
             class = "inline-input",
-            placeholder = "symptom_onset_days"
+            placeholder = F
           ),
           
           HTML("),"),

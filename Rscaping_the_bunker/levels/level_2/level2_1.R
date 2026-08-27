@@ -13,22 +13,22 @@ virus_dataset <- data.frame(
   )
 )
 
-excel_question <- list(
-  id = "excel_choice",
+tsv_question <- list(
+  id = "tsv_choice",
   type = "dropdown",
-  prompt = "virus_dataset <- read_excel( ... )",
+  prompt = "virus_dataset <- read.tsv( ... )",
   options = c(
-    "\"virus.xlsx\"" = "\"virus.xlsx\"",
+    "\"virus.tsv\"" = "\"virus.tsv\"",
     "virus" = "virus",
-    "virus.xlsx" = "virus.xlsx",
-    "\"data/virus.xlsx\"" = "\"data/virus.xlsx\""
+    "virus.tsv" = "virus.tsv",
+    "\"data/virus.tsv\"" = "\"data/virus.tsv\""
   ),
-  answer = "\"virus.xlsx\""
+  answer = "\"virus.tsv\""
 )
 
 level2_1_ui <- function() {
   
-  question <- render_question(excel_question)
+  question <- render_question(tsv_question)
   
   fluidPage(
     
@@ -36,19 +36,19 @@ level2_1_ui <- function() {
     
     tags$head(
       tags$style(HTML("
-
+        
         body{
           background-color:#1c1c1c;
           color:#24bb24;
           font-family:'Courier New', monospace;
         }
-
+        
         .game-container{
           display:flex;
           gap:20px;
           margin-top:20px;
         }
-
+        
         .editor,
         .console{
           width:50%;
@@ -57,18 +57,18 @@ level2_1_ui <- function() {
           border:2px solid #24bb24;
           text-align:left;
         }
-
+        
         .editor{
           background-color:#1c1c1c;
           min-height:200px;
         }
-
+        
         .console{
           background-color:#000000;
           min-height:200px;
           white-space:pre-wrap;
         }
-
+        
         .console-message{
           background-color:#000000 !important;
           color:#24bb24 !important;
@@ -79,17 +79,17 @@ level2_1_ui <- function() {
           margin-top:10px;
           min-height:80px;
         }
-
+        
         .console-message.error{
           color:#bb2424 !important;
           border-color:#bb2424 !important;
         }
-
+        
         .console-message.success{
           color:#24bb24 !important;
           border-color:#24bb24 !important;
         }
-
+        
         .console-message pre{
           background-color:#000000 !important;
           color:inherit !important;
@@ -101,7 +101,7 @@ level2_1_ui <- function() {
           font-family:'Courier New', monospace !important;
           white-space:pre-wrap !important;
         }
-
+        
         select,
         .form-control,
         .selectize-input,
@@ -114,32 +114,32 @@ level2_1_ui <- function() {
           border:2px solid #24bb24 !important;
           font-family:'Courier New', monospace !important;
         }
-
+        
         .selectize-input input{
           color:#24bb24 !important;
         }
-
+        
         .selectize-dropdown-content{
           background-color:#1c1c1c !important;
         }
-
+        
         .selectize-dropdown .option{
           background-color:#1c1c1c !important;
           color:#24bb24 !important;
         }
-
+        
         .selectize-dropdown .active{
           background-color:#24bb24 !important;
           color:#000000 !important;
         }
-
+        
         .selectize-control.single .selectize-input:after{
           border-top-color:#24bb24 !important;
         }
-
+        
         button,
         .btn,
-        #submit_excel{
+        #submit_tsv{
           background-color:#1c1c1c;
           color:#24bb24;
           border:2px solid #24bb24;
@@ -147,14 +147,14 @@ level2_1_ui <- function() {
           cursor:pointer;
           font-family:'Courier New', monospace;
         }
-
+        
         button:hover,
         .btn:hover,
-        #submit_excel:hover{
+        #submit_tsv:hover{
           background-color:#24bb24;
           color:#000000;
         }
-
+        
         .next-btn{
           margin-top:20px;
           background:#1c1c1c;
@@ -164,12 +164,12 @@ level2_1_ui <- function() {
           font-family:'Courier New', monospace;
           cursor:pointer;
         }
-
+        
         .next-btn:hover{
           background-color:#24bb24;
           color:#000000;
         }
-
+        
       "))
     ),
     
@@ -181,14 +181,14 @@ level2_1_ui <- function() {
         
         h3("Level 2.1: Load the Virus Dataset"),
         
-        p("Gebruik read_excel() om het bestand virus.xlsx te laden."),
+        p("Gebruik de juiste functie om het bestand virus.tsv te laden."),
         
         p("Kies wat er tussen de haakjes moet staan:"),
         
         question$ui,
         
         actionButton(
-          "submit_excel",
+          "submit_tsv",
           "▶ RUN CODE"
         )
       ),
@@ -198,7 +198,7 @@ level2_1_ui <- function() {
         
         h3("Console"),
         
-        uiOutput("excel_console_ui"),
+        uiOutput("tsv_console_ui"),
         
         br(),
         
@@ -208,44 +208,42 @@ level2_1_ui <- function() {
   )
 }
 
-level2_1_server <- function(input, output, session, current_page){
+level2_1_server <- function(input, output, session, current_page) {
   
-  question <- render_question(excel_question)
+  question <- render_question(tsv_question)
   
-  output$excel_console_ui <- renderUI({
+  output$tsv_console_ui <- renderUI({
     NULL
   })
   
-  observeEvent(input$submit_excel,{
+  observeEvent(input$submit_tsv, {
     
-    if(question$check(input)){
+    if (question$check(input)) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      output$excel_console_ui <- renderUI({
+      output$tsv_console_ui <- renderUI({
         
         div(
           class = "console-message success",
           
           verbatimTextOutput(
-            "excel_console",
+            "tsv_console",
             placeholder = FALSE
           )
         )
-        
       })
       
-      output$excel_console <- renderText({
+      output$tsv_console <- renderText({
         
         paste(
           "✔ Correct!",
           "",
-          "Het bestand virus.xlsx is succesvol geladen.",
+          "Het bestand virus.tsv is succesvol geladen.",
           "",
           "De dataset is beschikbaar voor analyse.",
           sep = "\n"
         )
-        
       })
       
       output$virus_table <- renderUI({
@@ -263,9 +261,7 @@ level2_1_server <- function(input, output, session, current_page){
             "Volgende",
             class = "next-btn"
           )
-          
         )
-        
       })
       
       output$virus_table_data <- renderTable({
@@ -278,39 +274,32 @@ level2_1_server <- function(input, output, session, current_page){
       
       output$virus_table <- renderUI(NULL)
       
-      output$excel_console_ui <- renderUI({
+      output$tsv_console_ui <- renderUI({
         
         div(
           class = "console-message error",
           
           verbatimTextOutput(
-            "excel_console",
+            "tsv_console",
             placeholder = FALSE
           )
         )
-        
       })
       
-      output$excel_console <- renderText({
+      output$tsv_console <- renderText({
         
         paste(
           "✖ Fout.",
           "",
-          "Bestandsnamen zijn tekst.",
-          "Gebruik daarom aanhalingstekens én de .xlsx-extensie.",
+          "Hint: Bestandsnamen zijn tekst.",
+          "Gebruik daarom aanhalingstekens én de .tsv-extensie.",
           sep = "\n"
         )
-        
       })
-      
     }
-    
   })
   
-  observeEvent(input$next_level2_2,{
-    
+  observeEvent(input$next_level2_2, {
     current_page("level2_2")
-    
   })
-  
 }

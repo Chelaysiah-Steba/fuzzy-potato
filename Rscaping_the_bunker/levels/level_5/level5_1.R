@@ -15,7 +15,6 @@ antiviral_effectiveness <- data.frame(
   )
 )
 
-
 antiviral_library <- data.frame(
   antiviral_name = c(
     "ViraBloc", "HelixStop", "CapsidCrush", "FuseAway", "PolymeraseX",
@@ -31,7 +30,6 @@ antiviral_library <- data.frame(
     155, 85
   )
 )
-
 
 level5_1_ui <- function() {
   
@@ -117,7 +115,7 @@ level5_1_ui <- function() {
         
         .inline-input {
           display: inline-block;
-          width: 260px;
+          width: 300px;
           background-color: #000000;
           color: #24bb24;
           border: 2px solid #24bb24;
@@ -154,11 +152,9 @@ level5_1_ui <- function() {
           margin: 0 !important;
         }
         
-        .table-scroll table thead {
-          background-color: #000000 !important;
-        }
-        
-        .table-scroll table tbody {
+        .table-scroll table thead,
+        .table-scroll table tbody,
+        .table-scroll .table {
           background-color: #000000 !important;
         }
         
@@ -173,10 +169,6 @@ level5_1_ui <- function() {
         
         .table-scroll table th {
           font-weight: bold !important;
-        }
-        
-        .table-scroll .table {
-          background-color: #000000 !important;
         }
         
         .next-btn,
@@ -196,7 +188,7 @@ level5_1_ui <- function() {
           color: #000000;
         }
         
-        #submit_excel {
+        #level5_1_submit_csv {
           margin-top: 20px;
           background-color: #1c1c1c;
           color: #24bb24;
@@ -206,14 +198,12 @@ level5_1_ui <- function() {
           cursor: pointer;
         }
         
-        #submit_excel:hover {
+        #level5_1_submit_csv:hover {
           background-color: #24bb24;
           color: #000000;
         }
-        
       "))
     ),
-    
     
     div(
       class = "game-container",
@@ -223,18 +213,14 @@ level5_1_ui <- function() {
         
         h3("Level 5.1: Antiviral datasets inladen"),
         
-        p(
-          "Laad de volgende twee bestanden in:"
-        ),
+        p("Laad de volgende twee CSV-bestanden in:"),
         
         tags$ul(
-          tags$li("antiviral_effectiveness.xlsx"),
-          tags$li("antiviral_library.xlsx")
+          tags$li("antiviral_effectiveness.csv"),
+          tags$li("antiviral_library.csv")
         ),
         
-        p(
-          "Typ beide functies volledig:"
-        ),
+        p("Typ beide functies volledig:"),
         
         div(
           class = "code-box",
@@ -242,10 +228,10 @@ level5_1_ui <- function() {
           HTML("antiviral_effectiveness_dataset <- "),
           
           tags$input(
-            id = "excel_input_1",
+            id = "level5_1_csv_input_effectiveness",
             type = "text",
             class = "inline-input",
-            placeholder = "read_excel(...)"
+            placeholder = F
           )
         ),
         
@@ -255,101 +241,95 @@ level5_1_ui <- function() {
           HTML("antiviral_library_dataset <- "),
           
           tags$input(
-            id = "excel_input_2",
+            id = "level5_1_csv_input_library",
             type = "text",
             class = "inline-input",
-            placeholder = "read_excel(...)"
+            placeholder = F
           )
         ),
         
         actionButton(
-          "submit_excel",
+          "level5_1_submit_csv",
           "▶ RUN CODE"
         )
       ),
-      
       
       div(
         class = "console",
         
         h3("Console"),
         
-        uiOutput("excel_console_ui"),
+        uiOutput("level5_1_console_ui"),
         
         br(),
         
-        uiOutput("effectiveness_table"),
+        uiOutput("level5_1_effectiveness_table_ui"),
         
         br(),
         
-        uiOutput("library_table"),
+        uiOutput("level5_1_library_table_ui"),
         
-        uiOutput("next_ui51")
+        uiOutput("level5_1_next_ui")
       )
     )
   )
 }
 
-
 level5_1_server <- function(input, output, session, current_page) {
   
-  output$excel_console_ui <- renderUI({
+  output$level5_1_console_ui <- renderUI({
     NULL
   })
   
-  output$effectiveness_table <- renderUI({
+  output$level5_1_effectiveness_table_ui <- renderUI({
     NULL
   })
   
-  output$library_table <- renderUI({
+  output$level5_1_library_table_ui <- renderUI({
     NULL
   })
   
+  output$level5_1_next_ui <- renderUI({
+    NULL
+  })
   
-  observeEvent(input$submit_excel, {
+  observeEvent(input$level5_1_submit_csv, {
     
-    req(
-      input$excel_input_1,
-      input$excel_input_2
-    )
+    input_1 <- trimws(input$level5_1_csv_input_effectiveness)
+    input_2 <- trimws(input$level5_1_csv_input_library)
     
+    correct_1 <- "read_csv(\"antiviral_effectiveness.csv\")"
+    correct_2 <- "read_csv(\"antiviral_library.csv\")"
     
-    clean1 <- trimws(input$excel_input_1)
-    clean2 <- trimws(input$excel_input_2)
+    first_correct <- identical(input_1, correct_1)
+    second_correct <- identical(input_2, correct_2)
     
-    
-    correct1 <- "read_excel(\"antiviral_effectiveness.xlsx\")"
-    correct2 <- "read_excel(\"antiviral_library.xlsx\")"
-    
-    
-    if (clean1 == correct1 && clean2 == correct2) {
+    if (first_correct && second_correct) {
       
       session$sendCustomMessage("greenFlash", TRUE)
       
-      
-      output$excel_console_ui <- renderUI({
+      output$level5_1_console_ui <- renderUI({
         
         div(
           class = "console-message success",
           
           verbatimTextOutput(
-            "excel_console",
+            "level5_1_console_text",
             placeholder = FALSE
           )
         )
       })
       
-      
-      output$excel_console <- renderText({
-        
-        paste0(
-          "✔ Correct!\n",
-          "Beide bestanden zijn succesvol geladen."
+      output$level5_1_console_text <- renderText({
+        paste(
+          "✔ Correct!",
+          "",
+          "Beide CSV-bestanden zijn succesvol geladen.",
+          sep = "\n"
         )
       })
       
-      
-      output$effectiveness_table <- renderUI({
+      output$level5_1_effectiveness_table_ui <- renderUI({
         
         tagList(
           
@@ -360,14 +340,12 @@ level5_1_server <- function(input, output, session, current_page) {
           
           div(
             class = "table-scroll",
-            
-            tableOutput("effectiveness_table_data")
+            tableOutput("level5_1_effectiveness_table")
           )
         )
       })
       
-      
-      output$library_table <- renderUI({
+      output$level5_1_library_table_ui <- renderUI({
         
         tagList(
           
@@ -378,122 +356,112 @@ level5_1_server <- function(input, output, session, current_page) {
           
           div(
             class = "table-scroll",
-            
-            tableOutput("library_table_data")
+            tableOutput("level5_1_library_table")
           )
         )
       })
       
-      
-      output$effectiveness_table_data <- renderTable({
-        
+      output$level5_1_effectiveness_table <- renderTable({
         antiviral_effectiveness
-        
       }, striped = FALSE, bordered = TRUE, hover = FALSE)
       
-      
-      output$library_table_data <- renderTable({
-        
+      output$level5_1_library_table <- renderTable({
         antiviral_library
-        
       }, striped = FALSE, bordered = TRUE, hover = FALSE)
       
-      
-      output$next_ui51 <- renderUI({
+      output$level5_1_next_ui <- renderUI({
         
         actionButton(
-          "next_level5_2",
+          "level5_1_next_level5_2",
           "Volgende",
           class = "next-btn"
         )
       })
       
-      
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
       
+      output$level5_1_effectiveness_table_ui <- renderUI(NULL)
+      output$level5_1_library_table_ui <- renderUI(NULL)
       
-      output$effectiveness_table <- renderUI({
-        NULL
-      })
+      hint_first <- ""
+      hint_second <- ""
       
-      
-      output$library_table <- renderUI({
-        NULL
-      })
-      
-      
-      output$next_ui51 <- renderUI({
+      if (!first_correct) {
         
-        actionButton(
-          "retry_level51",
-          "Probeer opnieuw",
-          class = "retry-btn"
+        hint_first <- paste(
+          "Eerste dataset:",
+          "Gebruik de leesfunctie die bedoeld is voor komma-gescheiden tekstbestanden.",
+          "De bestandsnaam moet als tekst tussen aanhalingstekens staan.",
+          sep = "\n"
         )
-      })
+      }
       
+      if (!second_correct) {
+        
+        hint_second <- paste(
+          "Tweede dataset:",
+          "Gebruik dezelfde CSV-leesfunctie als bij de eerste dataset.",
+          "Controleer of je verwijst naar het bestand met de juiste extensie.",
+          sep = "\n"
+        )
+      }
       
-      output$excel_console_ui <- renderUI({
+      hint_message <- paste(
+        c(hint_first, hint_second),
+        collapse = "\n\n"
+      )
+      
+      output$level5_1_console_ui <- renderUI({
         
         div(
           class = "console-message error",
           
           verbatimTextOutput(
-            "excel_console",
+            "level5_1_console_text",
             placeholder = FALSE
           )
         )
       })
       
-      
-      output$excel_console <- renderText({
+      output$level5_1_console_text <- renderText({
         
-        paste0(
-          "✖ Fout.\n",
-          "Je typte:\n",
-          "effectiveness: ", input$excel_input_1, "\n",
-          "library: ", input$excel_input_2, "\n\n",
-          "Hint: Gebruik de hele functie, en vergeet de aanhalingstekens én de .xlsx extensie niet."
+        paste(
+          "✖ Fout.",
+          "",
+          hint_message,
+          sep = "\n"
+        )
+      })
+      
+      output$level5_1_next_ui <- renderUI({
+        
+        actionButton(
+          "level5_1_retry",
+          "Probeer opnieuw",
+          class = "retry-btn"
         )
       })
     }
   })
   
-  
-  observeEvent(input$retry_level51, {
+  observeEvent(input$level5_1_retry, {
     
-    updateTextInput(
-      session,
-      "excel_input_1",
-      value = ""
+    # tags$input is een gewone HTML-input. Daarom werkt updateTextInput()
+    # hier niet betrouwbaar; maak de velden leeg met JavaScript.
+    session$sendCustomMessage(
+      type = "resetLevel5_1Inputs",
+      message = TRUE
     )
     
-    updateTextInput(
-      session,
-      "excel_input_2",
-      value = ""
-    )
-    
-    output$excel_console_ui <- renderUI({
-      NULL
-    })
-    
-    output$effectiveness_table <- renderUI({
-      NULL
-    })
-    
-    output$library_table <- renderUI({
-      NULL
-    })
-    
-    output$next_ui51 <- renderUI({
-      NULL
-    })
+    output$level5_1_console_ui <- renderUI(NULL)
+    output$level5_1_effectiveness_table_ui <- renderUI(NULL)
+    output$level5_1_library_table_ui <- renderUI(NULL)
+    output$level5_1_next_ui <- renderUI(NULL)
   })
   
-  
-  observeEvent(input$next_level5_2, {
+  observeEvent(input$level5_1_next_level5_2, {
     current_page("level5_2")
   })
 }

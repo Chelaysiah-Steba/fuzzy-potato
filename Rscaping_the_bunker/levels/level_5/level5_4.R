@@ -157,7 +157,7 @@ level5_4_ui <- function() {
             id = "ggplot_input",
             type = "text",
             class = "inline-input",
-            placeholder = "ggplot"
+            placeholder = F
           ),
           
           HTML("(aes(x = "),
@@ -180,7 +180,7 @@ level5_4_ui <- function() {
             id = "geom_input",
             type = "text",
             class = "inline-input",
-            placeholder = "geom_bar"
+            placeholder = F
           ),
           
           HTML("(stat = "),

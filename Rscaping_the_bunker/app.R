@@ -61,14 +61,14 @@ lines <- c(
   "Na dit incident zijn vrijwel alle aanwezige onderzoekers ziek geworden.",
   "Aan jou de taak om te achterhalen welk virus is vrijgekomen en welk antivirus ingezet moet worden.",
   "De wereld rekent op je.",
-  "(:"
+  ":)"
 )
 
 rv <- reactiveValues(
   current_line = 1,
   current_char = 0,
   is_pausing   = FALSE,
-  char_delay   = 90,
+  char_delay   = 75,
   line_pause   = 200
 )
 
@@ -107,6 +107,23 @@ level_selector_modal <- function() {
     title = "Kies een level",
     easyClose = TRUE,
     footer = NULL,
+    
+    div(
+      class = "memory-alert alert alert-dismissible",
+      
+      tags$button(
+        type = "button",
+        class = "close",
+        `data-dismiss` = "alert",
+        `aria-label` = "Sluiten",
+        tags$span(`aria-hidden` = "true", HTML("&times;"))
+      ),
+      
+      tags$strong("BELANGRIJKE MELDING // "),
+      "Noteer belangrijke resultaten uit eerdere weken. ",
+      "Keuzes die je eerder maakt kunnen later opnieuw nodig zijn."
+    ),
+    
     div(
       style = "display:flex; flex-direction:column; gap:10px;",
       actionButton("go_level_1", "Level 1", class = "start-btn"),
@@ -146,7 +163,7 @@ end_page_ui <- function() {
         "",
         id = "ending_terminal",
         style = "
-          color:#24bb24;
+          color:#00FF00;
           background:none;
           border:none;
           font-family:'Courier New', monospace;
@@ -155,7 +172,7 @@ end_page_ui <- function() {
           white-space:pre-wrap;
           min-height:320px;
           margin:25px auto;
-          text-shadow:0 0 8px #24bb24;
+          text-shadow:0 0 8px #00FF00;
         "
       )
     ),
@@ -163,8 +180,8 @@ end_page_ui <- function() {
       style = "
         overflow:hidden;
         white-space:nowrap;
-        border-top:2px solid #24bb24;
-        border-bottom:2px solid #24bb24;
+        border-top:2px solid #00FF00;
+        border-bottom:2px solid #00FF00;
         padding:12px;
         margin-top:20px;
       ",
@@ -193,11 +210,11 @@ ui <- fluidPage(
     tags$style(HTML("
       body {
         background-color: #1c1c1c;
-        color: #24bb24;
+        color: #00FF00;
         font-family: 'Courier New', monospace;
       }
       .landing-container {
-        border: 3px solid #24bb24;
+        border: 3px solid #00FF00;
         padding: 30px;
         margin: 50px auto;
         max-width: 800px;
@@ -208,7 +225,7 @@ ui <- fluidPage(
         font-size: 3em;
         font-weight: bold;
         margin-bottom: 20px;
-        text-shadow: 0 0 5px #24bb24;
+        text-shadow: 0 0 5px #00FF00;
       }
       .intro-text {
         font-size: 1.2em;
@@ -221,27 +238,56 @@ ui <- fluidPage(
         font-size: 1.2em;
         padding: 10px 30px;
         background-color: #1c1c1c;
-        color: #24bb24;
-        border: 2px solid #24bb24;
+        color: #00FF00;
+        border: 2px solid #00FF00;
         cursor: pointer;
         transition: all 0.3s ease;
       }
       .start-btn:hover {
-        background-color: #24bb24;
+        background-color: #00FF00;
         color: #1c1c1c;
       }
       .modal-content {
         background-color: #1c1c1c !important;
-        color: #24bb24;
-        border: 2px solid #24bb24;
+        color: #00FF00;
+        border: 2px solid #00FF00;
       }
       .modal-header, .modal-footer {
         background-color: #1c1c1c !important;
-        border-color: #24bb24;
+        border-color: #00FF00;
       }
       .modal-title {
-        color: #24bb24;
+        color: #00FF00;
       }
+      
+      .memory-alert {
+  position: relative;
+  background-color: #162616 !important;
+  color: #00FF00 !important;
+  border: 1px solid #00FF00;
+  border-left: 5px solid #00FF00;
+  padding: 15px 45px 15px 15px;
+  margin-bottom: 20px;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.25);
+}
+
+.memory-alert .close {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  color: #00FF00 !important;
+  opacity: 1;
+  font-size: 28px;
+  font-family: Arial, sans-serif;
+  text-shadow: none;
+}
+
+.memory-alert .close:hover {
+  color: #ffffff !important;
+}
+      
       @keyframes ticker {
         from { transform: translateX(0%); }
         to   { transform: translateX(-100%); }
@@ -273,7 +319,7 @@ ui <- fluidPage(
           p.style.fontFamily = 'Courier New, monospace';
           p.style.fontWeight = 'bold';
           p.style.fontSize = (Math.random()*12 + 10) + 'px';
-          p.style.textShadow = '0 0 10px #24bb24';
+          p.style.textShadow = '0 0 10px #00ff00';
           p.style.pointerEvents = 'none';
           p.style.zIndex = '99999';
           const drift = (Math.random()-0.5)*180;

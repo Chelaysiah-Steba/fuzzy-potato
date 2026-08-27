@@ -53,7 +53,6 @@ plot_ylab_question <- list(
   answer = "Gemiddelde onsettijd (dagen)"
 )
 
-
 level2_4_ui <- function() {
   
   title_q <- render_question(plot_title_question)
@@ -140,39 +139,39 @@ level2_4_ui <- function() {
         }
         
         select,
-.form-control,
-.selectize-input,
-.selectize-control.single .selectize-input,
-.selectize-dropdown,
-.selectize-dropdown .option,
-.selectize-input.full {
-  background-color: #000000 !important;
-  color: #24bb24 !important;
-  border: 2px solid #24bb24 !important;
-  font-family: 'Courier New', monospace !important;
-}
-
-.selectize-input input {
-  color: #24bb24 !important;
-}
-
-.selectize-dropdown-content {
-  background-color: #000000 !important;
-}
-
-.selectize-dropdown .option {
-  background-color: #000000 !important;
-  color: #24bb24 !important;
-}
-
-.selectize-dropdown .active {
-  background-color: #24bb24 !important;
-  color: #000000 !important;
-}
-
-.selectize-control.single .selectize-input:after {
-  border-top-color: #24bb24 !important;
-}
+        .form-control,
+        .selectize-input,
+        .selectize-control.single .selectize-input,
+        .selectize-dropdown,
+        .selectize-dropdown .option,
+        .selectize-input.full {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+          border: 2px solid #24bb24 !important;
+          font-family: 'Courier New', monospace !important;
+        }
+        
+        .selectize-input input {
+          color: #24bb24 !important;
+        }
+        
+        .selectize-dropdown-content {
+          background-color: #000000 !important;
+        }
+        
+        .selectize-dropdown .option {
+          background-color: #000000 !important;
+          color: #24bb24 !important;
+        }
+        
+        .selectize-dropdown .active {
+          background-color: #24bb24 !important;
+          color: #000000 !important;
+        }
+        
+        .selectize-control.single .selectize-input:after {
+          border-top-color: #24bb24 !important;
+        }
         
         button,
         .btn,
@@ -206,27 +205,20 @@ level2_4_ui <- function() {
           background-color: #24bb24;
           color: #000000;
         }
-        
       "))
     ),
     
-    
     div(
       class = "game-container",
-      
       
       div(
         class = "editor",
         
         h3("Level 2.4: Geef de grafiek de juiste labels"),
         
-        p(
-          "Vul de grafiektitel, subtitel, x-as label en y-as label in."
-        ),
+        p("Vul de grafiektitel, subtitel, x-as label en y-as label in."),
         
-        p(
-          "Kies steeds het juiste antwoord uit de dropdowns in de code."
-        ),
+        p("Kies steeds het juiste antwoord uit de dropdowns in de code."),
         
         div(
           class = "code-box",
@@ -288,7 +280,6 @@ axis.text.x = element_text(angle = 45, hjust = 1)
         )
       ),
       
-      
       div(
         class = "console",
         
@@ -296,12 +287,14 @@ axis.text.x = element_text(angle = 45, hjust = 1)
         
         uiOutput("label_console_ui"),
         
+        br(),
+        
+        # Bij het starten van dit level staat hier de grafiek uit level 2.3.
         uiOutput("label_content")
       )
     )
   )
 }
-
 
 level2_4_server <- function(input, output, session, current_page) {
   
@@ -314,16 +307,87 @@ level2_4_server <- function(input, output, session, current_page) {
     )
   }
   
-  
   output$label_console_ui <- renderUI({
     NULL
   })
   
-  
+  # Toon dezelfde grafiek als de succesvolle grafiek van level 2.3.
   output$label_content <- renderUI({
-    NULL
+    plotOutput("previous_level_plot", height = "400px")
   })
   
+  output$previous_level_plot <- renderPlot({
+    
+    ggplot(
+      virus_dataset,
+      aes(
+        x = virus,
+        y = mean_onset_days,
+        color = onset_group
+      )
+    ) +
+      
+      geom_point(size = 3) +
+      
+      geom_errorbar(
+        aes(
+          ymin = mean_onset_days - sd_onset_days,
+          ymax = mean_onset_days + sd_onset_days
+        ),
+        width = 0.2
+      ) +
+      
+      theme_minimal() +
+      
+      theme(
+        plot.background = element_rect(
+          fill = "black",
+          color = "black"
+        ),
+        panel.background = element_rect(
+          fill = "black",
+          color = "black"
+        ),
+        panel.grid.major = element_line(
+          color = "#555555"
+        ),
+        panel.grid.minor = element_line(
+          color = "#333333"
+        ),
+        text = element_text(
+          color = "#24bb24"
+        ),
+        axis.text = element_text(
+          color = "#24bb24"
+        ),
+        axis.title = element_text(
+          color = "#24bb24"
+        ),
+        legend.text = element_text(
+          color = "#24bb24"
+        ),
+        legend.title = element_text(
+          color = "#24bb24"
+        ),
+        legend.background = element_rect(
+          fill = "black",
+          color = "black"
+        ),
+        panel.border = element_blank(),
+        axis.text.x = element_text(
+          angle = 45,
+          hjust = 1
+        )
+      ) +
+      
+      labs(
+        title = NULL,
+        subtitle = NULL,
+        x = NULL,
+        y = NULL,
+        color = "Onset groep"
+      )
+  })
   
   observeEvent(input$run_label, {
     
@@ -335,7 +399,6 @@ level2_4_server <- function(input, output, session, current_page) {
     x_answer <- trimws(as.character(input$plot_xlab))
     x_ok <- x_answer %in% c("Virus", "Virusnaam")
     
-    
     if (
       isTRUE(title_q$check(input)) &&
       isTRUE(subtitle_q$check(input)) &&
@@ -344,7 +407,6 @@ level2_4_server <- function(input, output, session, current_page) {
     ) {
       
       session$sendCustomMessage("greenFlash", TRUE)
-      
       
       output$label_console_ui <- renderUI({
         
@@ -358,7 +420,6 @@ level2_4_server <- function(input, output, session, current_page) {
         )
       })
       
-      
       output$label_console <- renderText({
         
         paste(
@@ -369,12 +430,14 @@ level2_4_server <- function(input, output, session, current_page) {
         )
       })
       
-      
+      # De oude plot uit level 2.3 wordt vervangen door de nieuwe gemaakte plot.
       output$label_content <- renderUI({
         
         tagList(
           
-          plotOutput("label_plot"),
+          plotOutput("label_plot", height = "400px"),
+          
+          br(),
           
           actionButton(
             "next_transition2_3",
@@ -383,7 +446,6 @@ level2_4_server <- function(input, output, session, current_page) {
           )
         )
       })
-      
       
       output$label_plot <- renderPlot({
         
@@ -395,7 +457,9 @@ level2_4_server <- function(input, output, session, current_page) {
             color = onset_group
           )
         ) +
+          
           geom_point(size = 3) +
+          
           geom_errorbar(
             aes(
               ymin = mean_onset_days - sd_onset_days,
@@ -403,7 +467,9 @@ level2_4_server <- function(input, output, session, current_page) {
             ),
             width = 0.2
           ) +
+          
           theme_minimal() +
+          
           theme(
             plot.background = element_rect(
               fill = "black",
@@ -425,6 +491,9 @@ level2_4_server <- function(input, output, session, current_page) {
             axis.text = element_text(
               color = "#24bb24"
             ),
+            axis.title = element_text(
+              color = "#24bb24"
+            ),
             plot.title = element_text(
               color = "#24bb24"
             ),
@@ -441,28 +510,25 @@ level2_4_server <- function(input, output, session, current_page) {
               fill = "black",
               color = "black"
             ),
-            panel.border = element_blank()
+            panel.border = element_blank(),
+            axis.text.x = element_text(
+              angle = 45,
+              hjust = 1
+            )
           ) +
+          
           labs(
             title = "Gemiddelde onsettijd per virus",
             subtitle = "Foutbalken tonen de standaarddeviatie",
             x = "Virus",
             y = "Gemiddelde onsettijd (dagen)",
             color = "Onset groep"
-          ) +
-          theme(
-            axis.text.x = element_text(
-              angle = 45,
-              hjust = 1
-            )
           )
       })
-      
       
     } else {
       
       session$sendCustomMessage("redFlash", TRUE)
-      
       
       output$label_console_ui <- renderUI({
         
@@ -476,7 +542,6 @@ level2_4_server <- function(input, output, session, current_page) {
         )
       })
       
-      
       output$label_console <- renderText({
         
         paste(
@@ -489,17 +554,14 @@ level2_4_server <- function(input, output, session, current_page) {
         )
       })
       
-      
+      # Bij een fout blijft de grafiek uit level 2.3 zichtbaar.
       output$label_content <- renderUI({
-        NULL
+        plotOutput("previous_level_plot", height = "400px")
       })
     }
   })
   
-  
   observeEvent(input$next_transition2_3, {
-    
     current_page("transition2_3")
-    
   })
 }

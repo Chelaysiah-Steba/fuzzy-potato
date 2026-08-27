@@ -40,9 +40,9 @@ level5_3_ui <- function() {
             p("Vul de ontbrekende functies in:"),
             div(class = "code-box",
                 HTML("antiviral_library |> "),
-                tags$input(id = "ggplot_input", type = "text", class = "inline-input", placeholder = "ggplot"),
+                tags$input(id = "ggplot_input", type = "text", class = "inline-input", placeholder = F),
                 HTML("(aes(x = antiviral_name, y = stock_concentration_mg)) + "),
-                tags$input(id = "geom_input", type = "text", class = "inline-input", placeholder = "geom_bar"),
+                tags$input(id = "geom_input", type = "text", class = "inline-input", placeholder = F),
                 HTML("(stat = "),
                 tags$input(id = "stat_input", type = "text", class = "inline-input", placeholder = "\"identity\""),
                 HTML(") + geom_hline(yintercept = 150)")

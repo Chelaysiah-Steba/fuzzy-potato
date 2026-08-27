@@ -188,7 +188,7 @@ level5_2_ui <- function() {
             id = "distinct_input",
             type = "text",
             class = "inline-input",
-            placeholder = "functie voor unieke waarden"
+            placeholder = F
           ),
           
           HTML("(antiviral_class) |> "),
@@ -197,7 +197,7 @@ level5_2_ui <- function() {
             id = "count_input",
             type = "text",
             class = "inline-input",
-            placeholder = "functie om te tellen"
+            placeholder = F
           ),
           
           HTML("(antiviral_class)")

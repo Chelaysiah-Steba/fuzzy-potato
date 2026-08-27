@@ -256,7 +256,7 @@ level1_4_server <- function(input, output, session, current_page) {
         
         h3("Level 1.4 — Laad tidyverse en maak een tibble"),
         
-        p("Kies het juiste script om het tidyverse-pakket te laden."),
+        p("Kies de juiste functie om het tidyverse-pakket te laden."),
         
         selectInput(
           "package_choice",
@@ -384,7 +384,6 @@ level1_4_server <- function(input, output, session, current_page) {
           "",
           "Hint: gebruik de standaardfunctie om een package te laden.",
           "",
-          "Het juiste antwoord begint met library(...).",
           sep = "\n"
         )
         
