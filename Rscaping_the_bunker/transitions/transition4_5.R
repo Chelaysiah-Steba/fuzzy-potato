@@ -13,7 +13,7 @@ transition4_5_server <- function(input, output, session, current_page) {
         tags$h1(class = "game-title", "LEVEL 5"),
         tags$div(
           class = "intro-text",
-          "Het vrijgekomen virus is volledig geïdentificeerd.\n\nNu moet het juiste antiviral geselecteerd worden, zodat verdere verspreiding gestopt kan worden.\n\nAnalyseer de twee datasets over de aanwezige virussen en antivirals, om te bepalen welk antiviral gebruikt kan worden.\n\nDeze beslissing is van levensbelang, met het verkeerde antiviral zal het virus zich verder verspreiden."
+          "Het vrijgekomen virus is volledig geïdentificeerd.\n\nNu moet het juiste antivirus geselecteerd worden, zodat verdere verspreiding gestopt kan worden.\n\nAnalyseer de twee datasets over de aanwezige virussen en antiviruss, om te bepalen welk antivirus gebruikt kan worden.\n\nDeze beslissing is van levensbelang, met het verkeerde antivirus zal het virus zich verder verspreiden."
         ),
         actionButton("hx_continue_btn_5", "Doorgaan", class = "start-btn")
       )
