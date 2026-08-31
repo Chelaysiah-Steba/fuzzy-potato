@@ -47,7 +47,7 @@ Rscaping_the_bunker/
 
 2. Open het project in RStudio
 
-3. Install packages: (c("shiny", "tidyverse", "later", "htmltools", "shinyjs"))
+3. Installeer de packages: (c("shiny", "tidyverse", "later", "htmltools", "shinyjs"))
 
 4. Start de applicatie:
    shiny::runApp("Rscaping_the_bunker")
